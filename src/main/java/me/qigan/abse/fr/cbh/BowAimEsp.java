@@ -1,4 +1,4 @@
-package me.qigan.abse.fr.other;
+package me.qigan.abse.fr.cbh;
 
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
