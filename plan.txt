@@ -6,7 +6,7 @@ Add remapping:
 - Add room detect - Done(Except: rL)
 - Add routing - Done
 
-
+Upgraded bow aim esp algorithm(pure evil math goes hard)
 Fix supply pearl no throwing - Done
 Fixed Combat helper sprint - Done
 Modify autoskip - Done

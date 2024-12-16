@@ -55,7 +55,7 @@ public class ProjectilePath extends Module {
                     dy += mdy;
                     dz += mdz;
                     float f2 = 0.99F;
-                    float f3 = 0.03F;
+                    float f3 = 0.05F;
 
                     mdx *= f2;
                     mdy *= f2;

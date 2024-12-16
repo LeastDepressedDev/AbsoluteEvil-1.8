@@ -8,10 +8,8 @@ import me.qigan.abse.pathing.Path;
 import me.qigan.abse.sync.Sync;
 
 import me.qigan.abse.vp.Esp;
-import me.qigan.abse.vp.S2Dtype;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.*;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -47,22 +45,11 @@ public class Experimental extends Module implements EDLogic {
     void tick(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
 
-        Esp.autoFilledBox3D(new BlockPos(5, 5, 5), new Color(255, 0, 255, 155), 2f, false);
-
-        if (Minecraft.getMinecraft().objectMouseOver.getBlockPos() != null)
-            Esp.autoBox3D(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), Color.cyan, 2f, true);
-        if (Minecraft.getMinecraft().objectMouseOver.entityHit != null)
-            Esp.autoBox3D(Minecraft.getMinecraft().objectMouseOver.entityHit, Color.cyan, 2f, true);
-    }
-
-    @SubscribeEvent
-    void rend(RenderGameOverlayEvent.Text e) {
-        if (!isEnabled()) return;
-
-        try {
-            Esp.drawCenteredString(Index.MOVEMENT_CONTROLLER.getPath().getPosPath().size() + " : " + Index.MOVEMENT_CONTROLLER.isPaused(), 400, 200, 0xFFFFFF, S2Dtype.DEFAULT);
-        } catch (Exception ex) {
-
+        for (int i = 0; i < 100; i++) {
+            double[] d2 = BallisticCalculator.calcRelPosArrow(-Minecraft.getMinecraft().thePlayer.rotationPitch, i);
+            Vec3 vec = BallisticCalculator.splitToVec3(d2, Minecraft.getMinecraft().thePlayer.rotationYaw)
+                    .addVector(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
+            Esp.autoBox3D(vec.xCoord, vec.yCoord, vec.zCoord, 0.1, 0.1, Color.RED, 2f, false);
         }
     }
 
