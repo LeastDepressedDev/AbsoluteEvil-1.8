@@ -42,7 +42,7 @@ public class RenderableModule extends WidgetUpdatable {
         super(0, 0);
         box(335, 16);
         this.module = module;
-        this.sch = new WidgetSwitch(310, 2, module.isEnabled(), () -> Index.MAIN_CFG.toggle(module.id()));
+        this.sch = new WidgetSwitch(310, 2, Index.MAIN_CFG.getBoolVal(this.module.id()), () -> Index.MAIN_CFG.toggle(module.id()));
         this.textBox = new WidgetHoveringTextBox(this.module.description(), 0, 0, boxX, boxY).timed(700);
         this.disablerState = new WidgetHoveringTextBox("\u00A7cTemporary disabled!", 310, 2,
                 WidgetSwitch.CONST_SIZE_W, WidgetSwitch.CONST_SIZE_H);

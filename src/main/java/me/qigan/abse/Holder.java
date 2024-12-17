@@ -75,6 +75,7 @@ public class Holder {
 		register(new Swastika());
 		register(new BWEsp());
 		register(new BowAimEsp());
+		register(new SpinTown());
 		register(new BWTeamTracker());
 		register(new CombatHelperAim());
 		register(new CombatHelperAdvancedAimControls());

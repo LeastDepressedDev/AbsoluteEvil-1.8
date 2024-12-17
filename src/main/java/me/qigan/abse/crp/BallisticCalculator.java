@@ -1,7 +1,9 @@
 package me.qigan.abse.crp;
 
 import me.qigan.abse.config.AddressedData;
+import me.qigan.abse.vp.Vec3List;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 
 public class BallisticCalculator {
@@ -65,5 +67,45 @@ public class BallisticCalculator {
 
     public static AddressedData<Float, Double> solveForArrowAngle(double x, double y, double precision, int lim) {
         return solveForAngle(v0a, ka, ga, x, y, precision, lim);
+    }
+
+    public static Double solveForTWPDC(AddressedData<Entity, Vec3List> pt, double roughness) {
+        Double result = null;
+        double mnd = Double.MAX_VALUE;
+        final double k = ka;
+        final double v0 = v0a;
+        final double g = ga;
+        double ax = Math.sqrt(Math.pow(pt.getObject().vecSum.x, 2) + Math.pow(pt.getObject().vecSum.z, 2));
+        double ay = pt.getObject().vecSum.y;
+
+        double d1x = Math.sqrt(Math.pow(pt.getNamespace().posX-Minecraft.getMinecraft().thePlayer.posX, 2) +
+                Math.pow(pt.getNamespace().posZ-Minecraft.getMinecraft().thePlayer.posZ, 2));
+        double d2x = Math.sqrt(Math.pow(pt.getNamespace().posX+pt.getObject().vecSum.x-Minecraft.getMinecraft().thePlayer.posX, 2) +
+                Math.pow(pt.getNamespace().posZ+pt.getObject().vecSum.z-Minecraft.getMinecraft().thePlayer.posZ, 2));
+
+        double d1y = pt.getNamespace().posY-Minecraft.getMinecraft().thePlayer.posY;
+        double d2y = pt.getNamespace().posY+pt.getObject().vecSum.y-Minecraft.getMinecraft().thePlayer.posY;
+
+        double cosx = Math.cos(Math.PI-Math.acos(-(Math.pow(d1x, 2)-Math.pow(d2x, 2)-Math.pow(ax, 2))/(2*d2x*ax))),
+                cosy = Math.cos(Math.PI-Math.acos(-(Math.pow(d1y, 2)-Math.pow(d2y, 2)-Math.pow(ay, 2))/(2*d2y*ay)));
+
+        double logK = Math.log(k);
+
+        for (double t = 0; t < 3.2*20d; t+=roughness) {
+            double ktm1 = Math.pow(k, t)-1;
+            double tm1sq = Math.pow(t-1, 2);
+            double sx = Math.pow(logK, 2)*((Math.pow(d2x, 2)+Math.pow(ax/20, 2)*tm1sq-0.1*d2x*ax*(t-1)*cosx)/(v0*ktm1));
+            double sy = v0*ktm1-logK*Math.sqrt(
+                    Math.pow(d2y, 2)+Math.pow(ay/20, 2)*tm1sq-0.1*d2y*ay*(t-1)*cosy
+            ) + (g*ktm1)/(k*logK) - g*t;
+
+            double diff = Math.abs(sx-sy);
+            if (diff < mnd) {
+                mnd = diff;
+                result = t;
+            }
+        }
+
+        return result;
     }
 }
