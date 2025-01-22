@@ -2,15 +2,12 @@ package me.qigan.abse;
 
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
-import me.qigan.abse.fr.dungons.m7p3.AutoM7P4;
 import me.qigan.abse.fr.exc.PacketBreak;
 import me.qigan.abse.fr.qol.GhostBlocks;
 import me.qigan.abse.fr.qol.GhostUtils;
-import me.qigan.abse.mapping.routing.BBox;
 import me.qigan.abse.mapping.mod.M7Route;
 import me.qigan.abse.gui.inst.NewMainMenu;
-import me.qigan.abse.gui.overlay.GuiNotifier;
-import me.qigan.abse.gui.inst.MainGui;
+import me.qigan.abse.gui.inst.LegacyGui;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -146,7 +143,7 @@ public class InCmd extends CommandBase{
 					sender.addChatMessage(new ChatComponentText("\u00A7c Ghost blocks shit"));
 				}
 			} else if (args[0].equalsIgnoreCase("old")) {
-				MainGui.queue = true;
+				LegacyGui.queue = true;
 			} else if (args[0].equalsIgnoreCase("item")) {
 				Minecraft.getMinecraft().thePlayer.addChatMessage(
 						new ChatComponentText(

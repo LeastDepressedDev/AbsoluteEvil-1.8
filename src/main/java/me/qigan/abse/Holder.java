@@ -9,6 +9,7 @@ import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.crp.SafeMode;
 import me.qigan.abse.fr.*;
+import me.qigan.abse.fr.dungons.m7p3.AirStrafe;
 import me.qigan.abse.fr.dungons.m7p3.AutoM7P4;
 import me.qigan.abse.fr.dungons.m7p3.DeviceIssue;
 import me.qigan.abse.fr.exc.PacketBreak;
@@ -101,6 +102,7 @@ public class Holder {
 		register(new AutoMiningFilter());
 		register(new AutoMiningSecCheck());
 		register(new RouteRecorder());
+		register(new AirStrafe());
 	}
 	
 	public static void register(Module mod) {

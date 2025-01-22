@@ -14,10 +14,13 @@ import me.qigan.abse.sync.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
+import net.minecraft.util.Vector3d;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -65,27 +68,74 @@ public class SecretAura extends Module {
                 || Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().thePlayer == null
                 || !Sync.inDungeon || !Sync.isClear()) return;
         try {
-            BlockPos pos = Minecraft.getMinecraft().thePlayer.rayTrace(Minecraft.getMinecraft().playerController.getBlockReachDistance(), 1f).getBlockPos();
-            Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
-            if (!(block == Blocks.chest || block == Blocks.trapped_chest || block == Blocks.lever)) return;
-            MappingController ctr = Index.MAPPING_CONTROLLER;
-            if (ctr.map != null && ctr.playerCell != null && ctr.roomMap != null) {
-                int iter = ctr.map[ctr.playerCell[0]][ctr.playerCell[1]];
-                Room rm = ctr.roomMap.get(iter);
-                if (rm != null && rm.getType() == Room.Type.PUZZLE) return;
+            BlockPos pos = null;
+            if (Index.MAIN_CFG.getBoolVal("secar_rage")) {
+                EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                Vec3 playerPos = new Vec3(player.posX, player.posY, player.posZ);
+                boolean scare = false;
+                for (int x = -5; x <= 5; x++) {
+                    for (int y = -5; y <= 5; y++) {
+                        for (int z = -5; z <= 5; z++) {
+                            pos = new BlockPos(playerPos.xCoord+x,playerPos.yCoord+y,playerPos.zCoord+z);
+                            Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
+                            if (!(block == Blocks.chest || block == Blocks.trapped_chest || block == Blocks.lever)) continue;
+                            double d = playerPos.distanceTo(new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d));
+                            if (d < Minecraft.getMinecraft().playerController.getBlockReachDistance()) {
+                                MappingController ctr = Index.MAPPING_CONTROLLER;
+                                if (ctr.map != null && ctr.playerCell != null && ctr.roomMap != null) {
+                                    int iter = ctr.map[ctr.playerCell[0]][ctr.playerCell[1]];
+                                    Room rm = ctr.roomMap.get(iter);
+                                    if (rm != null && rm.getType() == Room.Type.PUZZLE) continue;
+                                }
+                                scare = true;
+                                break;
+                            }
+                            if (scare) break;
+                        }
+                        if (scare) break;
+                    }
+                    if (scare) break;
+                }
+            } else {
+                pos = Minecraft.getMinecraft().thePlayer.rayTrace(Minecraft.getMinecraft().playerController.getBlockReachDistance(), 1f).getBlockPos();
+                Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
+                if (!(block == Blocks.chest || block == Blocks.trapped_chest || block == Blocks.lever)) return;
+                MappingController ctr = Index.MAPPING_CONTROLLER;
+                if (ctr.map != null && ctr.playerCell != null && ctr.roomMap != null) {
+                    int iter = ctr.map[ctr.playerCell[0]][ctr.playerCell[1]];
+                    Room rm = ctr.roomMap.get(iter);
+                    if (rm != null && rm.getType() == Room.Type.PUZZLE) return;
+                }
             }
+
+            if (pos == null) return;
             if (!clicked.contains(pos) && (System.currentTimeMillis()-force > Index.MAIN_CFG.getIntVal("secar_fd"))) {
                 force = System.currentTimeMillis();
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(Index.MAIN_CFG.getIntVal("secar_d"));
-                        ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }).start();
+                if (Index.MAIN_CFG.getBoolVal("secar_rage")) {
+                    final BlockPos finalPos = pos;
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(Index.MAIN_CFG.getIntVal("secar_d"));
+                            Sync.doBlockRightClick(finalPos);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+                } else {
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(Index.MAIN_CFG.getIntVal("secar_d"));
+                            ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+                }
             }
-        } catch (Exception exd) {}
+
+        } catch (Exception exd) {
+            exd.printStackTrace();
+        }
     }
 
     @SubscribeEvent

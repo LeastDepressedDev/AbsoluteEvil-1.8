@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainGui extends QGuiScreen {
+public class LegacyGui extends QGuiScreen {
 
     private static final Map<Integer, String> sch = new HashMap<>();
     private static final Map<Integer, String> tsc = new HashMap<>();
@@ -52,7 +52,7 @@ public class MainGui extends QGuiScreen {
 
     public static boolean opened = false;
 
-    public MainGui(int page, QGuiScreen cls) {
+    public LegacyGui(int page, QGuiScreen cls) {
         super(cls);
         this.page = page;
     }
@@ -244,7 +244,7 @@ public class MainGui extends QGuiScreen {
     }
 
     private void reopen(final int page) {
-        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().displayGuiScreen(new MainGui(page, null)));
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().displayGuiScreen(new LegacyGui(page, null)));
     }
 
     @Override

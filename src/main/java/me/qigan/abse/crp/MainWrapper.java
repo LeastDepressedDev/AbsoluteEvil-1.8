@@ -20,7 +20,7 @@ import me.qigan.abse.fr.exc.ClickSimTick;
 import me.qigan.abse.fr.exc.SmoothAimControl;
 import me.qigan.abse.gui.inst.NewMainMenu;
 import me.qigan.abse.gui.overlay.GuiNotifier;
-import me.qigan.abse.gui.inst.MainGui;
+import me.qigan.abse.gui.inst.LegacyGui;
 import me.qigan.abse.mapping.MappingConstants;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.MovementController;
@@ -61,6 +61,7 @@ public class MainWrapper {
         public static KeyBinding debuffKey;
         public static KeyBinding ssKey;
         public static KeyBinding leapShortcut;
+        public static KeyBinding airStrafe;
     }
 
     public static LoginScreen ls = new LoginScreen();
@@ -87,6 +88,8 @@ public class MainWrapper {
         ClientRegistry.registerKeyBinding(Keybinds.aimLock);
         Keybinds.blockBreaker = new KeyBinding("Block breaker", Keyboard.KEY_NONE, "key.abse");
         ClientRegistry.registerKeyBinding(Keybinds.blockBreaker);
+        Keybinds.airStrafe = new KeyBinding("Air strafe", Keyboard.KEY_NONE, "key.abse");
+        ClientRegistry.registerKeyBinding(Keybinds.airStrafe);
 
         //Macro category TODO: MOVE
         Keybinds.debuffKey = new KeyBinding("Debuff key", Keyboard.KEY_NONE, "key.abse");
@@ -163,14 +166,14 @@ public class MainWrapper {
 
     @SubscribeEvent
     public void tick(InputEvent.KeyInputEvent e) {
-        if (MainGui.queue) {
+        if (LegacyGui.queue) {
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    Minecraft.getMinecraft().displayGuiScreen(new MainGui(0, null));
+                    Minecraft.getMinecraft().displayGuiScreen(new LegacyGui(0, null));
                 }
             });
-            MainGui.queue = false;
+            LegacyGui.queue = false;
         }
         if (NewMainMenu.queue) {
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
