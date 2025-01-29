@@ -1,6 +1,7 @@
 package me.qigan.abse.fr.macro;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.sync.Utils;
@@ -28,7 +29,8 @@ public class AutoDebuff extends Module {
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
         if (!isEnabled()) return;
-        if (MainWrapper.Keybinds.debuffKey.isPressed()) {
+        WKeybind bind = Index.KEY_MANAGER.get("debuffKey");
+        if (bind.isPressed()) {
             SPRAY_SLOT = findSlot("ICE_SPRAY_WAND");
             SW_SLOT = findSlot("SOUL_WHIP");
             if (SPRAY_SLOT == -1 || SW_SLOT == -1) return;
@@ -46,7 +48,7 @@ public class AutoDebuff extends Module {
                 }
             }).start();
         }
-        if (!MainWrapper.Keybinds.debuffKey.isKeyDown() && use) {
+        if (!bind.isDown() && use) {
             KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), false);
             SPRAY_SLOT = -1;
             SW_SLOT = -1;

@@ -1,5 +1,6 @@
 package me.qigan.abse.fr.dungons.m7p3;
 
+import me.qigan.abse.Index;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,7 @@ public class AirStrafe extends Module {
     }
 
     void strafe() {
-        if (!isEnabled() || !MainWrapper.Keybinds.airStrafe.isKeyDown()) return;
+        if (!isEnabled() || !Index.KEY_MANAGER.get("airStrafe").isDown()) return;
         int key = Minecraft.getMinecraft().gameSettings.keyBindForward.getKeyCode();
         float[] axis = xz(Minecraft.getMinecraft().thePlayer.rotationYaw);
         double speed = (5.612 / 20) * (Minecraft.getMinecraft().thePlayer.capabilities.getWalkSpeed()*10);

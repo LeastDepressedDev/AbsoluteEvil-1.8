@@ -141,7 +141,7 @@ public class DeviceIssue extends Module {
         }
 
         if (phase) {
-            if (MainWrapper.Keybinds.ssKey.isKeyDown() && Index.MAIN_CFG.getBoolVal("auto_ss_click") && iterSS < seqBp.size()) {
+            if (Index.KEY_MANAGER.get("ssKey").isDown() && Index.MAIN_CFG.getBoolVal("auto_ss_click") && iterSS < seqBp.size()) {
                 BlockPos pos = seqBp.get(iterSS);
                 double dx = pos.getX() + 0.9d - Minecraft.getMinecraft().thePlayer.posX;
                 double dy = pos.getY() - Minecraft.getMinecraft().thePlayer.posY - 1.1d;

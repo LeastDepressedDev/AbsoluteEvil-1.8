@@ -1,6 +1,7 @@
 package me.qigan.abse.fr.cbh;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.exc.ClickSimTick;
@@ -27,8 +28,9 @@ public class KillerPhase extends Module {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     void render(RenderWorldLastEvent e) {
+        WKeybind bind = Index.KEY_MANAGER.binds.get("aimLock");
         if (!isEnabled()) return;
-        if (MainWrapper.Keybinds.aimLock.isKeyDown()) {
+        if (bind.isDown()) {
             Entity ent = Minecraft.getMinecraft().objectMouseOver.entityHit;
             if (ent == null) return;
             if (ent instanceof EntityArmorStand || ent instanceof EntityXPOrb || ent instanceof EntityItem || ent instanceof EntityItemFrame) return;

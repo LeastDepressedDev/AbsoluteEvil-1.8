@@ -95,15 +95,15 @@ public class GhostBlocks extends Module {
     @SubscribeEvent
     void gbKeybdTick(TickEvent.ClientTickEvent e) {
         if (Minecraft.getMinecraft().theWorld == null) return;
-        if (MainWrapper.Keybinds.ghostBlocksReset.isPressed()) grestore();
+        if (Index.KEY_MANAGER.get("ghostBlocksReset").isPressed()) grestore();
         if (!isEnabled()) return;
         try {
             BlockPos pos = Minecraft.getMinecraft().thePlayer.rayTrace(5, 1).getBlockPos();
             Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
-            if (MainWrapper.Keybinds.ghostBlocks.isKeyDown()) {
+            if (Index.KEY_MANAGER.get("ghostBlocks").isDown()) {
                 if (block != Blocks.air && block != null) placeBlock(pos, Blocks.air.getDefaultState());
             }
-            if (MainWrapper.Keybinds.legGhostBlocks.isKeyDown()) {
+            if (Index.KEY_MANAGER.get("legGhostBlocks").isDown()) {
                 placeBlockLegacy(pos, Blocks.air);
             }
         } catch (Exception ex) {}

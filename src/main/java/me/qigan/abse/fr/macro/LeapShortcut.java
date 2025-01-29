@@ -3,6 +3,7 @@ package me.qigan.abse.fr.macro;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.exc.ClickSimTick;
@@ -51,7 +52,8 @@ public class LeapShortcut extends Module {
     @SubscribeEvent
     void rendTick(RenderWorldLastEvent e) {
         if (!isEnabled() || !Sync.inDungeon) return;
-        if (MainWrapper.Keybinds.leapShortcut.isPressed()) call(Index.MAIN_CFG.getBoolVal("leapSC_back"));
+        WKeybind bind = Index.KEY_MANAGER.get("leapShortcut");
+        if (bind.isPressed()) call(Index.MAIN_CFG.getBoolVal("leapSC_back"));
     }
 
     @Override

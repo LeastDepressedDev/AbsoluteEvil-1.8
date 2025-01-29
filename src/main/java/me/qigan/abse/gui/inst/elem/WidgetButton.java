@@ -14,9 +14,9 @@ public class WidgetButton extends WidgetUpdatable{
     public static Color colorEnabled = new Color(36, 97, 129);
     public static Color colorDisabled = new Color(23, 59, 76);
     public double textScale = 1;
-    private boolean enabled = true;
+    protected boolean enabled = true;
 
-    private String text = "";
+    protected String text = "";
     private final Runnable fun;
 
     private Dimension textOffset = new Dimension(0, 0);

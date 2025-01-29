@@ -6,6 +6,7 @@ import me.qigan.abse.Index;
 import me.qigan.abse.PathCmd;
 import me.qigan.abse.ant.LoginScreen;
 import me.qigan.abse.config.ConfigManager;
+import me.qigan.abse.config.KeybindManager;
 import me.qigan.abse.config.MuConfig;
 import me.qigan.abse.config.PositionConfig;
 import me.qigan.abse.crp.ovr.CustomEntRender;
@@ -47,58 +48,8 @@ import java.util.Map;
 
 public class MainWrapper {
 
-    public static class Keybinds {
-        public static KeyBinding unlimitedRange;
-        public static KeyBinding ghostBlocks;
-        public static KeyBinding legGhostBlocks;
-        public static KeyBinding ghostBlocksReset;
-        public static KeyBinding tempGhostBlocks;
-        public static KeyBinding ghostChest;
-        public static KeyBinding autoBridging;
-        public static KeyBinding aimBreak;
-        public static KeyBinding aimLock;
-        public static KeyBinding blockBreaker;
-        public static KeyBinding debuffKey;
-        public static KeyBinding ssKey;
-        public static KeyBinding leapShortcut;
-        public static KeyBinding airStrafe;
-    }
-
     public static LoginScreen ls = new LoginScreen();
     public static Map<String, Runnable> linkedScripts = new HashMap<>();
-
-    private static void keyBinds() {
-        Keybinds.unlimitedRange = new KeyBinding("Unlimited render range.", Keyboard.KEY_V, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.unlimitedRange);
-        Keybinds.ghostBlocks = new KeyBinding("Ghost block kaybind", Keyboard.KEY_F, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.ghostBlocks);
-        Keybinds.ghostBlocksReset = new KeyBinding("Ghost block reset kaybind", Keyboard.KEY_Z, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.ghostBlocksReset);
-        Keybinds.legGhostBlocks = new KeyBinding("Legacy ghost block", Keyboard.KEY_C, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.legGhostBlocks);
-        Keybinds.tempGhostBlocks = new KeyBinding("Temporary ghost block", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.tempGhostBlocks);
-        Keybinds.ghostChest = new KeyBinding("Ghost chest", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.ghostChest);
-        Keybinds.autoBridging = new KeyBinding("Auto bridging", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.autoBridging);
-        Keybinds.aimBreak = new KeyBinding("Aim break button", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.aimBreak);
-        Keybinds.aimLock = new KeyBinding("Aim lock", Keyboard.KEY_G, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.aimLock);
-        Keybinds.blockBreaker = new KeyBinding("Block breaker", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.blockBreaker);
-        Keybinds.airStrafe = new KeyBinding("Air strafe", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.airStrafe);
-
-        //Macro category TODO: MOVE
-        Keybinds.debuffKey = new KeyBinding("Debuff key", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.debuffKey);
-        Keybinds.ssKey = new KeyBinding("Auto SS", Keyboard.KEY_NONE, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.ssKey);
-        Keybinds.leapShortcut = new KeyBinding("Leap shortcut", Keyboard.KEY_L, "key.abse");
-        ClientRegistry.registerKeyBinding(Keybinds.leapShortcut);
-    }
 
     public static void setCustomEntRenderer() {
         Minecraft.getMinecraft().entityRenderer = new CustomEntRender(Minecraft.getMinecraft(), Minecraft.getMinecraft().getResourceManager());
@@ -149,8 +100,8 @@ public class MainWrapper {
         MinecraftForge.EVENT_BUS.register(Index.MOVEMENT_CONTROLLER);
         Index.MAPPING_CONTROLLER = new MappingController();
         MinecraftForge.EVENT_BUS.register(Index.MAPPING_CONTROLLER);
-
-        keyBinds();
+        Index.KEY_MANAGER = new KeybindManager();
+        MinecraftForge.EVENT_BUS.register(Index.KEY_MANAGER);
 
 //        int x0 = 0;
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;

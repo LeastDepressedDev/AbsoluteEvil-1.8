@@ -4,6 +4,7 @@ import me.qigan.abse.Holder;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
@@ -122,14 +123,16 @@ public class CombatHelperAim extends Module {
     }
 
     private static boolean isActive() {
-        return Index.MAIN_CFG.getBoolVal("cbh_kbk") ? MainWrapper.Keybinds.aimLock.isKeyDown() : Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown();
+        WKeybind bind = Index.KEY_MANAGER.get("aimLock");
+        return Index.MAIN_CFG.getBoolVal("cbh_kbk") ? bind.isDown() : Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown();
     }
 
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
+        WKeybind bind = Index.KEY_MANAGER.get("aimLock");
         if (Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") &&
-                MainWrapper.Keybinds.aimBreak.isPressed()) BREAK_TOGGLE=!BREAK_TOGGLE;
-        if (isActive() && !(Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ? BREAK_TOGGLE : MainWrapper.Keybinds.aimBreak.isKeyDown())) atkTick = Index.MAIN_CFG.getIntVal("cbh_atk");
+                bind.isPressed()) BREAK_TOGGLE=!BREAK_TOGGLE;
+        if (isActive() && !(Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ? BREAK_TOGGLE : bind.isDown())) atkTick = Index.MAIN_CFG.getIntVal("cbh_atk");
         if (Minecraft.getMinecraft().thePlayer == null || Minecraft.getMinecraft().theWorld == null) return;
         if (SmoothAimControl.OVERRIDE || !isEnabled()) return;
         if (skip == 0) {

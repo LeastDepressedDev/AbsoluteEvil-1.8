@@ -2,11 +2,11 @@ package me.qigan.abse.fr;
 
 import me.qigan.abse.Holder;
 import me.qigan.abse.Index;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.EnabledByDefault;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.fr.cbh.CombatHelperAim;
-import me.qigan.abse.fr.other.AutoBridging;
 import me.qigan.abse.vp.Esp;
 import me.qigan.abse.vp.S2Dtype;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -53,8 +53,10 @@ public class Hud extends Module{
             }
         }
 
-        if (MainWrapper.Keybinds.unlimitedRange.isKeyDown()) lines.add("\u00A7cRender distance++");
-        if (MainWrapper.Keybinds.aimBreak.isKeyDown() && !Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ||
+        WKeybind bind1 = Index.KEY_MANAGER.get("unlimitedRange");
+        WKeybind bind2 = Index.KEY_MANAGER.get("aimBreak");
+        if (bind1.isDown()) lines.add("\u00A7cRender distance++");
+        if (bind2.isDown() && !Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ||
                 Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") && CombatHelperAim.BREAK_TOGGLE)
             lines.add("\u00A7cAim break! " + (Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ? "[toggle]" : "[hold]"));
 

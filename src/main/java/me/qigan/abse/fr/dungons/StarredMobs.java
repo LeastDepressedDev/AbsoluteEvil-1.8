@@ -1,5 +1,7 @@
 package me.qigan.abse.fr.dungons;
 
+import me.qigan.abse.Index;
+import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.sync.Utils;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.crp.MainWrapper;
@@ -20,13 +22,14 @@ public class StarredMobs extends Module {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     void render(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
+        WKeybind bind = Index.KEY_MANAGER.get("unlimitedRange");
         if (Minecraft.getMinecraft().theWorld != null) {
             for (Entity ent : Minecraft.getMinecraft().theWorld.loadedEntityList) {
-                if (ent.getPosition().distanceSq(Minecraft.getMinecraft().thePlayer.getPosition()) < 500 || MainWrapper.Keybinds.unlimitedRange.isKeyDown()) {
+                if (ent.getPosition().distanceSq(Minecraft.getMinecraft().thePlayer.getPosition()) < 500 || bind.isDown()) {
                     if (ent instanceof EntityArmorStand) {
                         if (ent.getName().contains("\u272F") && ent.getName().contains("\u2764")) {
                             Esp.autoBox3D(ent.posX, ent.posY - 0.1, ent.posZ, 1, (ent.getName().contains("Fels") ? 3 : 2), starCol, 3f, true);
-                            if (MainWrapper.Keybinds.unlimitedRange.isKeyDown()) {
+                            if (bind.isDown()) {
                                 EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
                                 Esp.drawTracer(player.posX, player.posY, player.posZ, ent.posX, ent.posY, ent.posZ, starCol, 2f);
                             }

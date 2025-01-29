@@ -9,6 +9,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiKeyBindingList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -205,7 +206,7 @@ public class Sync {
     public static void doBlockRightClick(BlockPos pos) {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if (Minecraft.getMinecraft().thePlayer.getDistance(pos.getX()+0.5d, pos.getY()+0.5d-player.eyeHeight, pos.getZ()+0.5d) >
-                Minecraft.getMinecraft().playerController.getBlockReachDistance()+.15d) return;
+                Minecraft.getMinecraft().playerController.getBlockReachDistance()+.45d) return;
         Float[] rots = Utils.getRotationsTo(pos.getX()+0.5d-player.posX, pos.getY()+0.5d-player.posY-player.eyeHeight, pos.getZ()+0.5d-player.posZ, new float[]{
                 player.rotationYaw, player.rotationPitch
         });

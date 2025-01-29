@@ -48,13 +48,13 @@ public class TemporaryGb extends Module {
         try {
             BlockPos pos = Minecraft.getMinecraft().thePlayer.rayTrace(5, 1).getBlockPos();
             Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
-            if (MainWrapper.Keybinds.ghostChest.isPressed()) {
+            if (Index.KEY_MANAGER.get("ghostChest").isPressed()) {
                 BlockPos np = pos.add(0, 1, 0);
                 if (Minecraft.getMinecraft().theWorld.getBlockState(np).getBlock() == Blocks.air) {
                     if (!container.contains(np)) temps.add(new TempGb(np, Blocks.ender_chest.getDefaultState(), Index.MAIN_CFG.getIntVal("temp_gb_time")));
                 }
             }
-            if (MainWrapper.Keybinds.tempGhostBlocks.isKeyDown()) {
+            if (Index.KEY_MANAGER.get("tempGhostBlocks").isDown()) {
                 if (block != Blocks.air && block != null) {
                     if (!container.contains(pos)) temps.add(new TempGb(pos, Blocks.air.getDefaultState(), Index.MAIN_CFG.getIntVal("temp_gb_time")));
                 }

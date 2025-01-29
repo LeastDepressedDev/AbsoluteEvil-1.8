@@ -111,7 +111,6 @@ public class NewMainMenu extends QGuiScreen {
         elements.add(new WidgetText("\u00A77[?]", (int) (5*MATRIX_SIZES.width/6f)+6, (int) (MATRIX_SIZES.height/7)+4));
         elements.add(new WidgetHoveringTextBox(CONFIG_HELP_STRING, (int) (5*MATRIX_SIZES.width/6f)+6, (int) (MATRIX_SIZES.height/7)+4, 15, 6));
 
-
         if (modToRender == null) updateRenderedModules();
 
         super.initGui();
