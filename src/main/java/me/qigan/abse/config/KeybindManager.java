@@ -1,11 +1,13 @@
 package me.qigan.abse.config;
 
 import me.qigan.abse.Holder;
+import me.qigan.abse.Index;
 import me.qigan.abse.crp.AutoDisable;
 import me.qigan.abse.crp.EDLogic;
 import me.qigan.abse.crp.EnabledByDefault;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -52,17 +54,22 @@ public class KeybindManager {
             }
         }
 
+        for (WKeybind wkb : unsortedBinds) {
+            if (!writer.contains(wkb.kbName)) {
+                this.writer.set(wkb.kbName, Integer.toString(wkb.keyCode));
+            }
+        }
+
         for(AddressedData<String, String> w: writer.get()) {
             WKeybind bind = new WKeybind(w.getNamespace(), Integer.parseInt(w.getObject())).setDisplayName(w.getNamespace());
             binds.put(w.getNamespace(), bind);
             sortedBinds.add(bind);
         }
+    }
 
-        for (WKeybind keys : unsortedBinds) {
-            if (!binds.containsKey(keys.kbName)) {
-                binds.put(keys.kbName, keys);
-                sortedBinds.add(keys);
-            }
+    public final void after() {
+        for (Module mdl: Holder.MRL) {
+            mdl.moduleBind().setExecutor(() -> Index.MAIN_CFG.toggle(mdl.id()));
         }
     }
 
@@ -70,11 +77,20 @@ public class KeybindManager {
     void handleKeys(TickEvent.RenderTickEvent e) {
         if (e.phase == TickEvent.Phase.END) return;
         for (WKeybind key : sortedBinds) {
-            key.update(Keyboard.isKeyDown(key.keyCode));
+            key.update(Minecraft.getMinecraft().currentScreen == null && Keyboard.isKeyDown(key.keyCode));
         }
     }
 
+//    public void update() {
+//        writer.set();
+//    }
+
     public WKeybind get(String id) {
         return binds.get(id);
+    }
+
+    public void set(String id, int code) {
+        this.binds.get(id).keyCode = code;
+        this.writer.set(id, Integer.toString(code));
     }
 }

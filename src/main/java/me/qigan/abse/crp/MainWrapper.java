@@ -102,6 +102,7 @@ public class MainWrapper {
         MinecraftForge.EVENT_BUS.register(Index.MAPPING_CONTROLLER);
         Index.KEY_MANAGER = new KeybindManager();
         MinecraftForge.EVENT_BUS.register(Index.KEY_MANAGER);
+        Index.KEY_MANAGER.after();
 
 //        int x0 = 0;
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;

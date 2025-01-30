@@ -76,6 +76,7 @@ public class RenderableModule extends WidgetUpdatable {
                     triggers.add(null);
             }
         }
+        triggers.add(new WidgetKeybind(module.id(), 305, cordY+boxY+(INNER_GAP+10)*module.sets().size()+4, WidgetSwitch.CONST_SIZE_W, WidgetSwitch.CONST_SIZE_H));
     }
 
     public void insertRealCords(Point point) {
@@ -104,7 +105,7 @@ public class RenderableModule extends WidgetUpdatable {
         if (!module.sets().isEmpty()) Esp.drawOverlayString(NewMainMenu.fntj, "\u2699", 0, 0, 0x00FF30, S2Dtype.CORNERED);
         GlStateManager.popMatrix();
 
-        if (optionOpened && !module.sets().isEmpty()) {
+        if (optionOpened) {
             Gui.drawRect(3, boxY+1, boxX-3, boxY+2, NewMainMenu.LINES_COL.getRGB());
 
             for (int i = 0; i < module.sets().size(); i++) {
@@ -114,6 +115,7 @@ public class RenderableModule extends WidgetUpdatable {
 
                 if (triggers.get(i) != null) triggers.get(i).draw(mouseX, mouseY, partialTicks);
             }
+            triggers.get(module.sets().size()).draw(mouseX, mouseY, partialTicks);
         }
 
 
@@ -138,7 +140,7 @@ public class RenderableModule extends WidgetUpdatable {
     }
 
     private int sizeFunction() {
-        return (optionOpened && !module.sets().isEmpty() ? (INNER_GAP+10)*module.sets().size()+INNER_GAP : 0);
+        return (optionOpened ? (INNER_GAP+10)*(module.sets().size()+1)+INNER_GAP : 0);
     }
 
     public int calcSize() {
@@ -149,13 +151,13 @@ public class RenderableModule extends WidgetUpdatable {
     public void onClick(int mouseX, int mouseY, int mouseButton) {
         mouseY-=updatablePosition.y;
         if (mouseButton == 1 && Utils.pointInMovedDim(new Point(mouseX-2, mouseY), new Point(0, 0), new Dimension(boxX,
-                (optionOpened && !module.sets().isEmpty() ? calcSize()-VERTICAL_GAP : boxY)))) optionOpened=!optionOpened;
+                (optionOpened ? calcSize()-VERTICAL_GAP : boxY)))) optionOpened=!optionOpened;
         if (!Debug.DISABLE_STATE.contains(module.id())) this.sch.onClick(mouseX, mouseY, mouseButton);
         if (!optionOpened) return;
         for (int i = 0; i < triggers.size(); i++) {
             WidgetUpdatable upt = triggers.get(i);
             if (upt == null) continue;
-            if (!Debug.DISABLE_STATE.contains(module.sets().get(i).setId)) upt.onClick(mouseX, mouseY, mouseButton);
+            if (i == triggers.size()-1 || !Debug.DISABLE_STATE.contains(module.sets().get(i).setId)) upt.onClick(mouseX, mouseY, mouseButton);
         }
     }
 

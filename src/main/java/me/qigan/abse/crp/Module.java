@@ -7,6 +7,7 @@ import me.qigan.abse.Index;
 import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.config.WKeybind;
 
 public abstract class Module {
 
@@ -73,4 +74,5 @@ public abstract class Module {
 		return new ArrayList<>();
 	}
 	public void onRegister() {}
+	public WKeybind moduleBind() {return Index.KEY_MANAGER.get(id());}
 }
