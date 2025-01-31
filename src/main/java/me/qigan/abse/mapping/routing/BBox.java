@@ -2,6 +2,7 @@ package me.qigan.abse.mapping.routing;
 
 import me.qigan.abse.fr.qol.GhostBlocks;
 import me.qigan.abse.mapping.Room;
+import me.qigan.abse.mapping.mod.M7Route;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
@@ -15,6 +16,7 @@ public class BBox {
     public final int z2;
 
     public IBlockState block;
+    public M7Route.Category cat = M7Route.Category.NONE;
 
 
     public BBox(int x1, int y1, int z1, int x2, int y2, int z2, IBlockState bts) {
@@ -25,6 +27,11 @@ public class BBox {
         this.y2 = y2;
         this.z2 = z2;
         this.block = bts;
+    }
+
+    public BBox category(M7Route.Category category) {
+        this.cat = category;
+        return this;
     }
 
     public void run() {

@@ -6,18 +6,27 @@ Add remapping:
 - Add room detect - Done(Except: rL)
 - Add routing - Done
 
-Upgraded bow aim esp algorithm(pure evil math goes hard)
+Upgraded bow aim esp algorithm(pure evil math goes hard) - Done
 Fix supply pearl no throwing - Done
 Fixed Combat helper sprint - Done
 Modify autoskip - Done
 Added auto p4 - Done
 Added a lot of other shit done
-Added auto Harp - done
+Added auto Harp - Done
 Finally auto melody - Done
 Added auto chocolate Farm - Done
 Improved m7 route - Done
 Added auto mining - Done
 Added custom main menu - In progress(Maybe)
+Added normal keybind system - Done
+Updated secret aura - beta
+Added airstrafe - beta
+Routing and walking updated
+Recategorised auto route on F7/M7
+
+Removed some useless or not working modules
+Backend utils optimisation and stuff
+
 
 Auto save - Not started
 
