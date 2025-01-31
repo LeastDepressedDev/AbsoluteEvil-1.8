@@ -348,6 +348,24 @@ public class NewMainMenu extends QGuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         for (WidgetElement elem : elements) {
+            if (elem instanceof WidgetKeybind) {
+                if (((WidgetKeybind) elem).isSelected()) {
+                    ((WidgetKeybind) elem).keyTyped(typedChar, keyCode);
+                    return;
+                }
+            }
+        }
+        for (RenderableModule rm : modToRender) {
+            for (WidgetUpdatable upt : rm.triggers) {
+                if (upt instanceof WidgetKeybind) {
+                    if (((WidgetKeybind) upt).isSelected()) {
+                        ((WidgetKeybind) upt).keyTyped(typedChar, keyCode);
+                        return;
+                    }
+                }
+            }
+        }
+        for (WidgetElement elem : elements) {
             if (elem instanceof WidgetUpdatable) {
                 ((WidgetUpdatable) elem).keyTyped(typedChar, keyCode);
             }

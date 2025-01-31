@@ -3,6 +3,7 @@ package me.qigan.abse.gui.inst.elem;
 import me.qigan.abse.Index;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.client.settings.GameSettings;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 
@@ -43,10 +44,14 @@ public class WidgetKeybind extends WidgetButton{
         }
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
     @Override
     public void keyTyped(char typedChar, int keyCode) {
         if (selected) {
-            this.keyCode = keyCode;
+            this.keyCode = keyCode == Keyboard.KEY_ESCAPE ? Keyboard.KEY_NONE : keyCode;
             selected = false;
             updateKBD(this.keybindId, this.keyCode);
         }
