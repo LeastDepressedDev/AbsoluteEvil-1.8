@@ -11,6 +11,7 @@ import me.qigan.abse.fr.other.FireballDetector;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.MovementController;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.Mod;
@@ -39,6 +40,8 @@ public class Index
     public void init(FMLInitializationEvent event)
     {
         MainWrapper.initialise(event);
+
+
     }
 
     public static void relog(String username, String token, String pid) {
@@ -56,6 +59,8 @@ public class Index
 
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\u00A76Absolute fix applied!"));
     }
+
+
 
     public static boolean isSafe() {
         return Index.MAIN_CFG.getBoolVal("safe_mod");

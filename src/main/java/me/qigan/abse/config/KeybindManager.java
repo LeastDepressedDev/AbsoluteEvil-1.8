@@ -8,11 +8,13 @@ import me.qigan.abse.crp.EnabledByDefault;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.util.*;
 
@@ -73,7 +75,11 @@ public class KeybindManager {
     void handleKeys(TickEvent.RenderTickEvent e) {
         if (e.phase == TickEvent.Phase.END) return;
         for (WKeybind key : sortedBinds) {
-            key.update(Minecraft.getMinecraft().currentScreen == null && Keyboard.isKeyDown(key.keyCode));
+            if (key.keyCode > 0) {
+                key.update(Minecraft.getMinecraft().currentScreen == null && Keyboard.isKeyDown(key.keyCode));
+            } else {
+                key.update(Minecraft.getMinecraft().currentScreen == null && Mouse.isButtonDown(key.keyCode+100));
+            }
         }
     }
 

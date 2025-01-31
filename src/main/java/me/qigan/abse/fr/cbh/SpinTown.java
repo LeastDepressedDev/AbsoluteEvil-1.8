@@ -47,6 +47,7 @@ public class SpinTown extends Module implements EDLogic {
             }
         }
         Set<AddressedData<Entity, Vec3List>> toRm = new HashSet<>();
+        int tc = Index.MAIN_CFG.getIntVal("sptnd_tc");
         for (int i = 0; i < tracks.size(); i++) {
             AddressedData<Entity, Vec3List> pt = tracks.get(i);
             Entity ent = pt.getNamespace();
@@ -61,9 +62,9 @@ public class SpinTown extends Module implements EDLogic {
             delta.y = ent.posY-ent.lastTickPosY;
             delta.z = ent.posZ-ent.lastTickPosZ;
             pt.getObject().add(delta);
-            if (pt.getObject().size() > 20) {
+            if (pt.getObject().size() > tc) {
                 pt.getObject().remove(0);
-                Double dt = BallisticCalculator.solveForTWPDC(pt, 1d);
+                Double dt = BallisticCalculator.solveForTWPDC(pt, 1d, tc);
                 if (dt != null) {
                     dt += imp;
                     Vec3 pred = new Vec3(ent.posX, ent.posY, ent.posZ)
@@ -84,7 +85,8 @@ public class SpinTown extends Module implements EDLogic {
 //        for (AddressedData<Entity, Vec3List> pt : entries) {
 //            Vector3d dispose = pt.getObject().vecSum;
 //            Vec3 coord1 = new Vec3(dispose.x+pt.getNamespace().posX, dispose.y+pt.getNamespace().posY, dispose.z+pt.getNamespace().posZ);
-//            //Esp.autoBox3D(coord1.xCoord, coord1.yCoord, coord1.zCoord, 0.5, 0.5, Color.CYAN, 2f, true);
+//            Vec3 pred = prediction.getOrDefault(pt.getNamespace(), new Vec3(-255, -255 ,-255));
+//            Esp.renderTextInWorld(String.format("%f %f %f", pred.xCoord, pred.yCoord, pred.zCoord), coord1.xCoord, coord1.yCoord, coord1.zCoord, 0xFFFFFF, e.partialTicks);
 //        }
 //    }
 
@@ -133,6 +135,11 @@ public class SpinTown extends Module implements EDLogic {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("sptnd_imp", "Ping impact", ValType.NUMBER, "3"));
+        list.add(new SetsData<>("sptnd_tc", "Track tick count", ValType.NUMBER, "10"));
+
+        list.add(new SetsData<>("sptnd_auto", "Auto shot", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("sptnd_asa", "Auto shot accuracy", ValType.DOUBLE_NUMBER, "0.5"));
+        list.add(new SetsData<>("sptnd_res", "Reset", ValType.BUTTON, (Runnable) SpinTown::reset));
         return list;
     }
 

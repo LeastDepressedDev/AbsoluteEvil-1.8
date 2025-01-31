@@ -34,7 +34,7 @@ public class AutoDebuff extends Module {
 
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
-        if (!isEnabled()) return;
+        if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
         WKeybind bind = Index.KEY_MANAGER.get("debuffKey");
         if (bind.isPressed()) {
             SPRAY_SLOT = findSlot("ICE_SPRAY_WAND");
@@ -71,7 +71,7 @@ public class AutoDebuff extends Module {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("debuffKey", "Debuff key", ValType.KEYBINDING, Keyboard.KEY_NONE));
-        return super.sets();
+        return list;
     }
 
     @Override

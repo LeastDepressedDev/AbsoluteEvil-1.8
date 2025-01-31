@@ -215,7 +215,6 @@ public class Sync {
         MovingObjectPosition semiPos = rayTrace(Minecraft.getMinecraft().playerController.getBlockReachDistance(), 1f, new float[]{
                 rots[0], rots[1], rots[0], rots[1]
         }, pos);
-        Experimental.dPos = semiPos.getBlockPos();
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
         System.out.println(String.format("%f %f %f", semiPos.hitVec.xCoord, semiPos.hitVec.yCoord, semiPos.hitVec.zCoord));
         if (Minecraft.getMinecraft().playerController.onPlayerRightClick(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().theWorld,

@@ -69,7 +69,7 @@ public class BallisticCalculator {
         return solveForAngle(v0a, ka, ga, x, y, precision, lim);
     }
 
-    public static Double solveForTWPDC(AddressedData<Entity, Vec3List> pt, double roughness) {
+    public static Double solveForTWPDC(AddressedData<Entity, Vec3List> pt, double roughness, int tc) {
         Double result = null;
         double mnd = Double.MAX_VALUE;
         final double k = ka;
@@ -94,9 +94,9 @@ public class BallisticCalculator {
         for (double t = 0; t < 3.2*20d; t+=roughness) {
             double ktm1 = Math.pow(k, t)-1;
             double tm1sq = Math.pow(t-1, 2);
-            double sx = Math.pow(logK, 2)*((Math.pow(d2x, 2)+Math.pow(ax/20, 2)*tm1sq-0.1*d2x*ax*(t-1)*cosx)/(v0*ktm1));
+            double sx = Math.pow(logK, 2)*((Math.pow(d2x, 2)+Math.pow(ax/tc, 2)*tm1sq-2*d2x*(ax/tc)*(t-1)*cosx)/(v0*ktm1));
             double sy = v0*ktm1-logK*Math.sqrt(
-                    Math.pow(d2y, 2)+Math.pow(ay/20, 2)*tm1sq-0.1*d2y*ay*(t-1)*cosy
+                    Math.pow(d2y, 2)+Math.pow(ay/tc, 2)*tm1sq-2*d2y*(ay/tc)*(t-1)*cosy
             ) + (g*ktm1)/(k*logK) - g*t;
 
             double diff = Math.abs(sx-sy);

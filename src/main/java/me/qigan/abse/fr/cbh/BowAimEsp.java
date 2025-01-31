@@ -7,8 +7,10 @@ import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.BallisticCalculator;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
+import me.qigan.abse.sync.Utils;
 import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -31,6 +33,7 @@ public class BowAimEsp extends Module {
 
         int opac = Index.MAIN_CFG.getIntVal("baimesp_a");
         double dl = Index.MAIN_CFG.getDoubleVal("baimesp_dist");
+        double aaac = Index.MAIN_CFG.getDoubleVal("sptnd_asa");
 
         for (Entity ent : Minecraft.getMinecraft().theWorld.loadedEntityList) {
             if (ent instanceof EntityPlayer || Debug.GENERAL) {
@@ -56,9 +59,27 @@ public class BowAimEsp extends Module {
                         dd = Math.sqrt(Math.pow(Minecraft.getMinecraft().thePlayer.posX - pred.xCoord, 2)
                                 + Math.pow(Minecraft.getMinecraft().thePlayer.posZ - pred.zCoord, 2));
                         angle = BallisticCalculator.solveForArrowAngle(dd, pred.yCoord-Minecraft.getMinecraft().thePlayer.posY+ent.height/2, 0.05, 16);
-                        if (angle.getNamespace() == null) {return;}
+                        if (angle.getNamespace() == null) {
+                            Esp.renderTextInWorld("\u00A7l\u00A7cAss!!!", ent.posX, ent.posY + 4.5, ent.posZ, 0xFFFFFF, e.partialTicks);
+                            return;
+                        }
                         fy = Math.tan(angle.getNamespace())*dd+Minecraft.getMinecraft().thePlayer.getEyeHeight()+Minecraft.getMinecraft().thePlayer.posY+sz/2;
                         col = new Color(Color.orange.getRed(), Color.orange.getGreen(), Color.orange.getBlue(), Math.min(opac, 255));
+
+                        if (Index.MAIN_CFG.getBoolVal("sptnd_auto") &&
+                                Minecraft.getMinecraft().thePlayer.getItemInUseDuration()>=20) {
+                            Float[] rots = Utils.getRotationsTo(pred.xCoord-Minecraft.getMinecraft().thePlayer.posX,
+                                    fy-Minecraft.getMinecraft().thePlayer.posY-Minecraft.getMinecraft().thePlayer.getEyeHeight(),
+                                    pred.zCoord-Minecraft.getMinecraft().thePlayer.posZ,
+                                    new float[]{
+                                            Minecraft.getMinecraft().thePlayer.rotationYaw,
+                                            Minecraft.getMinecraft().thePlayer.rotationPitch
+                                    });
+                            if (Math.abs(Minecraft.getMinecraft().thePlayer.rotationYaw-rots[0]) <= aaac &&
+                                    Math.abs(Minecraft.getMinecraft().thePlayer.rotationPitch-rots[1]) <= aaac) {
+                                KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), false);
+                            }
+                        }
 
                         Esp.autoBox3D(pred.xCoord, fy, pred.zCoord, sz, sz, col, 2, true);
                     }
