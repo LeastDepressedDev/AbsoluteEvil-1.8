@@ -114,15 +114,10 @@ public class SecretAura extends Module {
                 if (Index.MAIN_CFG.getBoolVal("secar_rage")) {
                     final BlockPos finalPos = pos;
                     new Thread(() -> {
-                        try {
-                            Thread.sleep(Index.MAIN_CFG.getIntVal("secar_d"));
-                            click(new PlayerInteractEvent(Minecraft.getMinecraft().thePlayer,
+                        click(new PlayerInteractEvent(Minecraft.getMinecraft().thePlayer,
                                     PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, finalPos, null,
                                     Minecraft.getMinecraft().theWorld));
-                            Sync.doBlockRightClick(finalPos);
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                        Sync.doBlockRightClick(finalPos);
                     }).start();
                 } else {
                     new Thread(() -> {

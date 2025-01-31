@@ -3,6 +3,7 @@ package me.qigan.abse.crp;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.events.PacketEvent;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.Path;
 import me.qigan.abse.sync.Sync;
@@ -11,7 +12,9 @@ import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.util.*;
@@ -46,8 +49,12 @@ public class Experimental extends Module implements EDLogic {
     @SubscribeEvent
     void tick(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
-
         Esp.autoBox3D(dPos, Color.red, 2f, true);
+    }
+
+    @SubscribeEvent
+    void entTick(PacketEvent e) {
+        if (!isEnabled()) return;
     }
 
     @Override
