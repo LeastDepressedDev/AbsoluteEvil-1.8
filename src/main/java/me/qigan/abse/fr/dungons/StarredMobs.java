@@ -1,6 +1,8 @@
 package me.qigan.abse.fr.dungons;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.config.SetsData;
+import me.qigan.abse.config.ValType;
 import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.sync.Utils;
 import me.qigan.abse.crp.Module;
@@ -13,8 +15,11 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StarredMobs extends Module {
     public static final Color starCol = new Color(0, 141, 167, 255);
@@ -51,6 +56,13 @@ public class StarredMobs extends Module {
     @Override
     public Specification category() {
         return Specification.DUNGEONS;
+    }
+
+    @Override
+    public List<SetsData<?>> sets() {
+        List<SetsData<?>> list = new ArrayList<>();
+        list.add(new SetsData<>("unlimitedRange", "Unlimited range key", ValType.KEYBINDING, Keyboard.KEY_V));
+        return list;
     }
 
     @Override

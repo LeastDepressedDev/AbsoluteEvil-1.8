@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.crp.SafeMode;
@@ -16,7 +15,6 @@ import me.qigan.abse.fr.dungons.m7p3.DeviceIssue;
 import me.qigan.abse.fr.exc.PacketBreak;
 import me.qigan.abse.fr.kuudra.AutoRefillPearls;
 import me.qigan.abse.fr.macro.AutoDebuff;
-import me.qigan.abse.fr.macro.AutoLeapDungeon;
 import me.qigan.abse.fr.macro.SuplyPearl;
 import me.qigan.abse.fr.dungons.BonzoCorrector;
 import me.qigan.abse.fr.macro.LeapShortcut;
@@ -68,7 +66,6 @@ public class Holder {
 		register(new DeviceIssue());
 		register(new AutoM7P4());
 		register(new AutoLevers());
-		register(new AutoLeapDungeon());
 		register(new SoundOverride());
 		register(new DungeonRngSound());
 		register(new SuplyPearl());

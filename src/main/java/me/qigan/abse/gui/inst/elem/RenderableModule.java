@@ -1,6 +1,7 @@
 package me.qigan.abse.gui.inst.elem;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.DangerousModule;
@@ -70,13 +71,16 @@ public class RenderableModule extends WidgetUpdatable {
                     triggers.add(new WidgetTextField(250, calcYPos, 85, WidgetSwitch.CONST_SIZE_H)
                             .setText(Index.MAIN_CFG.getStrVal(data.setId)).filter("-.1234567890").allowInstaSync());
                     break;
+                case KEYBINDING:
+                    triggers.add(new WidgetKeybind(data.setId, 250, calcYPos, 85, WidgetSwitch.CONST_SIZE_H));
+                    break;
 
                 case COMMENT:
                 default:
                     triggers.add(null);
             }
         }
-        triggers.add(new WidgetKeybind(module.id(), 305, cordY+boxY+(INNER_GAP+10)*module.sets().size()+4, WidgetSwitch.CONST_SIZE_W, WidgetSwitch.CONST_SIZE_H));
+        triggers.add(new WidgetKeybind(module.id(), 250, cordY+boxY+(INNER_GAP+10)*module.sets().size()+4, 85, WidgetSwitch.CONST_SIZE_H));
     }
 
     public void insertRealCords(Point point) {

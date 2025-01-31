@@ -25,6 +25,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -231,6 +232,8 @@ public class CombatHelperAim extends Module {
         list.add(new SetsData<>("cbh_tickskip", "Tick skip[don't change if you are not sure]", ValType.NUMBER, "1"));
         list.add(new SetsData<>("cbh_atk", "Attack tick mod", ValType.NUMBER, "20"));
         list.add(new SetsData<>("cbh_hide_target", "Hide aim cursor", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("aimBreak", "Aim break key", ValType.KEYBINDING, Keyboard.KEY_NONE));
+        list.add(new SetsData<>("aimLock", "Aim lock key", ValType.KEYBINDING, Keyboard.KEY_G));
         list.add(new SetsData<>("cbh_kbk", "Use keybind key", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("cbh_fovat", "Fov", ValType.DOUBLE_NUMBER, "60"));
         return list;

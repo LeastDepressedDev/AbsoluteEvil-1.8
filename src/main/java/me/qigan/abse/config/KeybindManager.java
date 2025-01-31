@@ -21,18 +21,7 @@ public class KeybindManager {
     public Map<String, WKeybind> binds = new HashMap<>();
 
     public static final List<WKeybind> unsortedBinds = new ArrayList<>(Arrays.asList(
-            new WKeybind("unlimitedRange", Keyboard.KEY_V).setDisplayName("Unlimited render range."),
-            new WKeybind("ghostBlocks", Keyboard.KEY_F).setDisplayName("Ghost block kaybind."),
-            new WKeybind("ghostBlocksReset", Keyboard.KEY_Z).setDisplayName("Ghost block reset kaybind."),
-            new WKeybind("legGhostBlocks", Keyboard.KEY_C).setDisplayName("Legacy ghost block"),
-            new WKeybind("tempGhostBlocks", Keyboard.KEY_NONE).setDisplayName("Temporary ghost block."),
-            new WKeybind("ghostChest", Keyboard.KEY_NONE).setDisplayName("Ghost chest."),
-            new WKeybind("aimBreak", Keyboard.KEY_NONE).setDisplayName("Aim break button."),
-            new WKeybind("aimLock", Keyboard.KEY_G).setDisplayName("Aim lock."),
-            new WKeybind("airStrafe", Keyboard.KEY_NONE).setDisplayName("Air strafe"),
-            new WKeybind("debuffKey", Keyboard.KEY_NONE).setDisplayName("Debuff key"),
-            new WKeybind("ssKey", Keyboard.KEY_NONE).setDisplayName("Auto SS"),
-            new WKeybind("leapShortcut", Keyboard.KEY_Y).setDisplayName("Leap shortcut")
+
     ));
 
     public final List<WKeybind> sortedBinds = new ArrayList<>();
@@ -52,6 +41,13 @@ public class KeybindManager {
             if (!writer.contains(mdl.id())) {
                 this.writer.set(mdl.id(), Integer.toString(Keyboard.KEY_NONE));
             }
+            for (SetsData<?> dat : mdl.sets()) {
+                if (dat.dataType == ValType.KEYBINDING) {
+                    if (!writer.contains(dat.setId)) {
+                        this.writer.set(dat.setId, ((Integer) dat.defVal).toString());
+                    }
+                }
+            }
         }
 
         for (WKeybind wkb : unsortedBinds) {
@@ -61,7 +57,7 @@ public class KeybindManager {
         }
 
         for(AddressedData<String, String> w: writer.get()) {
-            WKeybind bind = new WKeybind(w.getNamespace(), Integer.parseInt(w.getObject())).setDisplayName(w.getNamespace());
+            WKeybind bind = new WKeybind(w.getNamespace(), Integer.parseInt(w.getObject()));
             binds.put(w.getNamespace(), bind);
             sortedBinds.add(bind);
         }

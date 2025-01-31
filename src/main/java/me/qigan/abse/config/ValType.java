@@ -5,6 +5,7 @@ public enum ValType {
 	DOUBLE_NUMBER,
 	STRING,
 	BOOLEAN,
+	KEYBINDING,
 
 
 

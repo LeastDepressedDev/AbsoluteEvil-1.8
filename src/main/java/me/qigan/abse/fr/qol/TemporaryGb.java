@@ -12,6 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,8 @@ public class TemporaryGb extends Module {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("temp_gb_time", "Time(client ticks)", ValType.NUMBER, "200"));
+        list.add(new SetsData<>("tempGhostBlocks", "Remove blocks key", ValType.KEYBINDING, Keyboard.KEY_NONE));
+        list.add(new SetsData<>("ghostChest", "Ghost chest key", ValType.KEYBINDING, Keyboard.KEY_NONE));
         return list;
     }
 

@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.*;
@@ -245,6 +246,7 @@ public class DeviceIssue extends Module {
         list.add(new SetsData<>("ss_reset_word", "Reset word", ValType.STRING, "res"));
         list.add(new SetsData<>("ss_hold", "Hold time[tick]", ValType.NUMBER, "1"));
         list.add(new SetsData<>("devices_auto_ss", "Auto skip SS", ValType.BOOLEAN, "true"));
+        list.add(new SetsData<>("ssKey", "Auto ss key", ValType.KEYBINDING, Keyboard.KEY_NONE));
         list.add(new SetsData<>("ss_count", "Clicks amount", ValType.NUMBER, "3"));
         list.add(new SetsData<>("ss_del", "Delay ticks", ValType.NUMBER, "3"));
         list.add(new SetsData<>("auto_ss_click", "Auto SS clicks", ValType.BOOLEAN, "false"));

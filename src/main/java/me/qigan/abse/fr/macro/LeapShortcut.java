@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class LeapShortcut extends Module {
     @Override
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
+        list.add(new SetsData<>("leapShortcut", "Leap key", ValType.KEYBINDING, Keyboard.KEY_Y));
         list.add(new SetsData<>("leapSC_back", "Switch item back", ValType.BOOLEAN, "true"));
         return list;
     }

@@ -20,6 +20,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.*;
@@ -137,6 +138,9 @@ public class GhostBlocks extends Module {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("render_gb_box", "Render ghost block box", ValType.BOOLEAN, "true"));
+        list.add(new SetsData<>("ghostBlocks", "Ghost blocks key", ValType.KEYBINDING, Keyboard.KEY_F));
+        list.add(new SetsData<>("ghostBlocksReset", "Reset key", ValType.KEYBINDING, Keyboard.KEY_Z));
+        list.add(new SetsData<>("legGhostBlocks", "Legacy ghost blocks", ValType.KEYBINDING, Keyboard.KEY_NONE));
         list.add(new SetsData<>("ignore_except", "Ignore exception blocks", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("tick_upt", "Tick update", ValType.NUMBER, "0"));
         list.add(new SetsData<>("show_hud_ghostblocks", "Hud", ValType.BOOLEAN, "true"));

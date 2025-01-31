@@ -34,7 +34,7 @@ public class MuConfig {
 			AutoDisable annot = mdl.getClass().getAnnotation(AutoDisable.class);
 			if (annot != null) this.writer.set(mdl.id(), "false");
 			for (SetsData<?> dat : mdl.sets()) {
-				if (dat.dataType != ValType.BUTTON && dat.dataType != ValType.COMMENT) {
+				if (dat.dataType != ValType.BUTTON && dat.dataType != ValType.COMMENT && dat.dataType != ValType.KEYBINDING) {
 					if (!writer.contains(dat.setId)) {
 						this.writer.set(dat.setId, (String) dat.defVal);
 					}

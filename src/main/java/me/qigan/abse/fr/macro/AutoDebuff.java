@@ -1,6 +1,8 @@
 package me.qigan.abse.fr.macro;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.config.SetsData;
+import me.qigan.abse.config.ValType;
 import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
@@ -9,6 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Macro
 public class AutoDebuff extends Module {
@@ -59,6 +65,13 @@ public class AutoDebuff extends Module {
     @Override
     public String id() {
         return "atm7db";
+    }
+
+    @Override
+    public List<SetsData<?>> sets() {
+        List<SetsData<?>> list = new ArrayList<>();
+        list.add(new SetsData<>("debuffKey", "Debuff key", ValType.KEYBINDING, Keyboard.KEY_NONE));
+        return super.sets();
     }
 
     @Override

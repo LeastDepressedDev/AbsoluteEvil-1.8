@@ -15,7 +15,9 @@ public class WidgetKeybind extends WidgetButton{
     public WidgetKeybind(String id, int x, int y, int width, int height) {
         super(x, y, width, height, null);
         this.keybindId = id;
-
+        try {
+            this.keyCode = Index.KEY_MANAGER.get(id).keyCode;
+        } catch (Exception ex) {}
     }
 
     @Override
@@ -34,7 +36,7 @@ public class WidgetKeybind extends WidgetButton{
         if (Utils.pointInMovedDim(new Point(mouseX, mouseY), new Point(cordX, cordY), new Dimension(boxX, boxY)) && enabled) {
             if (!selected) selected = true;
             else {
-                keyCode = mouseButton+100;
+                keyCode = mouseButton-100;
                 selected = false;
                 updateKBD(this.keybindId, this.keyCode);
             }
