@@ -3,6 +3,7 @@ package me.qigan.abse.fr.dungons.m7p3;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
 
+@DangerousModule
 public class AirStrafe extends Module {
 
     private float[] xz(float yaw) {
@@ -22,6 +24,7 @@ public class AirStrafe extends Module {
     }
 
     void strafe() {
+        if (Index.MAIN_CFG.getBoolVal("rage_lock")) return;
         if (!isEnabled() || !Index.KEY_MANAGER.get("airStrafe").isDown()) return;
         int key = Minecraft.getMinecraft().gameSettings.keyBindForward.getKeyCode();
         float[] axis = xz(Minecraft.getMinecraft().thePlayer.rotationYaw);

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.crp.Module;
+import me.qigan.abse.crp.RageLock;
 import me.qigan.abse.crp.SafeMode;
 import me.qigan.abse.fr.*;
 import me.qigan.abse.fr.dungons.m7p3.AirStrafe;
@@ -98,6 +99,7 @@ public class Holder {
 		register(new AutoMiningSecCheck());
 		register(new RouteRecorder());
 		register(new AirStrafe());
+		register(new RageLock());
 	}
 	
 	public static void register(Module mod) {

@@ -1,6 +1,7 @@
 package me.qigan.abse.sync;
 
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import me.qigan.abse.Index;
 import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.fr.Debug;
 import me.qigan.abse.mapping.MappingConstants;
@@ -204,6 +205,7 @@ public class Sync {
     }
 
     public static void doBlockRightClick(BlockPos pos) {
+        if (Index.MAIN_CFG.getBoolVal("rage_lock")) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if (Minecraft.getMinecraft().thePlayer.getDistance(pos.getX()+0.5d, pos.getY()+0.5d-player.eyeHeight, pos.getZ()+0.5d) >
                 Minecraft.getMinecraft().playerController.getBlockReachDistance()+.45d) return;
@@ -226,6 +228,7 @@ public class Sync {
 
     //--
     public static void doBlockLeftClick(BlockPos pos) {
+        if (Index.MAIN_CFG.getBoolVal("rage_lock")) return;
         if (Minecraft.getMinecraft().thePlayer.getDistance(pos.getX(), pos.getY()-1, pos.getZ()) >
                 Minecraft.getMinecraft().playerController.getBlockReachDistance()-.15d) return;
         Minecraft.getMinecraft().thePlayer.swingItem();
