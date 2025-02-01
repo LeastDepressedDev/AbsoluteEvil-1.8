@@ -16,6 +16,7 @@ import me.qigan.abse.fr.dungons.m7p3.DeviceIssue;
 import me.qigan.abse.fr.exc.PacketBreak;
 import me.qigan.abse.fr.kuudra.AutoRefillPearls;
 import me.qigan.abse.fr.macro.AutoDebuff;
+import me.qigan.abse.fr.macro.LegitGhostBlocksMacro;
 import me.qigan.abse.fr.macro.SuplyPearl;
 import me.qigan.abse.fr.dungons.BonzoCorrector;
 import me.qigan.abse.fr.macro.LeapShortcut;
@@ -100,6 +101,7 @@ public class Holder {
 		register(new RouteRecorder());
 		register(new AirStrafe());
 		register(new RageLock());
+		register(new LegitGhostBlocksMacro());
 	}
 	
 	public static void register(Module mod) {
