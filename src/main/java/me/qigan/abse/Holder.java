@@ -18,7 +18,7 @@ import me.qigan.abse.fr.kuudra.AutoRefillPearls;
 import me.qigan.abse.fr.macro.AutoDebuff;
 import me.qigan.abse.fr.macro.LegitGhostBlocksMacro;
 import me.qigan.abse.fr.macro.SuplyPearl;
-import me.qigan.abse.fr.dungons.BonzoCorrector;
+import me.qigan.abse.fr.macro.BonzoCorrector;
 import me.qigan.abse.fr.macro.LeapShortcut;
 import me.qigan.abse.fr.cbh.*;
 import me.qigan.abse.fr.dungons.*;

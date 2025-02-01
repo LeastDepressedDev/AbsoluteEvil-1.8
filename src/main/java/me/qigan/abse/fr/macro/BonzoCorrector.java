@@ -1,4 +1,4 @@
-package me.qigan.abse.fr.dungons;
+package me.qigan.abse.fr.macro;
 
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
@@ -8,6 +8,7 @@ import me.qigan.abse.fr.exc.ClickSimTick;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+@Macro
 public class BonzoCorrector extends Module {
 
     @SubscribeEvent
@@ -26,11 +28,19 @@ public class BonzoCorrector extends Module {
         }
         if (Minecraft.getMinecraft().thePlayer.getHeldItem() != null && Minecraft.getMinecraft().thePlayer.isSprinting()) {
             String id = Utils.getSbData(Minecraft.getMinecraft().thePlayer.getHeldItem()).getString("id");
-            if (id.equalsIgnoreCase("BONZO_STAFF") || id.equalsIgnoreCase("STARRED_BONZO_STAFF")) {
+            if ((id.equalsIgnoreCase("BONZO_STAFF") || id.equalsIgnoreCase("STARRED_BONZO_STAFF")) &&
+                Minecraft.getMinecraft().thePlayer.onGround) {
                 new Thread(() -> {
                     try {
-                        Thread.sleep(Index.MAIN_CFG.getIntVal("bonzo_cor_time"));
-                        ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode(), 4);
+                        if (Index.MAIN_CFG.getBoolVal("bonzo_s_act")) {
+                            KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode(), true);
+                            Thread.sleep(Index.MAIN_CFG.getIntVal("bonzo_s_time"));
+                            KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode(), false);
+                        }
+                        if (Index.MAIN_CFG.getBoolVal("bonzo_j_act")) {
+                            Thread.sleep(Index.MAIN_CFG.getIntVal("bonzo_j_time"));
+                            ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode(), 4);
+                        }
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -57,7 +67,10 @@ public class BonzoCorrector extends Module {
     @Override
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
-        list.add(new SetsData<>("bonzo_cor_time", "Delay[milliseconds]", ValType.NUMBER, "200"));
+        list.add(new SetsData<>("bonzo_j_act", "Jump after time", ValType.BOOLEAN, "true"));
+        list.add(new SetsData<>("bonzo_j_time", "Jump Delay[milliseconds]", ValType.NUMBER, "100"));
+        list.add(new SetsData<>("bonzo_s_act", "Sneak corrector", ValType.BOOLEAN, "true"));
+        list.add(new SetsData<>("bonzo_s_time", "Hold time[milliseconds]", ValType.NUMBER, "40"));
         return list;
     }
 

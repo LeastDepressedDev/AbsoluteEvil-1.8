@@ -23,6 +23,7 @@ Updated secret aura - beta
 Added airstrafe - beta
 Routing and walking updated
 Recategorised auto route on F7/M7
+Added legit macro binds - In progress
 
 Removed some useless or not working modules
 Backend utils optimisation and stuff
