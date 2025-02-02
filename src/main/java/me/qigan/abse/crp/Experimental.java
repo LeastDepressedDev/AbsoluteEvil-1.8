@@ -64,6 +64,11 @@ public class Experimental extends Module implements EDLogic {
                 MappingController.debug.clear();
             }
         }));
+        list.add(new SetsData<>("exptl_but3", "Aura test", ValType.BUTTON, (Runnable) () -> {
+            if (isEnabled()) {
+                Sync.doBlockRightClick(new BlockPos(5, 5, 5));
+            }
+        }));
         return list;
     }
 

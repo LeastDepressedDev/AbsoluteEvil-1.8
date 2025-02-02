@@ -5,19 +5,19 @@ import com.google.common.collect.Lists;
 import me.qigan.abse.config.AddressedData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.*;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.awt.*;
@@ -131,6 +131,25 @@ public class Utils {
         pt.x = first.x-second.x;
         pt.y = first.y-second.y;
         return pt;
+    }
+
+    public static Vec3 generateEntityHitVec(Entity entity) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        //player.getPositionVector().squareDistanceTo()
+        float cbm = entity.getCollisionBorderSize();
+        AxisAlignedBB axis = entity.getEntityBoundingBox().expand(cbm, cbm, cbm);
+
+        MovingObjectPosition semiPos = axis.calculateIntercept(player.getPositionEyes(1), entity.getPositionVector().addVector(0, entity.height/2, 0));
+        return semiPos == null || semiPos.hitVec == null ? null : semiPos.hitVec.subtract(entity.getPositionVector());
+    }
+
+    public static MovingObjectPosition generateBlockHit(BlockPos pos) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        WorldClient wrld = Minecraft.getMinecraft().theWorld;
+        Vec3 posVec = new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d);
+
+        AxisAlignedBB axis = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock().getCollisionBoundingBox(wrld, pos, wrld.getBlockState(pos));
+        return axis.calculateIntercept(player.getPositionEyes(1), posVec);
     }
 
     /**
