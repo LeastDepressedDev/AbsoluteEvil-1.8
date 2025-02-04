@@ -29,15 +29,8 @@ public class SuplyPearl extends Module {
             if (Minecraft.getMinecraft().thePlayer.getHeldItem().getItem() == Item.getItemFromBlock(Blocks.chest)) {
                 int slot = getPearlSlot();
                 if (slot == -1) return;
-                new Thread(() -> {
-                    try {
-                        Minecraft.getMinecraft().thePlayer.inventory.currentItem = slot;
-                        Thread.sleep(1);
-                        ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 2);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }).start();
+                Minecraft.getMinecraft().thePlayer.inventory.currentItem = slot;
+                ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 2);
             }
         }
     }

@@ -1,33 +1,5 @@
-Move logginer into gui - Done
 Fix party utils not detecting classes correctly - Not started
 Add dungeon dry tracker - Not started
-Dynamic route concept - Done
-Add remapping:
-- Add room detect - Done(Except: rL)
-- Add routing - Done
-
-Upgraded bow aim esp algorithm(pure evil math goes hard) - Done
-Fix supply pearl no throwing - Done
-Fixed Combat helper sprint - Done
-Modify autoskip - Done
-Added auto p4 - Done
-Added a lot of other shit done
-Added auto Harp - Done
-Finally auto melody - Done
-Added auto chocolate Farm - Done
-Improved m7 route - Done
-Added auto mining - Done
-Added custom main menu - In progress(Maybe)
-Added normal keybind system - Done
-Updated secret aura - beta
-Added airstrafe - beta
-Routing and walking updated
-Recategorised auto route on F7/M7
-Added legit macro binds - In progress
-
-Removed some useless or not working modules
-Backend utils optimisation and stuff
-
 
 Auto save - Not started
 
