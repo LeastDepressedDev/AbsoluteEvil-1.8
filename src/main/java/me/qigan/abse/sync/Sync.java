@@ -207,16 +207,20 @@ public class Sync {
     public static void doBlockRightClick(BlockPos pos) {
         if (Index.MAIN_CFG.getBoolVal("rage_lock")) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+//        Drunk brain rot code
         if (Minecraft.getMinecraft().thePlayer.getDistance(pos.getX()+0.5d, pos.getY()+0.5d-player.eyeHeight, pos.getZ()+0.5d) >
                 Minecraft.getMinecraft().playerController.getBlockReachDistance()+.45d) return;
-        Float[] rots = Utils.getRotationsTo(pos.getX()+0.5d-player.posX, pos.getY()+0.5d-player.posY-player.eyeHeight, pos.getZ()+0.5d-player.posZ, new float[]{
-                player.rotationYaw, player.rotationPitch
-        });
-        if (rots == null || rots[0] == null || rots[1] == null) return;
-
-        MovingObjectPosition semiPos = rayTrace(Minecraft.getMinecraft().playerController.getBlockReachDistance(), 1f, new float[]{
-                rots[0], rots[1], rots[0], rots[1]
-        }, pos);
+//        Float[] rots = Utils.getRotationsTo(pos.getX()+0.5d-player.posX, pos.getY()+0.5d-player.posY-player.eyeHeight, pos.getZ()+0.5d-player.posZ, new float[]{
+//                player.rotationYaw, player.rotationPitch
+//        });
+//        if (rots == null || rots[0] == null || rots[1] == null) return;
+//
+//        MovingObjectPosition semiPos = rayTrace(Minecraft.getMinecraft().playerController.getBlockReachDistance(), 1f, new float[]{
+//                rots[0], rots[1], rots[0], rots[1]
+//        }, pos);
+//        if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
+//        System.out.println(String.format("%f %f %f", semiPos.hitVec.xCoord, semiPos.hitVec.yCoord, semiPos.hitVec.zCoord));
+        MovingObjectPosition semiPos = Utils.generateBlockHit(pos);
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
         System.out.println(String.format("%f %f %f", semiPos.hitVec.xCoord, semiPos.hitVec.yCoord, semiPos.hitVec.zCoord));
         if (Minecraft.getMinecraft().playerController.onPlayerRightClick(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().theWorld,
