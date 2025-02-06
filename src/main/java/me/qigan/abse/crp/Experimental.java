@@ -56,17 +56,6 @@ public class Experimental extends Module implements EDLogic {
 
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    void tick(PacketEvent.SendEvent e) {
-        if (!isEnabled()) return;
-        if (e.packet instanceof C03PacketPlayer.C05PacketPlayerLook){
-            System.out.println("Flag");
-            System.out.println(""+Float.toString(((C03PacketPlayer.C05PacketPlayerLook) e.packet).getPitch()));
-            ReflectionHelper.setPrivateValue(C03PacketPlayer.class, (C03PacketPlayer) e.packet, 0f, "pitch", "field_149473_f");
-            System.out.println(""+Float.toString(((C03PacketPlayer.C05PacketPlayerLook) e.packet).getPitch()));
-        }
-    }
-
     @Override
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
