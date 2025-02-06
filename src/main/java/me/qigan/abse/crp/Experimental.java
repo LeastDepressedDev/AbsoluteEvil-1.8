@@ -3,17 +3,25 @@ package me.qigan.abse.crp;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.events.PacketEvent;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.Path;
 import me.qigan.abse.sync.Sync;
 
 import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.network.play.server.S14PacketEntity;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
@@ -45,11 +53,17 @@ public class Experimental extends Module implements EDLogic {
     void tick(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
 
-        for (int i = 0; i < 100; i++) {
-            double[] d2 = BallisticCalculator.calcRelPosArrow(-Minecraft.getMinecraft().thePlayer.rotationPitch, i);
-            Vec3 vec = BallisticCalculator.splitToVec3(d2, Minecraft.getMinecraft().thePlayer.rotationYaw)
-                    .addVector(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
-            Esp.autoBox3D(vec.xCoord, vec.yCoord, vec.zCoord, 0.1, 0.1, Color.RED, 2f, false);
+
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    void tick(PacketEvent.SendEvent e) {
+        if (!isEnabled()) return;
+        if (e.packet instanceof C03PacketPlayer.C05PacketPlayerLook){
+            System.out.println("Flag");
+            System.out.println(""+Float.toString(((C03PacketPlayer.C05PacketPlayerLook) e.packet).getPitch()));
+            ReflectionHelper.setPrivateValue(C03PacketPlayer.class, (C03PacketPlayer) e.packet, 0f, "pitch", "field_149473_f");
+            System.out.println(""+Float.toString(((C03PacketPlayer.C05PacketPlayerLook) e.packet).getPitch()));
         }
     }
 
