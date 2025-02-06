@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "verbose": true,
+  "package": "me.qigan.abse.mixins",
+  "refmap": "mixins.abse.refmap.json",
+  "mixins": []
+}
