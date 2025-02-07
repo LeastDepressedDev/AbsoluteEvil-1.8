@@ -78,6 +78,7 @@ public class PhantomAim {
             if (System.currentTimeMillis()-lTime<activeTime) {
                 if (aimPoint.length > 1) {
                     double s = speed + CombatHelperAimRandomize.createRandomDouble();
+
                     if (aimPoint[0] != null) currentAngles[0] += (float) ((aimPoint[0] - currentAngles[0]) * (s / devideCF));
                     if (aimPoint[1] != null) currentAngles[1] += (float) ((aimPoint[1] - currentAngles[1]) * (s / devideCF));
                 }
