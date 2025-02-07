@@ -4,5 +4,8 @@
   "verbose": true,
   "package": "me.qigan.abse.mixins",
   "refmap": "mixins.abse.refmap.json",
-  "mixins": []
+  "mixins": [
+    "MixinEntityPlayerSP",
+    "MixinEntityRenderer"
+  ]
 }

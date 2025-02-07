@@ -4,6 +4,7 @@ import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
 import me.qigan.abse.events.PacketEvent;
+import me.qigan.abse.fr.exc.PhantomAim;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.Path;
 import me.qigan.abse.sync.Sync;
@@ -11,13 +12,16 @@ import me.qigan.abse.sync.Sync;
 import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S14PacketEntity;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.awt.*;
@@ -50,10 +54,18 @@ public class Experimental extends Module implements EDLogic {
     }
 
     @SubscribeEvent
+    void Zov(PacketEvent.SendEvent e) {
+        if (!isEnabled()) return;
+        if (e.packet instanceof C0BPacketEntityAction) {
+            System.out.println(" " + Minecraft.getMinecraft().thePlayer.rotationYaw);
+        }
+    }
+
+    @SubscribeEvent
     void tick(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
 
-
+        PhantomAim.call(new Float[]{0f, 0f}, 300, false);
     }
 
     @Override

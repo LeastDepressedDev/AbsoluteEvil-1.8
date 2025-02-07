@@ -93,7 +93,6 @@ public class Holder {
 		register(new AutoChoco());
 		register(new KillerPhase());
 		register(new ProjectilePath());
-		register(new AbsoluteReach());
 		register(new GrottoFinder());
 		register(new AutoMining());
 		register(new AutoMiningFilter());

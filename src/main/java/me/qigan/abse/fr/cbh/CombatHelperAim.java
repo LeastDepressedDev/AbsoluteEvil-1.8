@@ -8,6 +8,7 @@ import me.qigan.abse.config.WKeybind;
 import me.qigan.abse.crp.MainWrapper;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
+import me.qigan.abse.fr.exc.PhantomAim;
 import me.qigan.abse.fr.exc.SmoothAimControl;
 import me.qigan.abse.sync.Utils;
 import me.qigan.abse.vp.Esp;
@@ -130,7 +131,7 @@ public class CombatHelperAim extends Module {
 
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
-        WKeybind bind = Index.KEY_MANAGER.get("aimLock");
+        WKeybind bind = Index.KEY_MANAGER.get("aimBreak");
         if (Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") &&
                 bind.isPressed()) BREAK_TOGGLE=!BREAK_TOGGLE;
         if (isActive() && !(Index.MAIN_CFG.getBoolVal("cbh_aim_tbkm") ? BREAK_TOGGLE : bind.isDown())) atkTick = Index.MAIN_CFG.getIntVal("cbh_atk");
@@ -193,12 +194,17 @@ public class CombatHelperAim extends Module {
                     if (randState) s+=CombatHelperAimRandomize.createRandomDouble();
                     double v = (prim.theta - fYaw) * (s / (10 * d));
                     double u = (prim.zeta - fPitch) * (s / (10 * d));
+                    if (Index.MAIN_CFG.getBoolVal("cbh_exptl")) {
+                        PhantomAim.setupSmoothParam(s, 10 * d);
+                        PhantomAim.call(new Float[]{(float) primary.theta,(float) primary.zeta}, 300, true);
+                    } else {
                     if (advcState) {
                         if (prim.lockTheta) Minecraft.getMinecraft().thePlayer.rotationYaw += (Math.abs(prim.theta - fYaw) < Index.MAIN_CFG.getDoubleVal("cbh_aim_px")) ? 0 : (float) v;
                         if (prim.lockZeta) Minecraft.getMinecraft().thePlayer.rotationPitch += (Math.abs(prim.zeta - fPitch) < Index.MAIN_CFG.getDoubleVal("cbh_aim_py")) ? 0 : (float) u;
                     } else {
                         if (prim.lockTheta) Minecraft.getMinecraft().thePlayer.rotationYaw += (float) v;
                         if (prim.lockZeta) Minecraft.getMinecraft().thePlayer.rotationPitch += (float) u;
+                    }
                     }
                 }
             }
@@ -236,6 +242,7 @@ public class CombatHelperAim extends Module {
         list.add(new SetsData<>("aimLock", "Aim lock key", ValType.KEYBINDING, Keyboard.KEY_G));
         list.add(new SetsData<>("cbh_kbk", "Use keybind key", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("cbh_fovat", "Fov", ValType.DOUBLE_NUMBER, "60"));
+        list.add(new SetsData<>("cbh_exptl", "Experimental settings", ValType.BOOLEAN, "false"));
         return list;
     }
 

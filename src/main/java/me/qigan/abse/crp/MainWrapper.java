@@ -9,7 +9,6 @@ import me.qigan.abse.config.ConfigManager;
 import me.qigan.abse.config.KeybindManager;
 import me.qigan.abse.config.MuConfig;
 import me.qigan.abse.config.PositionConfig;
-import me.qigan.abse.crp.ovr.CustomEntRender;
 import me.qigan.abse.crp.ovr.MCMainMenu;
 import me.qigan.abse.events.CoreEventProfiler;
 import me.qigan.abse.fr.exc.*;
@@ -28,16 +27,13 @@ import me.qigan.abse.sync.SoundUtils;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,13 +44,7 @@ public class MainWrapper {
     public static LoginScreen ls = new LoginScreen();
     public static Map<String, Runnable> linkedScripts = new HashMap<>();
 
-    public static void setCustomEntRenderer() {
-        Minecraft.getMinecraft().entityRenderer = new CustomEntRender(Minecraft.getMinecraft(), Minecraft.getMinecraft().getResourceManager());
-    }
-
     public static void initialise(FMLInitializationEvent e) {
-
-        setCustomEntRenderer();
 
         Utils.setupRoman();
         MappingConstants.setup();

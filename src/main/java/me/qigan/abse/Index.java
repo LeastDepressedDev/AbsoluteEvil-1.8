@@ -55,7 +55,6 @@ public class Index
         FireballDetector.scan.clear();
         BWTeamTracker.team.clear();
         BowPracticeMod.tracking.clear();
-        MainWrapper.setCustomEntRenderer();
 
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\u00A76Absolute fix applied!"));
     }
