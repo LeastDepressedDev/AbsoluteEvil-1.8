@@ -86,7 +86,7 @@ public class PhantomAim {
     }
 
     @SubscribeEvent
-    void renderOve(RenderGameOverlayEvent.Pre e) {
+    void renderOve(RenderGameOverlayEvent.Text e) {
         if (!enabled) return;
         Esp.drawCenteredString(currentAngles[0]+" "+currentAngles[1], 500, 200, 0xFFFFFF, S2Dtype.DEFAULT);
     }

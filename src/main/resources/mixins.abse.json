@@ -6,6 +6,7 @@
   "refmap": "mixins.abse.refmap.json",
   "mixins": [
     "MixinEntityPlayerSP",
-    "MixinEntityRenderer"
+    "MixinEntityRenderer",
+    "MixinEntity"
   ]
 }
