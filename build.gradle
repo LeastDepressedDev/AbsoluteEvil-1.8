@@ -1,7 +1,10 @@
 buildscript {
     repositories {
+        jcenter()
+        mavenCentral()
         maven { url "https://maven.minecraftforge.net" }
         maven { url 'https://repo.spongepowered.org/maven'}
+        maven { url 'https://maven.glass-launcher.net/babric'}
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
@@ -58,51 +61,7 @@ dependencies {
         exclude module: 'commons-io'
         exclude module: 'log4j-core'
     }
-
-    if (systemOs.contains("mac"))
-    {
-        compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'
-        compile 'org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209'
-        compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209'
-    }
-    else if (systemOs.contains("linux"))
-    {
-        compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-babric.1'
-        compile 'org.lwjgl.lwjgl:lwjgl:2.9.4-babric.1'
-        compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-babric.1'
-    }
 }
-
-if (systemOs.contains("mac"))
-{
-    configurations.all
-            {
-                resolutionStrategy
-                        {
-                            dependencySubstitution
-                                    {
-                                        substitute module('org.lwjgl.lwjgl:lwjgl_util:2.9.2-nightly-201408222') with module('org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209')
-                                        substitute module('org.lwjgl.lwjgl:lwjgl:2.9.2-nightly-201408222') with module('org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209')
-                                    }
-                            force 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209'
-                        }
-            }
-} else if (systemOs.contains("linux"))
-{
-    configurations.all
-            {
-                resolutionStrategy
-                        {
-                            dependencySubstitution
-                                    {
-                                        substitute module('org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209') using module('org.lwjgl.lwjgl:lwjgl_util:2.9.4-babric.1')
-                                        substitute module('org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209') using module('org.lwjgl.lwjgl:lwjgl:2.9.4-babric.1')
-                                    }
-                            force 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-babric.1'
-                        }
-            }
-}
-
 
 processResources {
     inputs.property "version", project.version
