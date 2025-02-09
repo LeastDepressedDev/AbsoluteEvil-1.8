@@ -74,7 +74,7 @@ public class PhantomAim {
     @SubscribeEvent
     void clientTick(TickEvent.ClientTickEvent e) {
         if (Minecraft.getMinecraft().thePlayer == null || Minecraft.getMinecraft().theWorld == null) return;
-        if (e.phase == TickEvent.Phase.END) {
+        if (e.phase == TickEvent.Phase.END && aimPoint != null) {
             if (System.currentTimeMillis()-lTime<activeTime) {
                 if (aimPoint.length > 1) {
                     double s = speed + CombatHelperAimRandomize.createRandomDouble();

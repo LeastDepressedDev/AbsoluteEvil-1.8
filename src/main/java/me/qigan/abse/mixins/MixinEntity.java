@@ -2,6 +2,7 @@ package me.qigan.abse.mixins;
 
 import me.qigan.abse.fr.exc.PhantomAim;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +29,8 @@ public abstract class MixinEntity {
 
 
     @Shadow public abstract UUID getUniqueID();
+
+    @Shadow public abstract void setSprinting(boolean p_setSprinting_1_);
 
     @Unique
     private Vector2f absoluteEvil$genVec(float p_moveFlying_1_, float p_moveFlying_2_, float rot) {
@@ -62,9 +65,11 @@ public abstract class MixinEntity {
                 Vector2f choice = null;
                 double res = 0d;
 
-                vec = absoluteEvil$genVec(p_moveFlying_1_, p_moveFlying_2_, rotCustom);
+                Vector2f fwdVec = absoluteEvil$genVec(p_moveFlying_1_, p_moveFlying_2_, rotCustom);
+                vec = (Vector2f) fwdVec.clone();
                 vecProd = vec.dot(targetVec);
                 res = vecProd;choice = vec;
+
                 vec = absoluteEvil$genVec(-p_moveFlying_1_, p_moveFlying_2_, rotCustom);
                 vecProd = vec.dot(targetVec);
                 if (vecProd > res) {res = vecProd;choice = vec;}
@@ -74,6 +79,24 @@ public abstract class MixinEntity {
                 vec = absoluteEvil$genVec(-p_moveFlying_1_, -p_moveFlying_2_, rotCustom);
                 vecProd = vec.dot(targetVec);
                 if (vecProd > res) {res = vecProd;choice = vec;}
+
+                vec = absoluteEvil$genVec(p_moveFlying_2_, p_moveFlying_1_, rotCustom);
+                vecProd = vec.dot(targetVec);
+                if (vecProd > res) {res = vecProd;choice = vec;}
+                vec = absoluteEvil$genVec(-p_moveFlying_2_, p_moveFlying_1_, rotCustom);
+                vecProd = vec.dot(targetVec);
+                if (vecProd > res) {res = vecProd;choice = vec;}
+                vec = absoluteEvil$genVec(p_moveFlying_2_, -p_moveFlying_1_, rotCustom);
+                vecProd = vec.dot(targetVec);
+                if (vecProd > res) {res = vecProd;choice = vec;}
+                vec = absoluteEvil$genVec(-p_moveFlying_2_, -p_moveFlying_1_, rotCustom);
+                vecProd = vec.dot(targetVec);
+                if (vecProd > res) {res = vecProd;choice = vec;}
+
+                if (choice.equals(fwdVec) && Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown())
+                    this.setSprinting(true);
+                else
+                    this.setSprinting(false);
 
                 this.motionX += (double)(choice.x);
                 this.motionZ += (double)(choice.y);

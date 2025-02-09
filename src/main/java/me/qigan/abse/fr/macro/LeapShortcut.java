@@ -32,16 +32,17 @@ public class LeapShortcut extends Module {
     }
 
     public static void call(boolean ret) {
+        double factor = Index.MAIN_CFG.getDoubleVal("leapSC_sf");
         new Thread(() -> {
             try {
                 int slot = find();
                 if (slot == -1) return;
                 int pre = Minecraft.getMinecraft().thePlayer.inventory.currentItem;
                 Utils.selectHotbarSlot(slot);
-                Thread.sleep(70);
+                Thread.sleep((int) (120*factor));
                 ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
                 if (ret) {
-                    Thread.sleep(40);
+                    Thread.sleep((int) (80*factor));
                     Utils.selectHotbarSlot(pre);
                 }
             } catch (InterruptedException ex) {
@@ -77,6 +78,7 @@ public class LeapShortcut extends Module {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("leapShortcut", "Leap key", ValType.KEYBINDING, Keyboard.KEY_Y));
         list.add(new SetsData<>("leapSC_back", "Switch item back", ValType.BOOLEAN, "true"));
+        list.add(new SetsData<>("leapSC_sf", "Actions speed factor", ValType.DOUBLE_NUMBER, "1"));
         return list;
     }
 
