@@ -38,6 +38,7 @@ public class M7Route extends Module {
         ALIGNERS,
         TERM_AURA,
         CORE,
+        EE3_ALIGN,
         CUSTOM
     }
 
@@ -97,6 +98,7 @@ public class M7Route extends Module {
             new BBox(57, 108, 123, 56, 111, 118, Blocks.air.getDefaultState()).category(Category.HEALER_FULL),
             new BBox(88, 165, 41, 95, 166, 41, Blocks.oak_fence.getDefaultState()).category(Category.HEALER_FULL), // New with alligner here ->
             new BBox(70, 221, 38, 71, 221, 38, Blocks.ender_chest.getDefaultState()).category(Category.BASIC_PREDEV),
+            new BBox(69, 221, 35, 69, 221, 35, Blocks.ender_chest.getDefaultState()).category(Category.BASIC_PREDEV),
             new BBox(77, 221, 37, 77, 222, 32, Blocks.ender_chest.getDefaultState()).category(Category.HEALER_FULL),
             new BBox(78, 221, 38, 78, 240, 38, Blocks.stained_glass.getDefaultState()).category(Category.HEALER_FULL),
             new BBox(77, 220, 37, 78, 220, 37, Blocks.air.getDefaultState()).category(Category.HEALER_FULL),
@@ -150,7 +152,9 @@ public class M7Route extends Module {
             new BBox(68, 109, 31, 68, 109, 32, Blocks.dark_oak_fence.getDefaultState()).category(Category.TERM_AURA),
             new BBox(38, 109, 141, 40, 109, 141, Blocks.dark_oak_fence.getDefaultState()).category(Category.TERM_AURA),
             new BBox(41, 108, 141, 51, 114, 141, Blocks.dark_oak_fence.getDefaultState()).category(Category.ALIGNERS),
-            new BBox(38, 124, 124, 41, 124, 124, Blocks.dark_oak_fence.getDefaultState()).category(Category.TERM_AURA)
+            new BBox(38, 124, 124, 41, 124, 124, Blocks.dark_oak_fence.getDefaultState()).category(Category.TERM_AURA),
+            new BBox(19, 131, 128, 20, 133, 128, Blocks.dark_oak_fence.getDefaultState()).category(Category.EE3_ALIGN),
+            new BBox(19, 122, 128, 20, 125, 128, Blocks.dark_oak_fence.getDefaultState()).category(Category.EE3_ALIGN)
             ));
 
     public static Map<BlockPos, DynamicRouteElement> dynamics = new HashMap<>();
