@@ -5,6 +5,7 @@ import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.events.PacketEvent;
 import me.qigan.abse.mapping.mod.Remapping;
 import me.qigan.abse.sync.Sync;
+import me.qigan.abse.sync.Utils;
 import me.qigan.abse.vp.Esp;
 import me.qigan.abse.vp.S2Dtype;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.network.play.server.S21PacketChunkData;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -28,22 +30,30 @@ public class MappingController {
     public static Color debugColor = new Color(36, 165, 183);
 
     public int[][] roomMapper = null;
-    public Set<int[]> loadedChunks = new HashSet<>();
+    public Set<String> loadedChunks = new HashSet<>();
     public Map<Integer, Room> roomReg = new HashMap<>();
     private int nextId = 1;
+
+    private int tick = 0;
 
     public void newDungeon() {
         roomMapper = MappingUtils.newMap();
         roomReg.clear();
         nextId = 1;
         loadedChunks.clear();
+        tick = 0;
     }
 
 
     private boolean loadCheck(int [] ax) {
-        return loadedChunks.contains(new int[]{ax[0]/16, ax[1]/16}) && loadedChunks.contains(new int[]{(ax[0]+MappingConstants.ROOM_SIZE)/16, ax[1]/16})
-                && loadedChunks.contains(new int[]{ax[0]/16, (ax[1]+MappingConstants.ROOM_SIZE)/16}) &&
-                loadedChunks.contains(new int[]{(ax[0]+MappingConstants.ROOM_SIZE)/16, (ax[1]+MappingConstants.ROOM_SIZE)/16});
+//        System.out.println(loadedChunks.contains(new AddressedData<>(ax[0]/16, ax[1]/16)) + " " +
+//                loadedChunks.contains(new AddressedData<>((ax[0]+MappingConstants.ROOM_SIZE)/16, ax[1]/16)) + " " +
+//                loadedChunks.contains(new AddressedData<>(ax[0]/16, (ax[1]+MappingConstants.ROOM_SIZE)/16)) + " " +
+//                loadedChunks.contains(new AddressedData<>((ax[0]+MappingConstants.ROOM_SIZE)/16, (ax[1]+MappingConstants.ROOM_SIZE)/16)));
+        return loadedChunks.contains(ax[0]/16 + " " + ax[1]/16) &&
+                loadedChunks.contains((ax[0]+MappingConstants.ROOM_SIZE)/16 + " " + ax[1]/16)
+                && loadedChunks.contains(ax[0]/16 + " " + (ax[1]+MappingConstants.ROOM_SIZE)/16) &&
+                loadedChunks.contains((ax[0]+MappingConstants.ROOM_SIZE)/16 + " " + (ax[1]+MappingConstants.ROOM_SIZE)/16);
     }
 
 
@@ -51,34 +61,55 @@ public class MappingController {
     private void reqRoomCheck(int i, int j, WorldClient world) {
         int[] coord = MappingUtils.cellToReal(i, j);
 
-        if (MappingUtils.rayUp(coord[0]-1, coord[1], world) != 255) {
+        if (MappingUtils.rayDown(coord[0]-1, coord[1], world) != 0 && i-1 > 0) {
             int p = roomMapper[i-1][j];
-            if (p > 0) roomMapper[i][j] = p;
-            return;
+            if (p > 0 && p != roomMapper[i][j]) {
+                roomMapper[i][j] = p;
+                roomReg.get(p).add(new int[]{i, j});
+                return;
+            }
         }
-        if (MappingUtils.rayUp(coord[0], coord[1]-1, world) != 255) {
+        if (MappingUtils.rayDown(coord[0], coord[1]-1, world) != 0 && j-1 > 0) {
             int p = roomMapper[i][j-1];
-            if (p > 0) roomMapper[i][j] = p;
-            return;
+            if (p > 0 && p != roomMapper[i][j]) {
+                roomMapper[i][j] = p;
+                roomReg.get(p).add(new int[]{i, j});
+                return;
+            }
         }
-        if (MappingUtils.rayUp(coord[0]+MappingConstants.ROOM_SIZE+1, coord[1], world) != 255) {
+        if (MappingUtils.rayDown(coord[0]+MappingConstants.ROOM_SIZE+1, coord[1], world) != 0 && i+1 < 6) {
             int p = roomMapper[i+1][j];
-            if (p > 0) roomMapper[i][j] = p;
-            return;
+            if (p > 0 && p != roomMapper[i][j]) {
+                roomMapper[i][j] = p;
+                roomReg.get(p).add(new int[]{i, j});
+                return;
+            }
         }
-        if (MappingUtils.rayUp(coord[0], coord[1]+MappingConstants.ROOM_SIZE+1, world) != 255) {
+        if (MappingUtils.rayDown(coord[0], coord[1]+MappingConstants.ROOM_SIZE+1, world) != 0 && j+1<6) {
             int p = roomMapper[i][j+1];
-            if (p > 0) roomMapper[i][j] = p;
+            if (p > 0 && p != roomMapper[i][j]) {
+                roomMapper[i][j] = p;
+                roomReg.get(p).add(new int[]{i, j});
+                return;
+            }
+        }
+
+        if (roomMapper[i][j] == 0) {
+            roomMapper[i][j] = nextId;
+            roomReg.put(nextId, new Room(nextId));
+            roomReg.get(nextId).add(new int[]{i, j});
+            nextId++;
             return;
         }
 
-        roomMapper[i][j] = nextId;
-        roomReg.put(nextId, new Room(nextId));
-        nextId++;
+        Room rm = roomReg.get(roomMapper[i][j]);
+        if (rm.core[0] == -1 || rm.id == -1) {
+            rm.add(new int[]{i, j});
+        }
     }
 
     public void update() {
-        WorldClient world = Minecraft.getMinecraft().theWorld;
+        if (!Utils.posInDim(Sync.playerPosAsBlockPos(), MappingConstants.MAP_BOUNDS)) return;
         for (int i = 0; i < roomMapper.length; i++) {
             for (int j = 0; j < roomMapper.length; j++) {
                 if (roomMapper[i][j] == -1) {
@@ -91,8 +122,8 @@ public class MappingController {
 
         for (int i = 0; i < roomMapper.length; i++) {
             for (int j = 0; j < roomMapper.length; j++) {
-                if (roomMapper[i][j] == 0) {
-                    reqRoomCheck(i, j, world);
+                if (roomMapper[i][j] > -1) {
+                    reqRoomCheck(i, j, Minecraft.getMinecraft().theWorld);
                 }
             }
         }
@@ -124,10 +155,23 @@ public class MappingController {
         return getRoom(getPlayerCell());
     }
 
+    private int calcTick() {
+        int d = Index.MAIN_CFG.getIntVal("remap_tick");
+        if (Index.MAIN_CFG.getBoolVal("remap_opt")) {
+            if (nextId > 17) d += 6;
+        }
+        return d;
+    }
+
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
-        if (e.phase == TickEvent.Phase.START || Minecraft.getMinecraft().theWorld == null || roomMapper == null) return;
-        if (Sync.inDungeon) update();
+        if (e.phase == TickEvent.Phase.END || Minecraft.getMinecraft().theWorld == null || roomMapper == null) return;
+        if (Sync.inDungeon) {
+            if (tick <= 0) {
+                update();
+                tick = calcTick();
+            } else tick--;
+        }
     }
 
     @SubscribeEvent
@@ -139,7 +183,10 @@ public class MappingController {
     void onChunkLoad(PacketEvent.ReceiveEvent e) {
         if (e.packet instanceof S21PacketChunkData) {
             S21PacketChunkData packet = (S21PacketChunkData) e.packet;
-            loadedChunks.add(new int[]{packet.getChunkX(), packet.getChunkZ()});
+//            if (Index.MAIN_CFG.getBoolVal("remap_debug")) {
+//                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("[MAP DEBUG] " + packet.getChunkX() + " " + packet.getChunkZ()));
+//            }
+            loadedChunks.add(packet.getChunkX() + " " + packet.getChunkZ());
         }
     }
 
@@ -154,14 +201,18 @@ public class MappingController {
     @SubscribeEvent
     void onOverlayRender(RenderGameOverlayEvent.Text e) {
         if (Minecraft.getMinecraft().theWorld == null || roomMapper == null || !Index.MAIN_CFG.getBoolVal("remap_debug")) return;
-        Point pt = new Point(100, 300);
-        int[] k = MappingUtils.realToCell(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posZ);
-        Esp.drawOverlayString(k[0] + ":" + k[1], pt.x, pt.y-30, Color.cyan, S2Dtype.DEFAULT);
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                Esp.drawCenteredString((k[0] == i && k[1] == j ? "\u00A7a" : "\u00A7c") + roomMapper[i][j], pt.x+15*i, pt.y+15*j, 0xFFFFFF, S2Dtype.DEFAULT);
+        try {
+            Point pt = new Point(100, 300);
+            int[] k = MappingUtils.realToCell(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posZ);
+            Esp.drawOverlayString(k[0] + ":" + k[1], pt.x, pt.y - 30, Color.cyan, S2Dtype.DEFAULT);
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++) {
+                    Esp.drawCenteredString((k[0] == i && k[1] == j ? "\u00A7a" : "\u00A7c") + roomMapper[i][j], pt.x + 15 * i, pt.y + 15 * j, 0xFFFFFF, S2Dtype.DEFAULT);
+                }
             }
+            Esp.drawOverlayString(Remapping.createRoomInfo(), pt.x, pt.y + 85, Color.cyan, S2Dtype.DEFAULT);
+        } catch (Exception ex) {
+
         }
-        Esp.drawOverlayString(Remapping.createRoomInfo(), pt.x, pt.y+85, Color.cyan, S2Dtype.DEFAULT);
     }
 }

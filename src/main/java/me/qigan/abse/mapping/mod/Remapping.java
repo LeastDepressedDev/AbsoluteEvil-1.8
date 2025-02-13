@@ -117,6 +117,8 @@ public class Remapping extends Module {
         list.add(new SetsData<>("remap_path", "Render path", ValType.BOOLEAN, "true"));
         list.add(new SetsData<>("remap_targets", "Render targets", ValType.BOOLEAN, "true"));
         list.add(new SetsData<>("remap_comments", "Render comments", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("remap_tick", "Delay tick[more tick means more optimisation]", ValType.NUMBER, "4"));
+        list.add(new SetsData<>("remap_opt", "Use optimisation algorithm", ValType.BOOLEAN, "true"));
         list.add(new SetsData<>("remap_debug", "Do debug render", ValType.BOOLEAN, "false"));
         return list;
     }

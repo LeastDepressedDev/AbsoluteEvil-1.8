@@ -1,2 +1,1 @@
-We have 6 by 6 matrix
-We can scan rooms for existence
+TODO: Fix problem with long rooms detecting wrong core... Technically we can simply add second checker coordinate. That should be enough.

@@ -7,10 +7,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Room {
 
@@ -64,7 +61,7 @@ public class Room {
      *
      */
 
-    public List<int[]> segments;
+    public Set<int[]> segments;
     public int[] core = new int[]{-1, -1};
     public Type type = Type.UNKNOWN;
     public Shape shape = Shape.UNKNOWN;
@@ -75,12 +72,13 @@ public class Room {
     private int height = 0;
 
     public Room(int iterN) {
-        this.segments = new ArrayList<>();
+        this.segments = new HashSet<>();
         this.iter = iterN;
     }
 
-    private boolean updateCore(int[] seg) {
+    public boolean updateCore(int[] seg) {
         WorldClient world = Minecraft.getMinecraft().theWorld;
+        this.height = MappingUtils.rayDown(MappingUtils.cellToReal(seg), Minecraft.getMinecraft().theWorld);
         int[] coord = MappingUtils.cellToReal(seg);
         if (world.getBlockState(new BlockPos(coord[0], height, coord[1]))
                 .getBlock() == Blocks.lapis_block &&
@@ -96,14 +94,19 @@ public class Room {
             return true;
         }
 
+        boolean flag = false;
         if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 3))
-                .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.SOUTH;
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.SOUTH; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 3, height, coord[1] + MappingConstants.ROOM_SIZE))
-                .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.WEST;
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.WEST; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 3))
-                .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.NORTH;
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.NORTH; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0] + 3, height, coord[1]))
-                .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.EAST;
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.EAST; flag=true;}
+
+        if (flag) {
+            this.core = seg;
+        }
 
         if (rotation == Rotation.UNKNOWN) {
             return false;
@@ -120,7 +123,6 @@ public class Room {
     }
 
     public void defineRoomType() {
-        if (shape != Shape.r1X1) return;
         BlockPos pos = new BlockPos(21, height, 0);
         for (int i = 0; i < 5; i++) {
             Block block = Minecraft.getMinecraft().theWorld.getBlockState(this.transformInnerCoordinate(pos.add(0, 0, i))).getBlock();
@@ -134,13 +136,12 @@ public class Room {
     public void add(int[] seg) {
         segments.add(seg);
         if (core[0] == -1) {
-            if (updateCore(seg)) {
-                this.height = MappingUtils.rayDown(MappingUtils.cellToReal(seg), Minecraft.getMinecraft().theWorld);
-            }
-        } else if (this.id == -1) {
+            updateCore(seg);
+        }
+        if (this.id == -1) {
             this.id = Rooms.match(this);
             if (this.id > -1) {
-                RoomTemplate tmpl = Rooms.rooms.get(this.id);
+                RoomTemplate tmpl = Rooms.rooms.get(this.id-1);
                 this.shape = tmpl.getShape();
             }
         }
