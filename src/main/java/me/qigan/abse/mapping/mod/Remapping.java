@@ -5,7 +5,7 @@ import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.Module;
-import me.qigan.abse.mapping.Mapping;
+import me.qigan.abse.mapping.MappingUtils;
 import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.mapping.Room;
 import me.qigan.abse.vp.Esp;
@@ -45,8 +45,8 @@ public class Remapping extends Module {
         if (!Index.MAIN_CFG.getBoolVal("remap_track") || Minecraft.getMinecraft().theWorld == null) return;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 6; j++) {
-                int[] xz = Mapping.cellToReal(i, j);
-                int y = Mapping.rayDown(xz[0], xz[1], Minecraft.getMinecraft().theWorld);
+                int[] xz = MappingUtils.cellToReal(i, j);
+                int y = MappingUtils.rayDown(xz[0], xz[1], Minecraft.getMinecraft().theWorld);
                 Esp.autoBox3D(new BlockPos(xz[0], y, xz[1]), Color.red, 3f, true);
             }
         }
@@ -72,7 +72,7 @@ public class Remapping extends Module {
         list.add(new SetsData<>("remap_track_clear", "Clear track", ValType.BUTTON, (Runnable) () -> repos.clear()));
         list.add(new SetsData<>("remap_track_sum", "Summarize[In console]", ValType.BUTTON, (Runnable) () -> {
             String ln = "Detect format\n";
-            Room rm = Index.MAPPING_CONTROLLER.roomMap.get(Index.MAPPING_CONTROLLER.getCurrentCellIter());
+            Room rm = Index.MAPPING_CONTROLLER.roomReg.get(Index.MAPPING_CONTROLLER.getPlayerCellIter());
             BlockPos pos = rm.transformInnerCoordinate(new BlockPos(0, 69, 0));
             for (AddressedData<BlockPos, Block> ele : repos) {
                 //int[] cc = Mapping.cellToReal(rm.center[0], rm.center[1]);
@@ -122,9 +122,9 @@ public class Remapping extends Module {
     }
 
     public static String createRoomInfo() {
-        Room rm = Index.MAPPING_CONTROLLER.roomMap.get(Index.MAPPING_CONTROLLER.getCurrentCellIter());
+        Room rm = Index.MAPPING_CONTROLLER.roomReg.get(Index.MAPPING_CONTROLLER.getPlayerCellIter());
         if (rm == null) return "";
-        return rm.iter + ":   " + rm.center[0] + "-" + rm.center[1] + "\n"
+        return rm.getId() + ":   " + rm.core[0] + "-" + rm.core[1] + "\n"
                 + rm.getShape() + "||" + rm.getType() + "||" + rm.getRotation() + "||" + rm.getHeight() + "\n"
                 + "id:" + rm.getId();
     }

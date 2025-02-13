@@ -82,9 +82,8 @@ public class SecretAura extends Module {
                             double d = playerPos.distanceTo(new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d));
                             if (d < Minecraft.getMinecraft().playerController.getBlockReachDistance()) {
                                 MappingController ctr = Index.MAPPING_CONTROLLER;
-                                if (ctr.map != null && ctr.playerCell != null && ctr.roomMap != null) {
-                                    int iter = ctr.map[ctr.playerCell[0]][ctr.playerCell[1]];
-                                    Room rm = ctr.roomMap.get(iter);
+                                if (ctr.roomMapper != null && ctr.getPlayerCell() != null && ctr.roomReg != null) {
+                                    Room rm = ctr.getPlayerRoom();
                                     if (rm != null && rm.getType() == Room.Type.PUZZLE) continue;
                                 }
                                 scare = true;
@@ -101,9 +100,8 @@ public class SecretAura extends Module {
                 Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
                 if (!(block == Blocks.chest || block == Blocks.trapped_chest || block == Blocks.lever)) return;
                 MappingController ctr = Index.MAPPING_CONTROLLER;
-                if (ctr.map != null && ctr.playerCell != null && ctr.roomMap != null) {
-                    int iter = ctr.map[ctr.playerCell[0]][ctr.playerCell[1]];
-                    Room rm = ctr.roomMap.get(iter);
+                if (ctr.roomMapper != null && ctr.getPlayerCell() != null && ctr.roomReg != null) {
+                    Room rm = ctr.getPlayerRoom();
                     if (rm != null && rm.getType() == Room.Type.PUZZLE) return;
                 }
             }
