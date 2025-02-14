@@ -61,38 +61,40 @@ public class MappingController {
     private void reqRoomCheck(int i, int j, WorldClient world) {
         int[] coord = MappingUtils.cellToReal(i, j);
 
-        if (MappingUtils.rayDown(coord[0]-1, coord[1], world) != 0 && i-1 > 0) {
-            int p = roomMapper[i-1][j];
-            if (p > 0 && p != roomMapper[i][j]) {
-                roomMapper[i][j] = p;
-                roomReg.get(p).add(new int[]{i, j});
-                return;
+        //if (!(roomReg.get(roomMapper[i][j]) != null && roomReg.get(roomMapper[i][j]).core[0] != -1)) {
+            if (MappingUtils.rayDown(coord[0] - 1, coord[1], world) != 0 && i - 1 > 0) {
+                int p = roomMapper[i - 1][j];
+                if (p > 0 && p != roomMapper[i][j]) {
+                    roomMapper[i][j] = p;
+                    roomReg.get(p).add(new int[]{i, j});
+                    return;
+                }
             }
-        }
-        if (MappingUtils.rayDown(coord[0], coord[1]-1, world) != 0 && j-1 > 0) {
-            int p = roomMapper[i][j-1];
-            if (p > 0 && p != roomMapper[i][j]) {
-                roomMapper[i][j] = p;
-                roomReg.get(p).add(new int[]{i, j});
-                return;
+            if (MappingUtils.rayDown(coord[0], coord[1] - 1, world) != 0 && j - 1 > 0) {
+                int p = roomMapper[i][j - 1];
+                if (p > 0 && p != roomMapper[i][j]) {
+                    roomMapper[i][j] = p;
+                    roomReg.get(p).add(new int[]{i, j});
+                    return;
+                }
             }
-        }
-        if (MappingUtils.rayDown(coord[0]+MappingConstants.ROOM_SIZE+1, coord[1], world) != 0 && i+1 < 6) {
-            int p = roomMapper[i+1][j];
-            if (p > 0 && p != roomMapper[i][j]) {
-                roomMapper[i][j] = p;
-                roomReg.get(p).add(new int[]{i, j});
-                return;
+            if (MappingUtils.rayDown(coord[0] + MappingConstants.ROOM_SIZE + 1, coord[1], world) != 0 && i + 1 < 6) {
+                int p = roomMapper[i + 1][j];
+                if (p > 0 && p != roomMapper[i][j]) {
+                    roomMapper[i][j] = p;
+                    roomReg.get(p).add(new int[]{i, j});
+                    return;
+                }
             }
-        }
-        if (MappingUtils.rayDown(coord[0], coord[1]+MappingConstants.ROOM_SIZE+1, world) != 0 && j+1<6) {
-            int p = roomMapper[i][j+1];
-            if (p > 0 && p != roomMapper[i][j]) {
-                roomMapper[i][j] = p;
-                roomReg.get(p).add(new int[]{i, j});
-                return;
+            if (MappingUtils.rayDown(coord[0], coord[1] + MappingConstants.ROOM_SIZE + 1, world) != 0 && j + 1 < 6) {
+                int p = roomMapper[i][j + 1];
+                if (p > 0 && p != roomMapper[i][j]) {
+                    roomMapper[i][j] = p;
+                    roomReg.get(p).add(new int[]{i, j});
+                    return;
+                }
             }
-        }
+        //}
 
         if (roomMapper[i][j] == 0) {
             roomMapper[i][j] = nextId;
@@ -170,6 +172,13 @@ public class MappingController {
             if (tick <= 0) {
                 update();
                 tick = calcTick();
+
+                if (Index.MAIN_CFG.getBoolVal("remap")) {
+                    Room room = getPlayerRoom();
+                    if (room != null && room.id != -1) {
+                        Rooms.routes.get(room.id).placeRoute(room);
+                    }
+                }
             } else tick--;
         }
     }

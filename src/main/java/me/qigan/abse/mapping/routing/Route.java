@@ -47,6 +47,7 @@ public class Route {
     }
 
     public final void placeRoute(Room room) {
+        if (room.id == -1) return;
         if (Index.MAIN_CFG.getBoolVal("remap_blocks")) {
             for (BBox box : this.pre) {
                 box.runRelative(room);

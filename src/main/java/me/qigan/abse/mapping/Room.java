@@ -96,12 +96,20 @@ public class Room {
 
         boolean flag = false;
         if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 3))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 8))
                 .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.SOUTH; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 3, height, coord[1] + MappingConstants.ROOM_SIZE))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 8, height, coord[1] + MappingConstants.ROOM_SIZE))
                 .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.WEST; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 3))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 8))
                 .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.NORTH; flag=true;}
         else if (world.getBlockState(new BlockPos(coord[0] + 3, height, coord[1]))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + 8, height, coord[1]))
                 .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.EAST; flag=true;}
 
         if (flag) {
