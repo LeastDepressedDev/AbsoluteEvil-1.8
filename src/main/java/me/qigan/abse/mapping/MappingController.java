@@ -170,14 +170,18 @@ public class MappingController {
         if (e.phase == TickEvent.Phase.END || Minecraft.getMinecraft().theWorld == null || roomMapper == null) return;
         if (Sync.inDungeon) {
             if (tick <= 0) {
-                update();
-                tick = calcTick();
+                try {
+                    update();
+                    tick = calcTick();
 
-                if (Index.MAIN_CFG.getBoolVal("remap")) {
-                    Room room = getPlayerRoom();
-                    if (room != null && room.id != -1) {
-                        Rooms.routes.get(room.id).placeRoute(room);
+                    if (Index.MAIN_CFG.getBoolVal("remap")) {
+                        Room room = getPlayerRoom();
+                        if (room != null && room.id != -1) {
+                            Rooms.routes.get(room.id).placeRoute(room);
+                        }
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             } else tick--;
         }
