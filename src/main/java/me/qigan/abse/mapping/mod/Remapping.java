@@ -120,6 +120,7 @@ public class Remapping extends Module {
         list.add(new SetsData<>("remap_tick", "Delay tick[more tick means more optimisation]", ValType.NUMBER, "4"));
         list.add(new SetsData<>("remap_opt", "Use optimisation algorithm", ValType.BOOLEAN, "true"));
         list.add(new SetsData<>("remap_debug", "Do debug render", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("remap_force", "Force new dungeon", ValType.BUTTON, (Runnable) () -> Index.MAPPING_CONTROLLER.newDungeon()));
         return list;
     }
 

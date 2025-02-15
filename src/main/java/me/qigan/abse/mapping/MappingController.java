@@ -137,6 +137,7 @@ public class MappingController {
     }
 
     public int getCellIter(int[] cell) {
+        if (cell[0] > 5 || cell[0] < 0 || cell[1] > 5 || cell[1] < 0) return -1;
         return roomMapper[cell[0]][cell[1]];
     }
 
