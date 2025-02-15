@@ -1,7 +1,8 @@
 package me.qigan.abse.mapping.auto;
 
+import me.qigan.abse.Index;
 import me.qigan.abse.fr.exc.SmoothAimControl;
-import me.qigan.abse.mapping.Mapping;
+import me.qigan.abse.mapping.MappingUtils;
 import me.qigan.abse.mapping.Room;
 import me.qigan.abse.sync.Sync;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,7 @@ public class SeqWalk extends QueuedSeq {
 
     public SeqWalk(Float[] angle, double distance) {
         this.dist = distance;
-        Room rm = Mapping.currentRoom();
+        Room rm = Index.MAPPING_CONTROLLER.getPlayerRoom();
         if (rm == null) {
             this.angle = angle;
         } else {

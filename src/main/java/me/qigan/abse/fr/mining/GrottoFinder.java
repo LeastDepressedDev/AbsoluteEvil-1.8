@@ -52,10 +52,6 @@ public class GrottoFinder extends Module {
                 queue.add(new Thread(() -> scan(packet.getChunkX(), packet.getChunkZ(), Index.MAIN_CFG.getIntVal("grotto_finder_skip"))));
             }
         }
-//        if (e.packet instanceof S26PacketMapChunkBulk) {
-//            S26PacketMapChunkBulk packet = (S26PacketMapChunkBulk) e.packet;
-//            for (packet.)
-//        }
     }
 
     @SubscribeEvent

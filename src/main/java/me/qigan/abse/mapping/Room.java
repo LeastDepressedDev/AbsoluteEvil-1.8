@@ -7,14 +7,12 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Room {
 
     public enum Shape {
+        UNKNOWN,
         r1X1,
         r1X2,
         r1X3,
@@ -24,6 +22,7 @@ public class Room {
     }
 
     public enum Rotation {
+        UNKNOWN(0f),
         SOUTH(0f),
         WEST(-90f),
         NORTH(-180f),
@@ -37,6 +36,7 @@ public class Room {
     }
 
     public enum Type {
+        UNKNOWN,
         SPAWN,
         REGULAR,
         BOSS,
@@ -46,122 +46,91 @@ public class Room {
         FAIRY
     }
 
+    /*
+     * Big Fucking space to not get lost in this stupid af god
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
+    public Set<int[]> segments;
+    public int[] core = new int[]{-1, -1};
+    public Type type = Type.UNKNOWN;
+    public Shape shape = Shape.UNKNOWN;
+    public Rotation rotation = Rotation.UNKNOWN;
+    public int id = -1;
     public final int iter;
-    private List<AddressedData<int[], Integer>> elements;
+
     private int height = 0;
 
-    public int[] center = null;
-
-    private Shape shape = Shape.r1X1;
-    private Rotation rotation = Rotation.EAST;
-    private Type type = Type.REGULAR;
-
-    private int id = -1;
-
-    public Room(int iter) {
-        this.iter = iter;
-        if (this.iter == 1) this.type = Type.SPAWN;
+    public Room(int iterN) {
+        this.segments = new HashSet<>();
+        this.iter = iterN;
     }
 
-    public Room define(int[][] map) {
-        Map<int[], Integer> tgr = new HashMap<>();
+    public boolean updateCore(int[] seg) {
         WorldClient world = Minecraft.getMinecraft().theWorld;
-        elements = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 6; j++) {
-                if (map[i][j] == iter) {
-                    int s = 0;
-                    if (i - 1 >= 0 && map[i-1][j] == iter) s++;
-                    if (i + 1 < 6 && map[i+1][j] == iter) s++;
-                    if (j - 1 >= 0 && map[i][j-1] == iter) s++;
-                    if (j + 1 < 6 && map[i][j+1] == iter) s++;
-                    AddressedData<int[], Integer> e = new AddressedData<>(new int[]{i, j}, s);
-                    elements.add(e);
-                    tgr.put(e.getNamespace(), e.getObject());
-                }
-            }
-        }
-
-        if (elements.size() == 0) return this;
-        this.height = Mapping.rayDown(Mapping.cellToReal(elements.get(0).getNamespace()), world);
-
-        switch (tgr.size()) {
-            default:
-            case 1:
-                this.shape = Shape.r1X1;
-                break;
-            case 2:
-                this.shape = Shape.r1X2;
-                break;
-            case 3:
-                this.shape = r3(tgr);
-                break;
-            case 4:
-                this.shape = r4(tgr);
-                break;
-        }
-
-        switch (shape) {
-            case r1X1: {
-                center = this.elements.get(0).getNamespace();
-                int[] coord = Mapping.cellToReal(this.elements.get(0).getNamespace());
-                if (world.getBlockState(new BlockPos(coord[0], height, coord[1]))
+        this.height = MappingUtils.rayDown(MappingUtils.cellToReal(seg), Minecraft.getMinecraft().theWorld);
+        int[] coord = MappingUtils.cellToReal(seg);
+        if (world.getBlockState(new BlockPos(coord[0], height, coord[1]))
+                .getBlock() == Blocks.lapis_block &&
+                world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + MappingConstants.ROOM_SIZE))
                         .getBlock() == Blocks.lapis_block &&
-                        world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + MappingConstants.ROOM_SIZE))
-                                .getBlock() == Blocks.lapis_block &&
-                        world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE))
-                                .getBlock() == Blocks.lapis_block &&
-                        world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1]))
-                                .getBlock() == Blocks.lapis_block) {
-                    this.type = Type.FAIRY;
-                    this.rotation = Rotation.EAST;
-                    break;
-                }
-
-                if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 3))
-                        .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.SOUTH;
-                else if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 3, height, coord[1] + MappingConstants.ROOM_SIZE))
-                        .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.WEST;
-                else if (world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 3))
-                        .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.NORTH;
-                else if (world.getBlockState(new BlockPos(coord[0] + 3, height, coord[1]))
-                        .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.EAST;
-
-                defineRoomType();
-            }
-                break;
-            case r1X2:
-            case r1X3:
-            case r1X4:
-            case r2X2:
-            case rL:
-            {
-                for (AddressedData<int[], Integer> data : this.elements) {
-                    int[] coord = Mapping.cellToReal(data.getNamespace());
-                    //coord[1] + 3 cuz some rooms can have stupid alignment
-                    if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 3))
-                            .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.SOUTH;
-                    else if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 3, height, coord[1] + MappingConstants.ROOM_SIZE))
-                            .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.WEST;
-                    else if (world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 3))
-                            .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.NORTH;
-                    else if (world.getBlockState(new BlockPos(coord[0] + 3, height, coord[1]))
-                            .getBlock() == Blocks.stained_hardened_clay) rotation = Rotation.EAST;
-
-                    this.center = data.getNamespace();
-                    break;
-                }
-            }
-                break;
+                world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE))
+                        .getBlock() == Blocks.lapis_block &&
+                world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1]))
+                        .getBlock() == Blocks.lapis_block) {
+            this.type = Type.FAIRY;
+            this.rotation = Rotation.EAST;
+            this.core = seg;
+            return true;
         }
 
-        defineRoomId();
+        boolean flag = false;
+        if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 3))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE, height, coord[1] + 8))
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.SOUTH; flag=true;}
+        else if (world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 3, height, coord[1] + MappingConstants.ROOM_SIZE))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + MappingConstants.ROOM_SIZE - 8, height, coord[1] + MappingConstants.ROOM_SIZE))
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.WEST; flag=true;}
+        else if (world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 3))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0], height, coord[1] + MappingConstants.ROOM_SIZE - 8))
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.NORTH; flag=true;}
+        else if (world.getBlockState(new BlockPos(coord[0] + 3, height, coord[1]))
+                .getBlock() == Blocks.stained_hardened_clay
+        && world.getBlockState(new BlockPos(coord[0] + 8, height, coord[1]))
+                .getBlock() == Blocks.stained_hardened_clay) {rotation = Rotation.EAST; flag=true;}
 
-        return this;
+        if (flag) {
+            this.core = seg;
+        }
+
+        if (rotation == Rotation.UNKNOWN) {
+            return false;
+        } else {
+            defineRoomType();
+            return true;
+        }
     }
 
-    private void defineRoomType() {
-        if (shape != Shape.r1X1) return;
+    public BlockPos transformInnerCoordinate(BlockPos pos) {
+        int[] coord = MappingUtils.transp(pos.getZ() - 15, pos.getX() - 15, this.rotation.angle);
+        int[] cellC = MappingUtils.cellToReal(this.core);
+        return new BlockPos(coord[0] + cellC[0] + 15, pos.getY(), coord[1] + cellC[1] + 15);
+    }
+
+    public void defineRoomType() {
         BlockPos pos = new BlockPos(21, height, 0);
         for (int i = 0; i < 5; i++) {
             Block block = Minecraft.getMinecraft().theWorld.getBlockState(this.transformInnerCoordinate(pos.add(0, 0, i))).getBlock();
@@ -172,70 +141,37 @@ public class Room {
         }
     }
 
-    private static Shape r3(final Map<int[], Integer> tgr) {
-        for (Map.Entry<int[], Integer> etr : tgr.entrySet()) {
-            if (etr.getValue() == 2) {
-                if (check(tgr, etr.getKey())) return Shape.rL;
+    public void add(int[] seg) {
+        segments.add(seg);
+        if (core[0] == -1) {
+            updateCore(seg);
+        }
+        if (this.id == -1) {
+            this.id = Rooms.match(this);
+            if (this.id > -1) {
+                RoomTemplate tmpl = Rooms.rooms.get(this.id-1);
+                this.shape = tmpl.getShape();
             }
         }
-        return Shape.r1X3;
-    }
-
-    private static Shape r4(final Map<int[], Integer> tgr) {
-        for (Map.Entry<int[], Integer> etr : tgr.entrySet()) {
-            if (etr.getValue() != 2) {
-                return Shape.r1X4;
-            }
-        }
-        return Shape.r2X2;
-    }
-
-    public BlockPos transformInnerCoordinate(BlockPos pos) {
-        int[] coord = Mapping.transp(pos.getZ() - 15, pos.getX() - 15, this.rotation.angle);
-        int[] cellC = Mapping.cellToReal(this.center);
-        return new BlockPos(coord[0] + cellC[0] + 15, pos.getY(), coord[1] + cellC[1] + 15);
-    }
-
-    private static boolean check(Map<int[], Integer> tgr, final int[] crd) {
-        int[] c1 = crd.clone(), c2 = crd.clone();
-        c1[0]+=1;
-        c2[1]+=1;
-        if (tgr.get(c1) != null && tgr.get(c2) != null) return true;
-        c1 = crd.clone(); c2 = crd.clone();
-        c1[0]-=1;
-        c2[1]+=1;
-        if (tgr.get(c1) != null && tgr.get(c2) != null) return true;
-        c1 = crd.clone(); c2 = crd.clone();
-        c1[0]+=1;
-        c2[1]-=1;
-        if (tgr.get(c1) != null && tgr.get(c2) != null) return true;
-        c1 = crd.clone(); c2 = crd.clone();
-        c1[0]-=1;
-        c2[1]-=1;
-        return tgr.get(c1) != null && tgr.get(c2) != null;
-    }
-
-    public void defineRoomId() {
-        this.id = Rooms.match(this);
-    }
-
-    public Shape getShape() {
-        return shape;
-    }
-
-    public int getHeight() {
-        return height;
     }
 
     public Rotation getRotation() {
         return rotation;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
     public Type getType() {
         return type;
     }
 
-    public int getId() {
-        return id;
+    public int getHeight() {
+        return height;
     }
 }
