@@ -15,7 +15,6 @@ public class ARController {
 
     public ARController() {
         URL = Loader.instance().getConfigDir() + "/" + URL;
-
         int sc = 0;
         File file = new File(URL);
         if (!file.exists()) file.mkdirs();
