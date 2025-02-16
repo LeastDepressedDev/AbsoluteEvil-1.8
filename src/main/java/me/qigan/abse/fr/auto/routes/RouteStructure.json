@@ -1,0 +1,70 @@
+{
+  "name": "IDK LOL",
+  "author": "zzzz",
+  "ref": "<dungeon/floor/global>",
+  "ref_id": <int:room id or floor number>,
+  "length": <int:route_length>,
+  "start": {
+    "x": 100,
+    "y": 100,
+    "z": 100
+  },
+  "script": {
+    "0": {
+      "type": "<wait/await/walk/epw/pearl/pgb/click>",
+      //This is a position, that player should be on a different step on route
+      "pos": {
+        "x": 100,
+        "y": 100,
+        "z": 100
+      }
+    },
+    "1": {
+      "type": "wait",
+      "time": 1200
+    },
+    "2": {
+      "type": "await",
+      "act": "<item>"
+    },
+    "3": {
+      "type": "walk",
+      "to": {
+        //We are skipping y coordinate because i dont want this to be in a regular walk op
+        "x": 100,
+        "z": 100
+      },
+      //Do jump on start?
+      "jump": false
+    },
+    "4": {
+      "type": "epw",
+      "target": {
+        "x": 100,
+        "y": 100,
+        "z": 100
+      }
+    },
+    "5": {
+      "type": "pearl",
+      "target": {
+        "yaw": 180,
+        "pitch": 0
+      },
+      "ewp_after": true
+    },
+    "6": {
+      "type": "click",
+      "cord": {
+        "x": 100,
+        "y": 100,
+        "z": 100
+      },
+      //Ghost pick if coord is unreachable
+      "gpu": true
+    }
+  },
+  "ghost_alligners": {
+
+  }
+}

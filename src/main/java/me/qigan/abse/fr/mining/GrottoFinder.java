@@ -187,7 +187,7 @@ public class GrottoFinder extends Module {
 
     @Override
     public Specification category() {
-        return Specification.MINING;
+        return Specification.SB_QOL;
     }
 
     @Override

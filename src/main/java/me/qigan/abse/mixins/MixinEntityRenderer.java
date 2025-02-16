@@ -11,6 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.util.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,6 +20,7 @@ import org.spongepowered.asm.mixin.SoftOverride;
 
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 @Mixin(EntityRenderer.class)
 public class MixinEntityRenderer {
 

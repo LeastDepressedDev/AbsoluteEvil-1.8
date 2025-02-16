@@ -11,9 +11,11 @@ import me.qigan.abse.config.MuConfig;
 import me.qigan.abse.config.PositionConfig;
 import me.qigan.abse.crp.ovr.MCMainMenu;
 import me.qigan.abse.events.CoreEventProfiler;
+import me.qigan.abse.fr.auto.routes.ARController;
 import me.qigan.abse.fr.exc.*;
 import me.qigan.abse.fr.mining.AutoMining;
 import me.qigan.abse.mapping.Rooms;
+import me.qigan.abse.fr.exc.PlayerControllerOverrider;
 import me.qigan.abse.mapping.mod.M7Route;
 import me.qigan.abse.gui.inst.NewMainMenu;
 import me.qigan.abse.gui.overlay.GuiNotifier;
@@ -36,13 +38,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainWrapper {
 
     public static LoginScreen ls = new LoginScreen();
-    public static Map<String, Runnable> linkedScripts = new HashMap<>();
 
     public static void initialise(FMLInitializationEvent e) {
 
@@ -91,6 +90,8 @@ public class MainWrapper {
         Index.KEY_MANAGER = new KeybindManager();
         MinecraftForge.EVENT_BUS.register(Index.KEY_MANAGER);
         Index.KEY_MANAGER.after();
+        Index.PLAYER_CONTROLLER = new PlayerControllerOverrider();
+        Index.AR_CONTROLLER = new ARController();
 
 //        int x0 = 0;
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;

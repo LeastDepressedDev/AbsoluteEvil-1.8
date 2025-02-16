@@ -54,18 +54,16 @@ public class Experimental extends Module implements EDLogic {
     }
 
     @SubscribeEvent
-    void Zov(PacketEvent.SendEvent e) {
+    void Zov(TickEvent.ClientTickEvent e) {
         if (!isEnabled()) return;
-        if (e.packet instanceof C0BPacketEntityAction) {
-            System.out.println(" " + Minecraft.getMinecraft().thePlayer.rotationYaw);
-        }
+
     }
 
     @SubscribeEvent
     void tick(RenderWorldLastEvent e) {
         if (!isEnabled()) return;
 
-        PhantomAim.call(new Float[]{0f, 0f}, 300, false);
+        //PhantomAim.call(new Float[]{0f, 0f}, 300, false);
     }
 
     @Override
@@ -94,11 +92,13 @@ public class Experimental extends Module implements EDLogic {
 
     @Override
     public void onEnable() {
-
+        Index.PLAYER_CONTROLLER.globalToggle = true;
+        Index.PLAYER_CONTROLLER.goStateOvr[2] = true;
     }
 
     @Override
     public void onDisable() {
+        Index.PLAYER_CONTROLLER.reset();
         Index.MOVEMENT_CONTROLLER.stop();
     }
 }

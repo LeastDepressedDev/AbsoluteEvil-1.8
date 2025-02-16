@@ -1,12 +1,15 @@
 package me.qigan.abse.mixins;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 
 import java.util.Map;
 
+@SideOnly(Side.CLIENT)
 public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
         System.out.println("[ABSE] Injecting with IFMLLoadingPlugin.");
