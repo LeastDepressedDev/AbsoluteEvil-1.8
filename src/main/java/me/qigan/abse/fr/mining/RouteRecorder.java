@@ -102,7 +102,7 @@ public class RouteRecorder extends Module {
 
     @Override
     public Specification category() {
-        return Specification.MINING;
+        return Specification.AUTO;
     }
 
     @Override

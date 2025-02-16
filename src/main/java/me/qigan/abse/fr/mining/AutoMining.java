@@ -426,7 +426,7 @@ public class AutoMining extends Module {
 
     @Override
     public Specification category() {
-        return Specification.MINING;
+        return Specification.AUTO;
     }
 
     @Override

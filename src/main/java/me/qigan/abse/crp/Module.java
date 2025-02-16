@@ -35,7 +35,7 @@ public abstract class Module {
 		DUNGEONS(Category.SKYBLOCK, "Dungeons"),
 		//OVERWORLD(Category.SKYBLOCK, "Overworld"),
 		SB_QOL(Category.SKYBLOCK, "Qol"),
-		MINING(Category.SKYBLOCK, "Mining"),
+		AUTO(Category.SKYBLOCK, "Auto"),
 
 		//OTHER
 		QOL(Category.OTHER, "Qol"),
