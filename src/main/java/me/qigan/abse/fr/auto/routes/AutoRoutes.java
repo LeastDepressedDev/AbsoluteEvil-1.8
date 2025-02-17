@@ -3,6 +3,7 @@ package me.qigan.abse.fr.auto.routes;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
+import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -12,6 +13,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
 
+@DangerousModule
 public class AutoRoutes extends Module {
 
     @SubscribeEvent
@@ -25,6 +27,11 @@ public class AutoRoutes extends Module {
     @Override
     public String id() {
         return "ar_mod";
+    }
+
+    @Override
+    public String fname() {
+        return "Auto routes";
     }
 
     @Override
