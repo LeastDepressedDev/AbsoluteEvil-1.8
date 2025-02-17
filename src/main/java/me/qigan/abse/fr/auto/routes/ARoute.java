@@ -1,5 +1,6 @@
 package me.qigan.abse.fr.auto.routes;
 
+import me.qigan.abse.Index;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -15,11 +16,16 @@ public class ARoute {
         GENERAL //Works everywhere
     }
 
+    public String name = "";
+    public String author = "";
+
     public int step = 0;
     public List<ARElement> elems = new ArrayList<>();
     public final Referer referer;
     public final int ref_id;
     public final BlockPos startingPos;
+
+    private long force = 0;
 
     public ARoute(Referer ref, int id, BlockPos sPos) {
         this.referer = ref;
@@ -29,13 +35,29 @@ public class ARoute {
 
     public boolean update(TickEvent.ClientTickEvent e) {
         if (step >= elems.size()) return true;
-        elems.get(step).tick(e, this);
+        if (System.currentTimeMillis()-force > Index.MAIN_CFG.getIntVal("ar_wait")) {
+            elems.get(step).tick(e, this);
 
-        if (elems.get(step).next()) step++;
+            if (elems.get(step).next()) {
+                force = System.currentTimeMillis();
+                step++;
+            }
+        }
         return false;
+    }
+
+    public void reset() {
+        step = 0;
+        for (ARElement elem : elems) {
+            elem.reset(this);
+        }
     }
 
     public ARElement stepElement() {
         return elems.get(step);
+    }
+
+    public void add(ARElement element) {
+        this.elems.add(element);
     }
 }

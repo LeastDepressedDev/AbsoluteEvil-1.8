@@ -86,6 +86,12 @@ public class Utils {
                 pos1.getZ() == pos2.getZ();
     }
 
+    public static boolean compareXZ(BlockPos pos1, BlockPos pos2) {
+        if (pos1 == null || pos2 == null) return false;
+        return pos1.getX() == pos2.getX() &&
+                pos1.getZ() == pos2.getZ();
+    }
+
     public static boolean posInDim(BlockPos pos, BlockPos[] dim, boolean in) {
         if (in) {
             return (pos.getX() >= dim[0].getX() && pos.getX() <= dim[1].getX()) &&

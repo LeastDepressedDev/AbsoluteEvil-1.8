@@ -25,7 +25,7 @@
     },
     "2": {
       "type": "await",
-      "act": "<item>"
+      "act": "<item/click>"
     },
     "3": {
       "type": "walk",
@@ -35,7 +35,10 @@
         "z": 100
       },
       //Do jump on start?
-      "jump": false
+      "jump": false,
+      "instant": false,
+      "rot_speed": 12,
+      "sprint": true
     },
     "4": {
       "type": "epw",

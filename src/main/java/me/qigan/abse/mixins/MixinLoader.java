@@ -14,7 +14,7 @@ public class MixinLoader implements IFMLLoadingPlugin {
     public MixinLoader() {
         System.out.println("[ABSE] Injecting with IFMLLoadingPlugin.");
         MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.abse.json"); //TODO: Add your own mixin config file here
+        Mixins.addConfiguration("mixins.abse.json");
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
     }
 

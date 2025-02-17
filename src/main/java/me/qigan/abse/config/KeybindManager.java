@@ -23,7 +23,7 @@ public class KeybindManager {
     public Map<String, WKeybind> binds = new HashMap<>();
 
     public static final List<WKeybind> unsortedBinds = new ArrayList<>(Arrays.asList(
-
+        new WKeybind("global_space", Keyboard.KEY_SPACE)
     ));
 
     public final List<WKeybind> sortedBinds = new ArrayList<>();

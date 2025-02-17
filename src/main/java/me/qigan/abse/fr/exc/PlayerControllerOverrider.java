@@ -22,9 +22,16 @@ public class PlayerControllerOverrider {
         stop();
     }
 
-    public void stop() {
+    public void dropPos() {
         this.goStateOvr = new boolean[]{false, false, false, false};
+    }
+
+    public void dropStates() {
         this.sneak = false;
         this.jump = false;
+    }
+
+    public void stop() {
+        dropPos(); dropStates();
     }
 }

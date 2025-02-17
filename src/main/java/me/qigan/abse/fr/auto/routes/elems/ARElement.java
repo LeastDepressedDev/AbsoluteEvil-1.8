@@ -15,4 +15,5 @@ public abstract class ARElement {
     public boolean next() {return true;}
 
     public abstract void tick(TickEvent.ClientTickEvent e, ARoute caller);
+    public abstract void reset(ARoute caller);
 }

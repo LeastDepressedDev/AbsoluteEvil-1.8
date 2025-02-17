@@ -19,8 +19,16 @@ public class AutoRoutes extends Module {
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
         if (Minecraft.getMinecraft().theWorld == null || !isEnabled() || e.phase == TickEvent.Phase.END) return;
-        if (Index.KEY_MANAGER.get("ar_mod_kb").isPressed()) {
+        if (Index.KEY_MANAGER.get("ar_mod_kb").isPressed() && !Index.AR_CONTROLLER.inRoute) {
             //TODO: Enter ar logic
+        }
+        if (Index.KEY_MANAGER.get("global_space").isPressed() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            Index.AR_CONTROLLER.stop();
+            return;
+        }
+        if (Index.KEY_MANAGER.get("global_space").isPressed()) {
+            if (Index.AR_CONTROLLER.inRoute) Index.AR_CONTROLLER.pause();
+            else Index.AR_CONTROLLER.resume();
         }
     }
 
@@ -43,6 +51,8 @@ public class AutoRoutes extends Module {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("ar_mod_kb", "Route enter keybind", ValType.KEYBINDING, -100));
+        list.add(new SetsData<>("ar_wait", "Force wait between actions", ValType.NUMBER, "300"));
+        list.add(new SetsData<>("ar_phantom", "Use phantom rotation[for legit]", ValType.BOOLEAN, "false"));
         return list;
     }
 

@@ -266,6 +266,10 @@ public class Sync {
         inKuudra = false;
     }
 
+    public static EntityPlayerSP player() {
+        return Minecraft.getMinecraft().thePlayer;
+    }
+
     /**
      * Checks whether the Skyblock Dungeon Map is in the player's hotbar
      * @return whether the map exists

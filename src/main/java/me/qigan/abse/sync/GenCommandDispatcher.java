@@ -26,11 +26,17 @@ public class GenCommandDispatcher extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender iCommandSender, String[] strings) throws CommandException {
-        String args = String.join("/", strings);
+        String args = "/"+String.join("/", strings);
         for (Method method : this.getClass().getMethods()) {
             if (method.isAnnotationPresent(CommandRoute.class)) {
+                CommandRoute route = method.getAnnotation(CommandRoute.class);
 
             }
         }
+    }
+
+    @CommandRoute(route = "")
+    public void sus() {
+
     }
 }
