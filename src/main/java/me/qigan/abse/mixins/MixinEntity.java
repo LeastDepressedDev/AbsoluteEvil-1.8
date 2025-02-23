@@ -61,7 +61,8 @@ public abstract class MixinEntity {
             p_moveFlying_2_ *= f;
 
             Vector2f targetVec = absoluteEvil$genVec(p_moveFlying_1_, p_moveFlying_2_, rot);
-            if (this.getUniqueID().equals(Minecraft.getMinecraft().thePlayer.getUniqueID()) && PhantomAim.enabled) {
+            if (this.getUniqueID() != null && Minecraft.getMinecraft().thePlayer != null &&
+                    this.getUniqueID().equals(Minecraft.getMinecraft().thePlayer.getUniqueID()) && PhantomAim.enabled) {
                 float rotCustom = PhantomAim.currentAngles[0] * 3.1415927F / 180.0F;
                 Vector2f vec;
                 double vecProd = 0d;
