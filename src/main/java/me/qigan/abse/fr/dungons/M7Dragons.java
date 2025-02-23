@@ -109,36 +109,41 @@ public class M7Dragons extends Module {
     @SubscribeEvent
     void playSound(PacketEvent.ReceiveEvent e) {
         if (!Sync.inDungeon) return;
-        if (e.packet instanceof S29PacketSoundEffect) {
-            S29PacketSoundEffect s = (S29PacketSoundEffect) e.packet;
-            BlockPos bp = new BlockPos((int) s.getX(), (int) s.getY(), (int) s.getZ());
-            DRAGON drag = DRAGON.match(bp);
-            if (drag != null) {
-                if (s.getSoundName().equalsIgnoreCase("random.explode") && started) {
-                    if (!done.contains(drag)) {
-                        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(drag.name + " is done!"));
-                        for (int i = 0; i < SOUND_VOL; i++) {
-                            Minecraft.getMinecraft().thePlayer.playSound("abse:skeet_hit", 1f, 1f);
+        try {
+            if (e.packet instanceof S29PacketSoundEffect) {
+                S29PacketSoundEffect s = (S29PacketSoundEffect) e.packet;
+                BlockPos bp = new BlockPos((int) s.getX(), (int) s.getY(), (int) s.getZ());
+                DRAGON drag = DRAGON.match(bp);
+                if (drag != null) {
+                    if (s.getSoundName().equalsIgnoreCase("random.explode") && started) {
+                        if (!done.contains(drag)) {
+                            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(drag.name + " is done!"));
+                            for (int i = 0; i < SOUND_VOL; i++) {
+                                Minecraft.getMinecraft().thePlayer.playSound("abse:skeet_hit", 1f, 1f);
+                            }
+                            done.add(drag);
                         }
-                        done.add(drag);
                     }
                 }
             }
-        }
-        if (e.packet instanceof S2APacketParticles) {
-            S2APacketParticles ptl = (S2APacketParticles) e.packet;
-            if (ptl.getParticleType() != EnumParticleTypes.ENCHANTMENT_TABLE) return;
-            BlockPos bp = new BlockPos((int) ptl.getXCoordinate(), (int) ptl.getYCoordinate(), (int) ptl.getZCoordinate());
-            DRAGON drag = check(bp);
-            if (drag != null) {
-                if (!spawning.containsKey(drag)) {
-                    started = true;
-                    Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(drag.name + " is spawning!"));
-                    spawning.put(drag, System.currentTimeMillis());
-                    if (spawning.size() > 1) first();
-                    else if (!first) anonc(drag);
+            if (e.packet instanceof S2APacketParticles) {
+                S2APacketParticles ptl = (S2APacketParticles) e.packet;
+                if (ptl.getParticleType() != EnumParticleTypes.ENCHANTMENT_TABLE) return;
+                BlockPos bp = new BlockPos((int) ptl.getXCoordinate(), (int) ptl.getYCoordinate(), (int) ptl.getZCoordinate());
+                DRAGON drag = check(bp);
+                if (drag != null) {
+                    if (!spawning.containsKey(drag)) {
+                        started = true;
+                        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(drag.name + " is spawning!"));
+                        spawning.put(drag, System.currentTimeMillis());
+                        if (spawning.size() > 1) first();
+                        else if (!first) anonc(drag);
+                    }
                 }
             }
+        } catch (ConcurrentModificationException ex) {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7aStupid ConcurrentMod exception hit: Printing to console"));
+            ex.printStackTrace();
         }
     }
 
@@ -162,6 +167,9 @@ public class M7Dragons extends Module {
             System.out.println("Drags: ");
             for (DRAGON drag : drags) {
                 System.out.println(drag);
+            }
+            if (Index.MAIN_CFG.getBoolVal("m7drags_manual")) {
+                c = Index.MAIN_CFG.getStrVal("m7drags_mps").toUpperCase().charAt(0);
             }
             switch (c) {
                 case 'H':
@@ -255,6 +263,8 @@ public class M7Dragons extends Module {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("m7drags_pathing", "Pathing", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("m7drags_manual", "Fix active class", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("m7drags_mps", "Active class letter", ValType.STRING, "H"));
         //list.add(new SetsData<>("m7drags_epower", "Easy power", ValType.DOUBLE_NUMBER, "17"));
         return list;
     }
