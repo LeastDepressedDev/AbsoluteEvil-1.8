@@ -3,6 +3,7 @@ package me.qigan.abse.mapping;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.events.PacketEvent;
+import me.qigan.abse.events.RoomChangedEvent;
 import me.qigan.abse.mapping.mod.Remapping;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
@@ -16,6 +17,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,6 +35,8 @@ public class MappingController {
     public Set<String> loadedChunks = new HashSet<>();
     public Map<Integer, Room> roomReg = new HashMap<>();
     private int nextId = 1;
+
+    public Room lastRoom = null;
 
     private int tick = 0;
 
@@ -129,6 +133,9 @@ public class MappingController {
                 }
             }
         }
+        Room room = getPlayerRoom();
+        if (room != lastRoom) MinecraftForge.EVENT_BUS.post(new RoomChangedEvent(lastRoom, room));
+        lastRoom = room;
     }
 
     public int[] getCell(double[] xz) {
@@ -143,6 +150,7 @@ public class MappingController {
 
     public int[] getPlayerCell() {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return new int[]{0, 0};
         return getCell(new double[]{player.posX, player.posZ});
     }
 
@@ -151,7 +159,7 @@ public class MappingController {
     }
 
     public Room getRoom(int[] xz) {
-        return roomReg.get(getCellIter(xz));
+        return roomReg.getOrDefault(getCellIter(xz), null);
     }
 
     public Room getPlayerRoom() {

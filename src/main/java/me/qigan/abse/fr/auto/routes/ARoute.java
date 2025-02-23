@@ -1,6 +1,7 @@
 package me.qigan.abse.fr.auto.routes;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.fr.auto.routes.elems.ARENull;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -39,6 +40,7 @@ public class ARoute {
             elems.get(step).tick(e, this);
 
             if (elems.get(step).next()) {
+                System.out.println(Integer.toString(step));
                 force = System.currentTimeMillis();
                 step++;
             }
@@ -54,6 +56,7 @@ public class ARoute {
     }
 
     public ARElement stepElement() {
+        if (step >= elems.size()) return new ARENull();
         return elems.get(step);
     }
 

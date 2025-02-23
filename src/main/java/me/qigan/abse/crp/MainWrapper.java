@@ -94,6 +94,7 @@ public class MainWrapper {
         Index.KEY_MANAGER.after();
         Index.PLAYER_CONTROLLER = new PlayerControllerOverrider();
         Index.AR_CONTROLLER = new ARController();
+        MinecraftForge.EVENT_BUS.register(Index.AR_CONTROLLER);
 
 //        int x0 = 0;
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;

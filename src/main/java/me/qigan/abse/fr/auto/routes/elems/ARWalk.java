@@ -2,6 +2,7 @@ package me.qigan.abse.fr.auto.routes.elems;
 
 import me.qigan.abse.Index;
 import me.qigan.abse.fr.auto.routes.ARoute;
+import me.qigan.abse.mapping.MappingUtils;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.util.BlockPos;
@@ -45,7 +46,8 @@ public class ARWalk extends ARElement{
         Index.PLAYER_CONTROLLER.stop();
         switch (state) {
             case BEGIN:
-                if (!Utils.compare(Sync.playerPosAsBlockPos(), pos)) return;
+                if (Sync.player().getPositionVector().distanceTo(
+                        new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d)) > 1.25) return;
                 break;
             case ROTATE:
                 Float[] rots = Utils.getRotationsTo(
@@ -78,8 +80,11 @@ public class ARWalk extends ARElement{
     }
 
     private void updateState() {
-        if (Utils.compareXZ(Sync.playerPosAsBlockPos(), new BlockPos(to.xCoord, to.yCoord, to.zCoord))) {
+        if (Sync.player().getPositionVector().distanceTo(to) <= 0.33) {
             state = State.DONE;
+            Index.PLAYER_CONTROLLER.stop();
+            Sync.player().motionX = 0;
+            Sync.player().motionZ = 0;
             return;
         }
         Float[] rots = Utils.getRotationsTo(

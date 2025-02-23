@@ -2,6 +2,7 @@ package me.qigan.abse.mapping;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 
 public class MappingUtils {
 
@@ -17,6 +18,26 @@ public class MappingUtils {
                 (int) Math.round((double) x * Math.cos(angle) - (double) y * Math.sin(angle))
         };
     }
+
+    /**
+     *
+     * @param angle (IN DEGREES)
+     */
+    public static double[] transp(double x, double y, double angle) {
+        angle = Math.toRadians(angle);
+        //Math.
+        return new double[]{
+                (double) Math.round((double) x * Math.sin(angle) + (double) y * Math.cos(angle)),
+                (double) Math.round((double) x * Math.cos(angle) - (double) y * Math.sin(angle))
+        };
+    }
+
+    public static Vec3 transp(Vec3 vec, double angle) {
+        angle = Math.toRadians(angle);
+        double[] tpa = MappingUtils.transp(vec.xCoord, vec.zCoord, angle);
+        return new Vec3(tpa[0], vec.yCoord, tpa[1]);
+    }
+
 
     public static int[] transp(int[] coord, float angle) {
         return transp(coord[0], coord[1], angle);

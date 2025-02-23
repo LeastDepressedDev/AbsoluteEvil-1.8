@@ -33,7 +33,7 @@ public class RouteUpdater {
             Esp.autoBox3D(endPos.add(0, -1, 0), Color.red, 2f, true);
             Esp.renderTextInWorld("end", endPos.add(0, -1, 0), Color.red.getRGB(), 1d, e.partialTicks);
 
-            drawPath(path);
+            drawPath(path, 5.0f, Color.green);
         }
         if (Index.MAIN_CFG.getBoolVal("remap_targets")) {
             for (AddressedData<BlockPos, Color> block : outlines) {
@@ -47,7 +47,7 @@ public class RouteUpdater {
         }
     }
 
-    private static void drawPath(List<BlockPos> vec) {
+    public static void drawPath(List<BlockPos> vec, float ls, Color color) {
         if (vec.size() <= 2) return;
         double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
         double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
@@ -57,7 +57,7 @@ public class RouteUpdater {
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        VisualApi.setupLine((float) 5.0, Color.green);
+        VisualApi.setupLine(ls, color);
         GlStateManager.translate(0, 0, 0);
         GL11.glBegin(1);
         for (int i = 0; i < vec.size()-1; i++) {

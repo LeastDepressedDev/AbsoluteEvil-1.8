@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 
 import java.util.*;
 
@@ -128,6 +129,12 @@ public class Room {
         int[] coord = MappingUtils.transp(pos.getZ() - 15, pos.getX() - 15, this.rotation.angle);
         int[] cellC = MappingUtils.cellToReal(this.core);
         return new BlockPos(coord[0] + cellC[0] + 15, pos.getY(), coord[1] + cellC[1] + 15);
+    }
+
+    public Vec3 transformInnerCoordinate(Vec3 pos) {
+        double[] coord = MappingUtils.transp(pos.xCoord - 15d, pos.zCoord - 15d, this.rotation.angle);
+        int[] cellC = MappingUtils.cellToReal(this.core);
+        return new Vec3(coord[0] + cellC[0] + 15d, pos.yCoord, coord[1] + cellC[1] + 15d);
     }
 
     public void defineRoomType() {

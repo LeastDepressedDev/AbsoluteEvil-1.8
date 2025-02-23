@@ -4,6 +4,7 @@ import me.qigan.abse.fr.auto.routes.ARoute;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ARWait extends ARElement{
@@ -34,7 +35,8 @@ public class ARWait extends ARElement{
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {
         switch (state) {
             case BEGIN:
-                if (Utils.compare(Sync.playerPosAsBlockPos(), pos)) {
+                if (Sync.player().getPositionVector().distanceTo(
+                        new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d)) <= 1.25) {
                     lastTime = System.currentTimeMillis();
                     state = State.RELAY;
                 }

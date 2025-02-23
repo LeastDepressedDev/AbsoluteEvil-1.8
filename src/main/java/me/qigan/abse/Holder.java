@@ -10,6 +10,7 @@ import me.qigan.abse.crp.Module;
 import me.qigan.abse.crp.RageLock;
 import me.qigan.abse.crp.SafeMode;
 import me.qigan.abse.fr.*;
+import me.qigan.abse.fr.auto.routes.AutoRoutes;
 import me.qigan.abse.fr.dungons.m7p3.AirStrafe;
 import me.qigan.abse.fr.dungons.m7p3.AutoM7P4;
 import me.qigan.abse.fr.dungons.m7p3.DeviceIssue;
@@ -101,6 +102,7 @@ public class Holder {
 		register(new AirStrafe());
 		register(new RageLock());
 		register(new LegitGhostBlocksMacro());
+		register(new AutoRoutes());
 	}
 	
 	public static void register(Module mod) {
