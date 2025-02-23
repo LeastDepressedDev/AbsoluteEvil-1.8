@@ -139,6 +139,16 @@ public class Utils {
         return pt;
     }
 
+    public static int calcStartWith(String string1, String string2) {
+        int len = Math.min(string1.length(), string2.length());
+        int s = 0;
+        for (int i = 0; i < len; i++) {
+            if (string1.charAt(i) != string2.charAt(i)) return 0;
+            else s++;
+        }
+        return s;
+    }
+
     public static Vec3 generateEntityHitVec(Entity entity) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         //player.getPositionVector().squareDistanceTo()

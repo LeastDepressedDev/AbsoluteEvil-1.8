@@ -25,6 +25,7 @@ import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.MovementController;
 import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.events.PacketHandler;
+import me.qigan.abse.sync.GenCommandDispatcher;
 import me.qigan.abse.sync.SoundUtils;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
@@ -69,6 +70,7 @@ public class MainWrapper {
 
         ClientCommandHandler.instance.registerCommand(new InCmd());
         ClientCommandHandler.instance.registerCommand(new PathCmd());
+        ClientCommandHandler.instance.registerCommand(new GenCommandDispatcher("sus"));
 
         File file = new File(Loader.instance().getConfigDir() + "/abse/configs");
         if (!file.exists()) file.mkdirs();
