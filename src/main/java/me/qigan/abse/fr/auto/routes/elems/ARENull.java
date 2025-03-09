@@ -19,4 +19,9 @@ public class ARENull extends ARElement{
     public void reset(ARoute caller) {
 
     }
+
+    @Override
+    public String elementString() {
+        return "";
+    }
 }

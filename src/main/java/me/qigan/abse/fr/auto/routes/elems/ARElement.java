@@ -17,4 +17,5 @@ public abstract class ARElement {
 
     public abstract void tick(TickEvent.ClientTickEvent e, ARoute caller);
     public abstract void reset(ARoute caller);
+    public abstract String elementString();
 }

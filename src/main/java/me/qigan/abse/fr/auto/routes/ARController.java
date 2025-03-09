@@ -77,7 +77,11 @@ public class ARController {
 
     public void rotate(Float[] target, double speed) {
         if (speed <= 0) {
-            //TODO: add instant rotation proc
+            if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
+                //TODO: Add phantom rotation processor
+            } else {
+                SmoothAimControl.set(target, 2, 20, speed);
+            }
         } else {
             if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
                 //TODO: Add phantom rotation processor

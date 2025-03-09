@@ -10,19 +10,24 @@ import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
 import me.qigan.abse.vp.Esp;
+import me.qigan.abse.vp.S2Dtype;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @DangerousModule
@@ -58,12 +63,34 @@ public class AutoRoutes extends Module {
         for (ARoute route : routes) {
             List<Vec3> path = new ArrayList<>();
             for (ARElement ele : route.elems) {
+                Esp.drawPointInWorldCircle(ele.pos, 0.7, 16, 1.7f, Color.cyan);
                 path.add(ele.pos);
             }
-            Esp.autoFilledBox3D(route.startingPos, Color.green, 1.6f, true);
+            Esp.autoFilledBox3D(route.startingPos, new Color(0, 255, 0, 85), 1.6f, true);
             RouteUpdater.drawPath(path, 1.4f, Color.cyan);
         }
+    }
 
+    @SubscribeEvent
+    void renderGameOverlay(RenderGameOverlayEvent e) {
+        if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
+        if (Index.AR_CONTROLLER.inRoute && Index.AR_CONTROLLER.currentARoute != null) {
+
+            GlStateManager.pushMatrix();
+            GL11.glScaled(2, 2, 2);
+            Esp.drawCenteredString("In route", e.resolution.getScaledWidth()/4, e.resolution.getScaledHeight()/2-150, Color.green, S2Dtype.CORNERED);
+            GlStateManager.popMatrix();
+
+            ARoute ctr = Index.AR_CONTROLLER.currentARoute;
+            Point pt = Index.POS_CFG.calc("ar_loc");
+            List<String> texts = new ArrayList<>(Arrays.asList(
+                    "\u00A7aRoute: "
+            ));
+            for (int i = 0; i < 5; i++) {
+                texts.add(0, ctr.step+i<ctr.elems.size() ? ctr.elems.get(ctr.step+i).elementString() : "");
+            }
+            Esp.drawAllignedTextList(texts, pt.x, pt.y, false, e.resolution, S2Dtype.CORNERED);
+        }
     }
 
     @Override

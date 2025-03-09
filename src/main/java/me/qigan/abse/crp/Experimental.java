@@ -56,7 +56,6 @@ public class Experimental extends Module implements EDLogic {
     @SubscribeEvent
     void Zov(TickEvent.ClientTickEvent e) {
         if (!isEnabled()) return;
-
     }
 
     @SubscribeEvent
@@ -64,6 +63,13 @@ public class Experimental extends Module implements EDLogic {
         if (!isEnabled()) return;
 
         //PhantomAim.call(new Float[]{0f, 0f}, 300, false);
+    }
+
+    @SubscribeEvent
+    void packet(PacketEvent.SendEvent e) {
+        if (!isEnabled()) return;
+
+
     }
 
     @Override

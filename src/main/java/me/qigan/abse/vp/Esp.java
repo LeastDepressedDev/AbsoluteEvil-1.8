@@ -503,6 +503,36 @@ public class Esp {
         renderTextInWorld(str, x, y, z, col, 1d, partialTicks);
     }
 
+    public static void drawPointInWorldCircle(Vec3 pos, double radius, int segments, float ls, Color color) {
+        double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
+        double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
+        double renderPosZ = Minecraft.getMinecraft().getRenderManager().viewerPosZ;
+
+        double xPos = pos.xCoord - renderPosX;
+        double yPos = pos.yCoord - renderPosY;
+        double zPos = pos.zCoord - renderPosZ;
+
+        GL11.glPushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        VisualApi.setupLine(ls, color);
+        GlStateManager.translate(0, 0, 0);
+        GL11.glBegin(1);
+
+        double aSeg = 2*Math.PI/segments;
+        for (double angle = aSeg; angle < 2*Math.PI; angle+=aSeg) {
+            GL11.glVertex3d(xPos+radius*Math.cos(angle-aSeg), yPos, zPos+radius*Math.sin(angle-aSeg));
+            GL11.glVertex3d(xPos+radius*Math.cos(angle), yPos, zPos+radius*Math.sin(angle));
+        }
+
+        GL11.glEnd();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GL11.glColor4f(255, 255, 255, 1f);
+        GL11.glPopMatrix();
+    }
+
     public static void  drawAllignedTextList(List<String> lines, int x, int y, boolean sortVertical, ScaledResolution res, S2Dtype mode) {
         drawAllignedTextList(lines, x, y, sortVertical, res, mode, new Color(0xFFFFFF));
     }

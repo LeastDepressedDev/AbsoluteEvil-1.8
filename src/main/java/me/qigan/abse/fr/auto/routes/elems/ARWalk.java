@@ -78,6 +78,11 @@ public class ARWalk extends ARElement{
         jcTime = 0;
     }
 
+    @Override
+    public String elementString() {
+        return "\u00A7fWalk\u00A7f(\u00A77" + to.xCoord + "\u00A7f,\u00A77" + to.zCoord + "\u00A7f)";
+    }
+
     private void updateState() {
         if (Sync.player().getPositionVector().distanceTo(to) <= 0.45) {
             state = State.DONE;

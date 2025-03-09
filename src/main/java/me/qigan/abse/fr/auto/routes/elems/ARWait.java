@@ -51,4 +51,10 @@ public class ARWait extends ARElement{
         lastTime = 0;
         state = State.BEGIN;
     }
+
+    @Override
+    public String elementString() {
+        return "\u00A76" + (state == State.RELAY ? "Waiting\u00A7f(\u00A7a"+ Long.toString(System.currentTimeMillis()-lastTime) + "\u00A7f)" :
+                "Wait\u00A7f(\u00A7a" + delay + "\u00A7f)");
+    }
 }
