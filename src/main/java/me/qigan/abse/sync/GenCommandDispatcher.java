@@ -80,14 +80,4 @@ public class GenCommandDispatcher extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 0;
     }
-
-    @CommandRoute(route = "/")
-    public void sus(String[] args) {
-        System.out.println("State final: "+Integer.toString(args.length));
-    }
-
-    @CommandRoute(route = "/zv")
-    public void testZV(String[] args) {
-        System.out.println("State zvzvv: "+Integer.toString(args.length));
-    }
 }
