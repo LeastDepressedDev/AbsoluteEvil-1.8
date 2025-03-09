@@ -28,7 +28,7 @@ public class ARWalk extends ARElement{
     private boolean jc = true;
     private long jcTime = 0;
 
-    public ARWalk(BlockPos pos, Vec3 target, boolean jump, boolean sprint, double speed) {
+    public ARWalk(Vec3 pos, Vec3 target, boolean jump, boolean sprint, double speed) {
         super(pos);
         this.to = target;
         this.doJump = jump;
@@ -46,8 +46,7 @@ public class ARWalk extends ARElement{
         Index.PLAYER_CONTROLLER.stop();
         switch (state) {
             case BEGIN:
-                if (Sync.player().getPositionVector().distanceTo(
-                        new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d)) > 1.25) return;
+                if (Sync.player().getPositionVector().distanceTo(pos) > 0.6) return;
                 break;
             case ROTATE:
                 Float[] rots = Utils.getRotationsTo(
@@ -80,7 +79,7 @@ public class ARWalk extends ARElement{
     }
 
     private void updateState() {
-        if (Sync.player().getPositionVector().distanceTo(to) <= 0.33) {
+        if (Sync.player().getPositionVector().distanceTo(to) <= 0.45) {
             state = State.DONE;
             Index.PLAYER_CONTROLLER.stop();
             Sync.player().motionX = 0;

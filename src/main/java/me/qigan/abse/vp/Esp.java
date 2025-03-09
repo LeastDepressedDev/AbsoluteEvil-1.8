@@ -218,6 +218,10 @@ public class Esp {
         autoFilledBox3D(pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d, 1, 1, color, lf, esp);
     }
 
+    public static void autoFilledBox3D(Vec3 pos, Color color, float lf, boolean esp) {
+        autoFilledBox3D(pos.xCoord, pos.yCoord, pos.zCoord, 1, 1, color, lf, esp);
+    }
+
     public static void autoFilledBox3D(double x, double y, double z, double width, double height, Color color, float lf, boolean esp) {
         double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
         double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
@@ -437,8 +441,26 @@ public class Esp {
         drawBox3D(xPos+0.5, yPos+1, zPos+0.5, 1, 1, color, lineW, esp);
     }
 
+    public static void autoBox3D(Vec3 pos, Color color, float lineW, boolean esp) {
+        double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
+        double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
+        double renderPosZ = Minecraft.getMinecraft().getRenderManager().viewerPosZ;
+
+        double xPos = pos.xCoord - renderPosX;
+        double yPos = pos.yCoord - renderPosY;
+        double zPos = pos.zCoord - renderPosZ;
+
+
+        drawBox3D(xPos, yPos+1, zPos, 1, 1, color, lineW, esp);
+    }
+
+
     public static void renderTextInWorld(String str, BlockPos pos, int col, double size, float partialTicks) {
         renderTextInWorld(str, pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d, col, size, partialTicks);
+    }
+
+    public static void renderTextInWorld(String str, Vec3 pos, int col, double size, float partialTicks) {
+        renderTextInWorld(str, pos.xCoord, pos.yCoord, pos.zCoord, col, size, partialTicks);
     }
 
     /**

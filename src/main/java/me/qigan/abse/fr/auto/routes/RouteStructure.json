@@ -5,13 +5,13 @@
   "ref_id": <int:room id or floor number>,
   "length": <int:route_length>,
   "start": {
-    "x": 100,
-    "y": 100,
-    "z": 100
+    "x": 100.1,
+    "y": 100.1,
+    "z": 100.1
   },
   "script": {
     "0": {
-      "type": "<wait/await/walk/epw/pearl/pgb/click>",
+      "type": "<wait/await/walk/epw/pearl/pgb/click/bicontr>",
       //This is a position, that player should be on a different step on route
       "pos": {
         "x": 100,
@@ -65,6 +65,12 @@
       },
       //Ghost pick if coord is unreachable
       "gpu": true
+    },
+    "7": {
+      //Same as walk to but without rotating toward
+      "type": "bicontr",
+      "move": [0, 0, 1, 0],
+      "rotate": [0.12, 13]
     }
   },
   "ghost_alligners": {

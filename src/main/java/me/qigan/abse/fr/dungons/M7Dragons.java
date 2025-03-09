@@ -190,21 +190,26 @@ public class M7Dragons extends Module {
     }
 
     private void anonc(DRAGON dragon) {
-        if (Index.MAIN_CFG.getBoolVal("m7drags_pathing")) {
-            BlockPos to = null;
-            switch (Sync.getPlayerDungeonClass()) {
-                case 'H':
-                case 'T':
-                case 'M':
-                    to = dragon.debuffPos;
-                    break;
-                case 'A':
-                case 'B':
-                    to = dragon.stackPos;
+        try {
+            if (Index.MAIN_CFG.getBoolVal("m7drags_pathing")) {
+                BlockPos to = null;
+                switch (Sync.getPlayerDungeonClass()) {
+                    case 'H':
+                    case 'T':
+                    case 'M':
+                        to = dragon.debuffPos;
+                        break;
+                    case 'A':
+                    case 'B':
+                        to = dragon.stackPos;
+                }
+                if (to != null) currentPath = new Path(Sync.playerPosAsBlockPos(), to).build();
             }
-            if (to != null) currentPath = new Path(Sync.playerPosAsBlockPos(), to).build();
+            if (!done.contains(dragon)) GuiNotifier.call(dragon.name, 40, true, 0xFFFFFF);
+        } catch (ConcurrentModificationException ex) {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7aStupid ConcurrentMod exception hit: Printing to console"));
+            ex.printStackTrace();
         }
-        if (!done.contains(dragon)) GuiNotifier.call(dragon.name, 40, true, 0xFFFFFF);
     }
 
     DRAGON check(BlockPos pos) {
@@ -222,25 +227,29 @@ public class M7Dragons extends Module {
     @SubscribeEvent
     void render(RenderWorldLastEvent e) {
         if (!isEnabled() || Minecraft.getMinecraft().thePlayer.posY > 25 || !Sync.inDungeon) return;
-        long timeRN = System.currentTimeMillis();
-        for (DRAGON drag : DRAGON.values()) {
-            if (!done.contains(drag)) Esp.renderTextInWorld(drag.name, drag.pos, 0xFFFFFF, 1.6, e.partialTicks);
-        }
-        Map<DRAGON, Long> map = new HashMap<>(spawning);
-        for (Map.Entry<DRAGON, Long> ele : map.entrySet()) {
-            long dif = timeRN-ele.getValue();
-            if (dif >= 5500) spawning.remove(ele.getKey());
-            if (dif <= 5000) Esp.renderTextInWorld(Long.toString(5000-dif), ele.getKey().timerLocation,
-                    Color.green.getRGB(), 4, e.partialTicks);
-        }
-        if (Index.MAIN_CFG.getBoolVal("m7drags_pathing") && currentPath != null) {
-            Esp.autoBox3D(currentPath.from, Color.green, 2f, false);
-            Esp.autoBox3D(currentPath.to, Color.green, 2f, false);
-            List<Point3d> points = new ArrayList<>();
-            for (AddressedData<BlockPos, ?> pos : currentPath.getPosPath()) {
-                points.add(new Point3d(pos.getNamespace().getX()+0.5, pos.getNamespace().getY()+1, pos.getNamespace().getZ()+0.5));
+        try {
+            long timeRN = System.currentTimeMillis();
+            for (DRAGON drag : DRAGON.values()) {
+                if (!done.contains(drag)) Esp.renderTextInWorld(drag.name, drag.pos, 0xFFFFFF, 1.6, e.partialTicks);
             }
-            Esp.drawAsSingleLine(points, Color.cyan, 4f, false);
+            for (Map.Entry<DRAGON, Long> ele : spawning.entrySet()) {
+                long dif = timeRN - ele.getValue();
+                if (dif >= 5500) spawning.remove(ele.getKey());
+                if (dif <= 5000) Esp.renderTextInWorld(Long.toString(5000 - dif), ele.getKey().timerLocation,
+                        Color.green.getRGB(), 4, e.partialTicks);
+            }
+            if (Index.MAIN_CFG.getBoolVal("m7drags_pathing") && currentPath != null) {
+                Esp.autoBox3D(currentPath.from, Color.green, 2f, false);
+                Esp.autoBox3D(currentPath.to, Color.green, 2f, false);
+                List<Point3d> points = new ArrayList<>();
+                for (AddressedData<BlockPos, ?> pos : currentPath.getPosPath()) {
+                    points.add(new Point3d(pos.getNamespace().getX() + 0.5, pos.getNamespace().getY() + 1, pos.getNamespace().getZ() + 0.5));
+                }
+                Esp.drawAsSingleLine(points, Color.cyan, 4f, false);
+            }
+        } catch (ConcurrentModificationException ex) {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7aStupid ConcurrentMod exception hit: Printing to console"));
+            ex.printStackTrace();
         }
     }
 

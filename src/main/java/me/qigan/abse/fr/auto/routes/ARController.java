@@ -65,7 +65,7 @@ public class ARController {
             Index.PLAYER_CONTROLLER.globalToggle = inRoute;
 
             if (!inRoute) return;
-            if (Minecraft.getMinecraft().thePlayer.getDistanceSqToCenter(currentARoute.stepElement().pos) > 80*80) {
+            if (Minecraft.getMinecraft().thePlayer.getPositionVector().distanceTo(currentARoute.stepElement().pos) > 80) {
                 interrupt(currentARoute);
             }
 
@@ -90,7 +90,7 @@ public class ARController {
     public void loadRoute(JSONObject obj, Object... adjData) {
         JSONObject pos = obj.getJSONObject("start");
         ARoute.Referer referer = ARoute.Referer.valueOf(obj.getString("ref"));
-        BlockPos partPos = new BlockPos(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+        Vec3 partPos = new Vec3(pos.getDouble("x"), pos.getDouble("y"), pos.getDouble("z"));
         int ref_id = obj.getInt("ref_id");
         if (referer == ARoute.Referer.DUNGEON) {
             Room room = (Room) adjData[0];
@@ -105,7 +105,7 @@ public class ARController {
         for (int i = 0; i < length; i++) {
             JSONObject jsonEle = obj.getJSONObject(Integer.toString(i));
             JSONObject part = jsonEle.getJSONObject("pos");
-            BlockPos semiPos = new BlockPos(part.getInt("x"), part.getInt("y"), part.getInt("z"));
+            Vec3 semiPos = new Vec3(part.getDouble("x"), part.getDouble("y"), part.getDouble("z"));
             if (route.referer == ARoute.Referer.DUNGEON) {
                 semiPos = ((Room) adjData[0]).transformInnerCoordinate(semiPos);
             }
@@ -150,6 +150,7 @@ public class ARController {
     }
 
     public void recallRoutes() {
+        if (!Index.MAIN_CFG.getBoolVal("ar_mod")) return;
         loadedRoutes.clear();
         Room droom = Index.MAPPING_CONTROLLER.getPlayerRoom();
         for (AddressedData<ARoute.Referer, JSONObject> part : existingRoutes) {

@@ -8,6 +8,7 @@ import me.qigan.abse.vp.VisualApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RouteUpdater {
-    public static List<BlockPos> path = new ArrayList<>();
+    public static List<Vec3> path = new ArrayList<>();
     public static List<AddressedData<BlockPos, Color>> outlines = new ArrayList<>();
     public static List<AddressedData<BlockPos, String>> comments = new ArrayList<>();
 
@@ -26,12 +27,12 @@ public class RouteUpdater {
     void render(RenderWorldLastEvent e) {
         if (Minecraft.getMinecraft().theWorld == null) return;
         if (path.size() > 0 && Index.MAIN_CFG.getBoolVal("remap_path")) {
-            BlockPos startPos = path.get(0);
-            Esp.autoBox3D(startPos.add(0, -1, 0), Color.green, 2f, true);
-            Esp.renderTextInWorld("start", startPos.add(0, -1, 0), Color.green.getRGB(), 1d, e.partialTicks);
-            BlockPos endPos = path.get(path.size()-1);
-            Esp.autoBox3D(endPos.add(0, -1, 0), Color.red, 2f, true);
-            Esp.renderTextInWorld("end", endPos.add(0, -1, 0), Color.red.getRGB(), 1d, e.partialTicks);
+            Vec3 startPos = path.get(0);
+            Esp.autoBox3D(startPos.addVector(0, -1, 0), Color.green, 2f, true);
+            Esp.renderTextInWorld("start", startPos.addVector(0, -1, 0), Color.green.getRGB(), 1d, e.partialTicks);
+            Vec3 endPos = path.get(path.size()-1);
+            Esp.autoBox3D(endPos.addVector(0, -1, 0), Color.red, 2f, true);
+            Esp.renderTextInWorld("end", endPos.addVector(0, -1, 0), Color.red.getRGB(), 1d, e.partialTicks);
 
             drawPath(path, 5.0f, Color.green);
         }
@@ -47,7 +48,7 @@ public class RouteUpdater {
         }
     }
 
-    public static void drawPath(List<BlockPos> vec, float ls, Color color) {
+    public static void drawPath(List<Vec3> vec, float ls, Color color) {
         if (vec.size() <= 2) return;
         double renderPosX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
         double renderPosY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
@@ -62,11 +63,11 @@ public class RouteUpdater {
         GL11.glBegin(1);
         for (int i = 0; i < vec.size()-1; i++) {
 
-            BlockPos pt1 = vec.get(i);
-            BlockPos pt2 = vec.get(i+1);
+            Vec3 pt1 = vec.get(i);
+            Vec3 pt2 = vec.get(i+1);
 
-            double x = pt1.getX()+0.5d, y = pt1.getY()+0.5d, z = pt1.getZ()+0.5d;
-            double x1 = pt2.getX()+0.5d, y1 = pt2.getY()+0.5d, z1 = pt2.getZ()+0.5d;
+            double x = pt1.xCoord, y = pt1.yCoord, z = pt1.zCoord;
+            double x1 = pt2.xCoord, y1 = pt2.yCoord, z1 = pt2.zCoord;
 
             x -= renderPosX;
             y -= renderPosY;
@@ -99,7 +100,10 @@ public class RouteUpdater {
         comments = new ArrayList<>();
         outlines = new ArrayList<>();
 
-        for (BlockPos point : route.getPath()) path.add(room.transformInnerCoordinate(point));
+        for (BlockPos point : route.getPath()) {
+            BlockPos pt = room.transformInnerCoordinate(point);
+            path.add(new Vec3(pt.getX()+0.5d, pt.getY()+0.5d, pt.getZ()+0.5d));
+        }
         for (AddressedData<BlockPos, Color> point : route.getOutlines()) outlines.add(new AddressedData<>(room.transformInnerCoordinate(point.getNamespace()), point.getObject()));
         for (AddressedData<BlockPos, String> point : route.getComments()) comments.add(new AddressedData<>(room.transformInnerCoordinate(point.getNamespace()), point.getObject()));
     }

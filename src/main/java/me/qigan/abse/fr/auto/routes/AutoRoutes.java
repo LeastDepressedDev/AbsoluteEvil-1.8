@@ -13,6 +13,7 @@ import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.RenderWorldEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +34,7 @@ public class AutoRoutes extends Module {
         boolean pressedState = Index.KEY_MANAGER.get("global_space").isPressed();
         if (Index.KEY_MANAGER.get("ar_mod_kb").isPressed() && !Index.AR_CONTROLLER.inRoute) {
             for (ARoute route : Index.AR_CONTROLLER.loadedRoutes) {
-                if (Utils.compare(Sync.playerPosAsBlockPos(), route.startingPos)) {
+                if (Sync.player().getPositionVector().distanceTo(route.startingPos) <= 0.6) {
                     Index.AR_CONTROLLER.enterRoute(route);
                     return;
                 }
@@ -55,11 +56,11 @@ public class AutoRoutes extends Module {
         if (Index.AR_CONTROLLER == null || Index.AR_CONTROLLER.loadedRoutes == null) return;
         List<ARoute> routes = new ArrayList<>(Index.AR_CONTROLLER.loadedRoutes);
         for (ARoute route : routes) {
-            List<BlockPos> path = new ArrayList<>();
+            List<Vec3> path = new ArrayList<>();
             for (ARElement ele : route.elems) {
                 path.add(ele.pos);
             }
-            Esp.autoFilledBox3D(route.startingPos, Color.green, 1.3f, true);
+            Esp.autoFilledBox3D(route.startingPos, Color.green, 1.6f, true);
             RouteUpdater.drawPath(path, 1.4f, Color.cyan);
         }
 

@@ -2,13 +2,14 @@ package me.qigan.abse.fr.auto.routes.elems;
 
 import me.qigan.abse.fr.auto.routes.ARoute;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public abstract class ARElement {
 
-    public BlockPos pos;
+    public Vec3 pos;
 
-    public ARElement(BlockPos pos) {
+    public ARElement(Vec3 pos) {
         this.pos = pos;
     }
 

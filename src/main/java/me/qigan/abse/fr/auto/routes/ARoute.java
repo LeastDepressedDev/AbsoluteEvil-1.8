@@ -4,6 +4,7 @@ import me.qigan.abse.Index;
 import me.qigan.abse.fr.auto.routes.elems.ARENull;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
@@ -24,11 +25,11 @@ public class ARoute {
     public List<ARElement> elems = new ArrayList<>();
     public final Referer referer;
     public final int ref_id;
-    public final BlockPos startingPos;
+    public final Vec3 startingPos;
 
     private long force = 0;
 
-    public ARoute(Referer ref, int id, BlockPos sPos) {
+    public ARoute(Referer ref, int id, Vec3 sPos) {
         this.referer = ref;
         this.ref_id = id;
         this.startingPos = sPos;
