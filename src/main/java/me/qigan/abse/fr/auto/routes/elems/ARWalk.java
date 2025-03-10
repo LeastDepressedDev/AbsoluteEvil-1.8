@@ -21,19 +21,17 @@ public class ARWalk extends ARElement{
     public final Vec3 to;
     public final boolean doJump;
     public final boolean allowSprint;
-    public final double speed;
 
     //INITIALS
     public State state = State.BEGIN;
     private boolean jc = true;
     private long jcTime = 0;
 
-    public ARWalk(Vec3 pos, Vec3 target, boolean jump, boolean sprint, double speed) {
+    public ARWalk(Vec3 pos, Vec3 target, boolean jump, boolean sprint) {
         super(pos);
         this.to = target;
         this.doJump = jump;
         this.allowSprint = sprint;
-        this.speed = speed;
     }
 
     @Override
@@ -53,10 +51,10 @@ public class ARWalk extends ARElement{
                         to.xCoord-Sync.player().posX,
                         to.yCoord-Sync.player().posY,
                         to.zCoord-Sync.player().posZ,
-                        new float[]{Sync.player().rotationYaw, Sync.player().rotationPitch}
+                        new float[]{Sync.rotations()[0], Sync.rotations()[1]}
                 );
                 rots[1] = null;
-                Index.AR_CONTROLLER.rotate(rots, speed);
+                Index.AR_CONTROLLER.rotate(rots);
                 break;
             case WALK:
                 Index.PLAYER_CONTROLLER.goStateOvr[0] = true;
@@ -97,7 +95,7 @@ public class ARWalk extends ARElement{
                 to.zCoord-Sync.player().posZ,
                 new float[]{Sync.player().rotationYaw, Sync.player().rotationPitch}
         );
-        if (rots[0] != null && Math.abs(rots[0]-Sync.player().rotationYaw) < 0.5d) {
+        if (rots[0] != null && Math.abs(rots[0]-Sync.rotations()[0]) < 0.5d) {
             state = State.WALK;
         } else {
             state = State.ROTATE;

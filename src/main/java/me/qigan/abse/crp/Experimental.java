@@ -33,6 +33,8 @@ import java.util.List;
 @DangerousModule
 public class Experimental extends Module implements EDLogic {
 
+    public static Set<Vec3> expRender = new HashSet<>();
+
     @Override
     public String id() {
         return "exptl";
@@ -60,6 +62,9 @@ public class Experimental extends Module implements EDLogic {
 
     @SubscribeEvent
     void tick(RenderWorldLastEvent e) {
+        for (Vec3 vec : expRender) {
+            Esp.autoBox3D(vec, Color.red, 1.7f, true);
+        }
         if (!isEnabled()) return;
 
         //PhantomAim.call(new Float[]{0f, 0f}, 300, false);

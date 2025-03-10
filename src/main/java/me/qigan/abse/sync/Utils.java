@@ -201,11 +201,11 @@ public class Utils {
     }
 
     
-    public static Float[] getRotationsTo(BlockPos from, BlockPos to, float[] angles) {
+    public static Float[] getRotationsTo(Vec3 from, Vec3 to, float[] angles) {
         return getRotationsTo(
-                to.getX() - from.getX(),
-                to.getY() - from.getY(),
-                to.getZ() - from.getZ(),
+                to.xCoord - from.xCoord,
+                to.yCoord - from.yCoord,
+                to.zCoord - from.zCoord,
                 angles
         );
     }

@@ -5,6 +5,7 @@ import me.qigan.abse.fr.auto.routes.elems.ARENull;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class ARoute {
             elems.get(step).tick(e, this);
 
             if (elems.get(step).next()) {
+                MinecraftForge.EVENT_BUS.unregister(elems.get(step));
+                if (step+1<elems.size()) MinecraftForge.EVENT_BUS.register(elems.get(step+1));
                 System.out.println(Integer.toString(step));
                 force = System.currentTimeMillis();
                 step++;
@@ -54,6 +57,10 @@ public class ARoute {
         for (ARElement elem : elems) {
             elem.reset(this);
         }
+    }
+
+    public boolean rage() {
+        return false;
     }
 
     public ARElement stepElement() {

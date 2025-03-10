@@ -3,6 +3,7 @@ package me.qigan.abse.fr.auto.routes;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.events.RoomChangedEvent;
+import me.qigan.abse.fr.auto.routes.elems.ARClick;
 import me.qigan.abse.fr.auto.routes.elems.ARWait;
 import me.qigan.abse.fr.auto.routes.elems.ARWalk;
 import me.qigan.abse.fr.exc.SmoothAimControl;
@@ -75,7 +76,8 @@ public class ARController {
         }
     }
 
-    public void rotate(Float[] target, double speed) {
+    public void rotate(Float[] target) {
+        double speed = Index.MAIN_CFG.getDoubleVal("ar_rotspeed");
         if (speed <= 0) {
             if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
                 //TODO: Add phantom rotation processor
@@ -126,9 +128,18 @@ public class ARController {
                     if (referer == ARoute.Referer.DUNGEON) {
                         target = ((Room) adjData[0]).transformInnerCoordinate(target);
                     }
-                    route.add(new ARWalk(semiPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"),
-                            jsonEle.getBoolean("instant") ? 0 : jsonEle.getDouble("rot_speed"))
+                    route.add(new ARWalk(semiPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"))
                     );
+                }
+                break;
+                case "click":
+                {
+                    JSONObject click = jsonEle.getJSONObject("cord");
+                    BlockPos target = new BlockPos(click.getDouble("x"), click.getDouble("y"), click.getDouble("z"));
+                    if (referer == ARoute.Referer.DUNGEON) {
+                        target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                    }
+                    route.add(new ARClick(semiPos, target, jsonEle.getBoolean("gpu")));
                 }
                 break;
             }

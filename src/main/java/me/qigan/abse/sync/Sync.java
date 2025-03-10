@@ -4,6 +4,7 @@ import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import me.qigan.abse.Index;
 import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.fr.Debug;
+import me.qigan.abse.fr.exc.PhantomAim;
 import me.qigan.abse.mapping.MappingConstants;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -39,6 +40,17 @@ public class Sync {
     public static char getPlayerDungeonClass() {
         if (!Sync.inDungeon) return 'N';
         return cls;
+    }
+
+    public static float[] rotations() {
+        if (PhantomAim.enabled) {
+            return new float[]{
+                    PhantomAim.currentAngles[0]==null ? player().rotationYaw : PhantomAim.currentAngles[0],
+                    PhantomAim.currentAngles[1]==null ? player().rotationPitch : PhantomAim.currentAngles[1]
+            };
+        } else {
+            return new float[]{player().rotationYaw, player().rotationPitch};
+        }
     }
 
     /**
@@ -208,8 +220,6 @@ public class Sync {
         if (Index.MAIN_CFG.getBoolVal("rage_lock")) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
 //        Drunk brain rot code
-        if (Minecraft.getMinecraft().thePlayer.getDistance(pos.getX()+0.5d, pos.getY()+0.5d-player.eyeHeight, pos.getZ()+0.5d) >
-                Minecraft.getMinecraft().playerController.getBlockReachDistance()+.45d) return;
 //        Float[] rots = Utils.getRotationsTo(pos.getX()+0.5d-player.posX, pos.getY()+0.5d-player.posY-player.eyeHeight, pos.getZ()+0.5d-player.posZ, new float[]{
 //                player.rotationYaw, player.rotationPitch
 //        });
@@ -222,7 +232,7 @@ public class Sync {
 //        System.out.println(String.format("%f %f %f", semiPos.hitVec.xCoord, semiPos.hitVec.yCoord, semiPos.hitVec.zCoord));
         MovingObjectPosition semiPos = Utils.generateBlockHit(pos);
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
-        System.out.println(String.format("%f %f %f", semiPos.hitVec.xCoord, semiPos.hitVec.yCoord, semiPos.hitVec.zCoord));
+        if (player.getPositionVector().distanceTo(semiPos.hitVec) > Minecraft.getMinecraft().playerController.getBlockReachDistance()) return;
         if (Minecraft.getMinecraft().playerController.onPlayerRightClick(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().theWorld,
                 Minecraft.getMinecraft().thePlayer.inventory.getCurrentItem(), pos,
                 semiPos.sideHit, semiPos.hitVec)) {

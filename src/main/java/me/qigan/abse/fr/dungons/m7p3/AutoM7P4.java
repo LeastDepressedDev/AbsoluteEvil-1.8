@@ -23,6 +23,7 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class AutoM7P4 extends Module {
 
-    public static final BlockPos startingPos = new BlockPos(68, 130, 50);
+    public static final Vec3 startingPos = new Vec3(68, 130, 50);
 
     public static final BlockPos[] DIM = {new BlockPos(62, 126, 34), new BlockPos(64, 129, 36)};
 
@@ -170,7 +171,7 @@ public class AutoM7P4 extends Module {
                 }
             }
         }
-        Float[] angles = Utils.getRotationsTo(Sync.playerPosAsBlockPos().add(0, 1, 0), startingPos.add(-1-2*line, -2*row, 0),
+        Float[] angles = Utils.getRotationsTo(Sync.player().getPositionVector().addVector(0, 1,0), startingPos.addVector(-1-2*line, -2*row, 0),
                 new float[]{Minecraft.getMinecraft().thePlayer.rotationYaw, Minecraft.getMinecraft().thePlayer.rotationPitch});
         angles[1]-=1.5f;
         angles[0]-=0.5f;
@@ -181,8 +182,8 @@ public class AutoM7P4 extends Module {
     @SubscribeEvent
     void render(RenderWorldLastEvent e) {
         if (!isEnabled() || !Utils.posInDim(Sync.playerPosAsBlockPos(), DIM)) return;
-        Esp.renderTextInWorld("\u00A76PHASE", startingPos.getX()+4, startingPos.getY()+2, startingPos.getZ(), 0xFFFFFF, 1.6d, e.partialTicks);
-        Esp.renderTextInWorld("\u00A7a"+count, startingPos.getX()+4, startingPos.getY(), startingPos.getZ(), 0xFFFFFF, 2d, e.partialTicks);
+        Esp.renderTextInWorld("\u00A76PHASE", startingPos.xCoord+4, startingPos.yCoord+2, startingPos.zCoord, 0xFFFFFF, 1.6d, e.partialTicks);
+        Esp.renderTextInWorld("\u00A7a"+count, startingPos.xCoord+4, startingPos.yCoord, startingPos.zCoord, 0xFFFFFF, 2d, e.partialTicks);
     }
 
 

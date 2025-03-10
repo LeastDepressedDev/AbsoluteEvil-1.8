@@ -22,6 +22,6 @@ public class ARENull extends ARElement{
 
     @Override
     public String elementString() {
-        return "";
+        return "\u00A70|NullElement|";
     }
 }

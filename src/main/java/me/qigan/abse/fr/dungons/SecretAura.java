@@ -66,7 +66,7 @@ public class SecretAura extends Module {
     void tick(TickEvent.ClientTickEvent e) {
         if (!isEnabled() || e.phase == TickEvent.Phase.END
                 || Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().thePlayer == null
-                || !Sync.inDungeon || !Sync.isClear()) return;
+                || !Sync.inDungeon || !Sync.isClear() || Index.AR_CONTROLLER.inRoute) return;
         try {
             BlockPos pos = null;
             if (Index.MAIN_CFG.getBoolVal("secar_rage")) {

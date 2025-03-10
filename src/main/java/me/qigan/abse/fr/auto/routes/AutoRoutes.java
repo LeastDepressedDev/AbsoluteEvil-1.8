@@ -5,6 +5,7 @@ import me.qigan.abse.config.SetsData;
 import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.Module;
+import me.qigan.abse.fr.auto.routes.elems.ARClick;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.sync.Sync;
@@ -63,6 +64,7 @@ public class AutoRoutes extends Module {
         for (ARoute route : routes) {
             List<Vec3> path = new ArrayList<>();
             for (ARElement ele : route.elems) {
+                if (ele instanceof ARClick) continue;
                 Esp.drawPointInWorldCircle(ele.pos, 0.7, 16, 1.7f, Color.cyan);
                 path.add(ele.pos);
             }
@@ -121,6 +123,7 @@ public class AutoRoutes extends Module {
         list.add(new SetsData<>("ar_mod_kb", "Route enter keybind", ValType.KEYBINDING, -100));
         list.add(new SetsData<>("ar_wait", "Force wait between actions", ValType.NUMBER, "300"));
         list.add(new SetsData<>("ar_phantom", "Use phantom rotation[for legit]", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("ar_rotspeed", "Rotation speed[<=0->instnat]", ValType.DOUBLE_NUMBER, "16.3"));
         list.add(new SetsData<>("ar_reload", "Reload routes", ValType.BUTTON, (Runnable) AutoRoutes::reloadRoads));
         list.add(new SetsData<>("ar_recall", "Recall routes", ValType.BUTTON, (Runnable) () -> Index.AR_CONTROLLER.recallRoutes()));
         return list;

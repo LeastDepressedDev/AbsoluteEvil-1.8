@@ -31,7 +31,7 @@ public class LegitGhostBlocksMacro extends Module {
     // Fuck the developer who forced me to do this very VERY shitty move!
     public static final int MOVE_SLOTS_CONST = +36;
 
-    private int findPicake() {
+    private static int findPicake() {
         for (int i = 0; i < 9; i++) {
             if (Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(i) == null) continue;
             if (Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(i).getItem() == Items.diamond_pickaxe
@@ -43,36 +43,46 @@ public class LegitGhostBlocksMacro extends Module {
         return -1;
     }
 
+    public static void performSingle() {
+        if (!cdm) return;
+        cdm = false;
+        int p = Minecraft.getMinecraft().thePlayer.inventory.currentItem;
+        int i = findPicake();
+        new Thread(() -> {
+            try {
+                Random rand = new Random();
+                KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode(), true);
+                KeyBinding.onTick(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode());
+                Thread.sleep(5+Math.abs(rand.nextInt())%9);
+                KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), true);
+                KeyBinding.onTick(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode());
+                KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode(), false);
+                Thread.sleep(15);
+                KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), false);
+                Thread.sleep(70);
+                Minecraft.getMinecraft().thePlayer.inventory.currentItem = p;
+                cdm=true;
+            } catch (InterruptedException ex) {
+                reportBroken();
+                throw new RuntimeException(ex);
+            }
+        }).start();
+    }
+
 
     @SubscribeEvent
     void render(RenderWorldLastEvent e) {
-        if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
-        boolean b = Index.KEY_MANAGER.get("lgmKey").isPressed();
-        boolean x = Index.KEY_MANAGER.get("lgmGpKey").isPressed();
+        if (Minecraft.getMinecraft().theWorld == null) return;
+        boolean b = false, x = false;
+        if (isEnabled()) {
+            b = Index.KEY_MANAGER.get("lgmKey").isPressed();
+            x = Index.KEY_MANAGER.get("lgmGpKey").isPressed();
+        }
         int i = findPicake();
         if (i == -1) return;
         int p = Minecraft.getMinecraft().thePlayer.inventory.currentItem;
         if (cdm && b) {
-            cdm = false;
-            new Thread(() -> {
-                try {
-                    Random rand = new Random();
-                    KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode(), true);
-                    KeyBinding.onTick(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode());
-                    Thread.sleep(5+Math.abs(rand.nextInt())%9);
-                        KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), true);
-                        KeyBinding.onTick(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode());
-                        KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindsHotbar[i].getKeyCode(), false);
-                    Thread.sleep(15);
-                        KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode(), false);
-                    Thread.sleep(70);
-                    Minecraft.getMinecraft().thePlayer.inventory.currentItem = p;
-                    cdm=true;
-                } catch (InterruptedException ex) {
-                    reportBroken();
-                    throw new RuntimeException(ex);
-                }
-            }).start();
+            performSingle();
         }
         if (cdm && x) {
             cdm = false;

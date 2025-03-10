@@ -36,8 +36,6 @@
       },
       //Do jump on start?
       "jump": false,
-      "instant": false,
-      "rot_speed": 12,
       "sprint": true
     },
     "4": {
