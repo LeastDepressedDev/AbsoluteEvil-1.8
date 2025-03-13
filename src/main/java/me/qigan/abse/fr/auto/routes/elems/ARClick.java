@@ -16,6 +16,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.json.JSONObject;
 
 public class ARClick extends ARElement{
 
@@ -74,5 +75,15 @@ public class ARClick extends ARElement{
     @Override
     public String elementString() {
         return "";
+    }
+
+    @Override
+    public JSONObject jsonObject() {
+        return new JSONObject().put("type", "click").put("pos", this.posObject())
+                .put("cord", new JSONObject()
+                        .put("x", clickPos.getX())
+                        .put("y", clickPos.getY())
+                        .put("z", clickPos.getZ()))
+                .put("gpu", this.gp);
     }
 }

@@ -6,6 +6,7 @@ import me.qigan.abse.sync.Utils;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.json.JSONObject;
 
 public class ARWait extends ARElement{
 
@@ -56,5 +57,10 @@ public class ARWait extends ARElement{
     public String elementString() {
         return "\u00A76" + (state == State.RELAY ? "Waiting\u00A7f(\u00A7a"+ Long.toString(System.currentTimeMillis()-lastTime) + "\u00A7f)" :
                 "Wait\u00A7f(\u00A7a" + delay + "\u00A7f)");
+    }
+
+    @Override
+    public JSONObject jsonObject() {
+        return new JSONObject().put("type", "wait");
     }
 }
