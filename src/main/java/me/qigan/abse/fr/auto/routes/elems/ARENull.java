@@ -11,6 +11,10 @@ public class ARENull extends ARElement{
         super(new Vec3(0, 0, 0), new Vec3(0, 0, 0));
     }
 
+    public ARENull(Vec3 pos) {
+        super(pos, pos);
+    }
+
     @Override
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {}
 

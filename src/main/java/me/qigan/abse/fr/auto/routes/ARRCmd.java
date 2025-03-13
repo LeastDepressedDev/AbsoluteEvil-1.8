@@ -1,17 +1,22 @@
 package me.qigan.abse.fr.auto.routes;
 
-import me.qigan.abse.fr.auto.routes.elems.ARENull;
-import me.qigan.abse.fr.auto.routes.elems.ARElement;
-import me.qigan.abse.fr.auto.routes.elems.ARWait;
-import me.qigan.abse.fr.auto.routes.elems.ARWalk;
+import me.qigan.abse.Index;
+import me.qigan.abse.fr.auto.routes.elems.*;
 import me.qigan.abse.sync.CommandRoute;
 import me.qigan.abse.sync.GenCommandDispatcher;
 import me.qigan.abse.sync.Sync;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.fml.common.Loader;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 public class ARRCmd extends GenCommandDispatcher {
@@ -37,8 +42,33 @@ public class ARRCmd extends GenCommandDispatcher {
         try {
             ARoute.Referer ref = ARoute.Referer.valueOf(args[0]);
             route = new ARoute(ref, args.length > 1 ? Integer.parseInt(args[1]) : 0, Sync.player().getPositionVector());
+            route.add(new ARENull(route.startingPos));
         } catch (IllegalArgumentException ex) {
             Sync.player().addChatMessage(new ChatComponentText("\u00A7cIllegal referrer type. \u00A76Allowed type: [general, dungeon, floor]"));
+        }
+    }
+
+    @CommandRoute(route = "/save")
+    public void saveRoute(String[] args) {
+        if (args.length > 0) {
+            File file = new File(ARController.URL+"/"+args[0]);
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.flush();
+                writer.write(route.saveObj().toString());
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7cRoute name required as first argument."));
         }
     }
 
@@ -64,21 +94,35 @@ public class ARRCmd extends GenCommandDispatcher {
     @CommandRoute(route = "/undo")
     public void addRouteUndo(String[] args) {
         route.elems.remove(route.elems.size()-1);
+        Sync.player().addChatMessage(new ChatComponentText("\u00A7aUndo."));
     }
 
     @CommandRoute(route = "/add/walk")
     public void addRouteWalk(String[] args) {
         ARElement ele = route.elems.get(route.elems.size()-1);
         route.add(new ARWalk(ele.endPos, Sync.player().getPositionVector(), false, true));
+        Sync.player().addChatMessage(new ChatComponentText("\u00A7aAdded walk."));
     }
 
     @CommandRoute(route = "/add/wait")
     public void addRouteWait(String[] args) {
         if (args.length > 0) {
             route.add(new ARWait(Sync.player().getPositionVector(), Long.parseLong(args[0])));
+            Sync.player().addChatMessage(new ChatComponentText(String.format("\u00A7aAdded delay %d.", Long.parseLong(args[0]))));
         } else {
             Sync.player().addChatMessage(new ChatComponentText("\u00A7cDelay required."));
         }
+    }
+
+    @CommandRoute(route = "/add/click")
+    public void addRouteClick(String[] args) {
+        MovingObjectPosition mpos = Minecraft.getMinecraft().objectMouseOver;
+        if (mpos.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || mpos.getBlockPos() == null) {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7cYou must be looking on block."));
+        }
+        route.add(new ARClick(Sync.player().getPositionVector(), mpos.getBlockPos(), args.length > 0 ? Boolean.parseBoolean(args[0]) : true));
+        Sync.player().addChatMessage(new ChatComponentText(String.format("\u00A7aAdded click (%d, %d, %d).",
+                mpos.getBlockPos().getX(), mpos.getBlockPos().getY(), mpos.getBlockPos().getZ())));
     }
 
     @Override

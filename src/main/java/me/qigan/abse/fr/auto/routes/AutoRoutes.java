@@ -68,7 +68,11 @@ public class AutoRoutes extends Module {
         for (ARoute route : routes) {
             List<Vec3> path = new ArrayList<>();
             for (ARElement ele : route.elems) {
-                if (ele instanceof ARClick || ele instanceof ARENull) continue;
+                if (ele instanceof ARENull) continue;
+                if (ele instanceof ARClick) {
+                    Esp.autoBox3D(((ARClick) ele).clickPos, Color.yellow, 3f, true);
+                    continue;
+                }
                 Esp.drawPointInWorldCircle(ele.startPos, 0.7, 16, 1.7f, Color.cyan);
                 path.add(ele.startPos);
                 if (!Utils.compare(ele.startPos, ele.endPos)) {

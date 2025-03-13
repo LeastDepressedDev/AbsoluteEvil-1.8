@@ -7,6 +7,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,28 @@ public class ARoute {
 
     public boolean rage() {
         return false;
+    }
+
+    public JSONObject saveObj() {
+        JSONObject obj = new JSONObject();
+        obj.put("name", name);
+        obj.put("author", author);
+        obj.put("ref", referer.toString());
+        obj.put("ref_id", ref_id);
+        obj.put("length", elems.size());
+        obj.put("start", startingPos);
+        JSONObject script = new JSONObject();
+        int i = 0;
+        for (ARElement element : elems) {
+            script.put(Integer.toString(i), element.jsonObject());
+            i++;
+        }
+        obj.put("script", script);
+
+
+        JSONObject aligners = new JSONObject();
+        obj.put("ghost_aligners", aligners);
+        return obj;
     }
 
     public ARElement stepElement() {

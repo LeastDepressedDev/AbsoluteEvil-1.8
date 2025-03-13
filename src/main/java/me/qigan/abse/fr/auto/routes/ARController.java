@@ -41,7 +41,6 @@ public class ARController {
         URL = Loader.instance().getConfigDir() + "/abse/routes";
         File file = new File(URL);
         if (!file.exists()) file.mkdirs();
-        System.out.println(URL);
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             assert files != null;

@@ -45,7 +45,7 @@ public class ARClick extends ARElement{
         if (caller.rage()) {
 
         } else {
-            Float[] rots = Utils.getRotationsTo(Sync.player().getPositionEyes(0), semiPos.hitVec,
+            Float[] rots = Utils.getRotationsTo(Sync.player().getPositionEyes(1), semiPos.hitVec,
                     new float[]{Sync.rotations()[0], Sync.rotations()[1]});
             Index.AR_CONTROLLER.rotate(rots);
             if (Minecraft.getMinecraft().objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK &&
@@ -77,7 +77,7 @@ public class ARClick extends ARElement{
 
     @Override
     public String elementString() {
-        return "";
+        return String.format("\u00A7aClick(%d, %d, %d)", clickPos.getX(), clickPos.getY(), clickPos.getZ());
     }
 
     @Override
