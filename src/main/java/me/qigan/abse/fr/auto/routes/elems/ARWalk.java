@@ -8,6 +8,7 @@ import me.qigan.abse.sync.Utils;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.json.JSONObject;
 
 public class ARWalk extends ARElement{
 
@@ -79,6 +80,13 @@ public class ARWalk extends ARElement{
     @Override
     public String elementString() {
         return "\u00A7fWalk\u00A7f(\u00A77" + to.xCoord + "\u00A7f,\u00A77" + to.zCoord + "\u00A7f)";
+    }
+
+    @Override
+    public JSONObject jsonObject() {
+        return new JSONObject().put("type", "walk").put("pos", this.posObject())
+                .put("jump", this.doJump).put("sprint", this.allowSprint)
+                .put("to", new JSONObject().put("x", to.xCoord).put("z", to.zCoord));
     }
 
     private void updateState() {

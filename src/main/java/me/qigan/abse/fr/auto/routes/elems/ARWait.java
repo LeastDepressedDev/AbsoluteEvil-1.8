@@ -55,12 +55,12 @@ public class ARWait extends ARElement{
 
     @Override
     public String elementString() {
-        return "\u00A76" + (state == State.RELAY ? "Waiting\u00A7f(\u00A7a"+ Long.toString(System.currentTimeMillis()-lastTime) + "\u00A7f)" :
+        return "\u00A76" + (state == State.RELAY ? "Waiting\u00A7f(\u00A7a"+ Long.toString(delay-System.currentTimeMillis()+lastTime) + "\u00A7f)" :
                 "Wait\u00A7f(\u00A7a" + delay + "\u00A7f)");
     }
 
     @Override
     public JSONObject jsonObject() {
-        return new JSONObject().put("type", "wait");
+        return new JSONObject().put("type", "wait").put("pos", this.posObject()).put("time", this.delay);
     }
 }

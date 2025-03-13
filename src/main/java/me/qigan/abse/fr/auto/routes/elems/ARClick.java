@@ -23,6 +23,8 @@ public class ARClick extends ARElement{
     public final BlockPos clickPos;
     public final boolean gp;
 
+    private long forceDelay = 0;
+
     boolean clickDispatched = false;
 
     public ARClick(Vec3 pos, BlockPos clickPos, boolean gpu) {
@@ -50,7 +52,8 @@ public class ARClick extends ARElement{
                     Utils.compare(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), clickPos)) {
                 ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
             }
-            if (gp && Math.abs(Sync.rotations()[0]-rots[0]) < 0.5) {
+            if (gp && Math.abs(Sync.rotations()[0]-rots[0]) < 0.5 && System.currentTimeMillis()-forceDelay>300) {
+                forceDelay = System.currentTimeMillis();
                 LegitGhostBlocksMacro.performSingle();
             }
         }
