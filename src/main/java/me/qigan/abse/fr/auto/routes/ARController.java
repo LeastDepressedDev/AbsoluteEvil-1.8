@@ -66,7 +66,7 @@ public class ARController {
             Index.PLAYER_CONTROLLER.globalToggle = inRoute;
 
             if (!inRoute) return;
-            if (Minecraft.getMinecraft().thePlayer.getPositionVector().distanceTo(currentARoute.stepElement().pos) > 80) {
+            if (Minecraft.getMinecraft().thePlayer.getPositionVector().distanceTo(currentARoute.stepElement().startPos) > 80) {
                 interrupt(currentARoute);
             }
 
@@ -82,7 +82,8 @@ public class ARController {
             if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
                 //TODO: Add phantom rotation processor
             } else {
-                SmoothAimControl.set(target, 2, 20, speed);
+                if (target[0] != null) Sync.player().rotationYaw = target[0];
+                if (target[1] != null) Sync.player().rotationYaw = target[1];
             }
         } else {
             if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
@@ -94,57 +95,62 @@ public class ARController {
     }
 
     public void loadRoute(JSONObject obj, Object... adjData) {
-        JSONObject pos = obj.getJSONObject("start");
-        ARoute.Referer referer = ARoute.Referer.valueOf(obj.getString("ref"));
-        Vec3 partPos = new Vec3(pos.getDouble("x"), pos.getDouble("y"), pos.getDouble("z"));
-        int ref_id = obj.getInt("ref_id");
-        if (referer == ARoute.Referer.DUNGEON) {
-            Room room = (Room) adjData[0];
-            if (room == null || room.id != ref_id) return;
-            partPos = ((Room) adjData[0]).transformInnerCoordinate(partPos);
-        }
-        ARoute route = new ARoute(referer, ref_id, partPos);
-        route.name = obj.getString("name");
-        route.author = obj.getString("author");
-        int length = obj.getInt("length");
-        obj = obj.getJSONObject("script");
-        for (int i = 0; i < length; i++) {
-            JSONObject jsonEle = obj.getJSONObject(Integer.toString(i));
-            JSONObject part = jsonEle.getJSONObject("pos");
-            Vec3 semiPos = new Vec3(part.getDouble("x"), part.getDouble("y"), part.getDouble("z"));
-            if (route.referer == ARoute.Referer.DUNGEON) {
-                semiPos = ((Room) adjData[0]).transformInnerCoordinate(semiPos);
+        try {
+            JSONObject pos = obj.getJSONObject("start");
+            ARoute.Referer referer = ARoute.Referer.valueOf(obj.getString("ref"));
+            Vec3 partPos = new Vec3(pos.getDouble("x"), pos.getDouble("y"), pos.getDouble("z"));
+            int ref_id = obj.getInt("ref_id");
+            if (referer == ARoute.Referer.DUNGEON) {
+                Room room = (Room) adjData[0];
+                if (room == null || room.id != ref_id) return;
+                partPos = ((Room) adjData[0]).transformInnerCoordinate(partPos);
             }
-            switch (jsonEle.getString("type")) {
-                case "wait":
-                {
-                    route.add(new ARWait(semiPos, jsonEle.getLong("time")));
+            ARoute route = new ARoute(referer, ref_id, partPos);
+            route.name = obj.getString("name");
+            route.author = obj.getString("author");
+            int length = obj.getInt("length");
+            obj = obj.getJSONObject("script");
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonEle = obj.getJSONObject(Integer.toString(i));
+                JSONObject part1 = jsonEle.getJSONObject("pos").getJSONObject("start");
+                JSONObject part2 = jsonEle.getJSONObject("pos").getJSONObject("end");
+                Vec3 startPos = new Vec3(part1.getDouble("x"), part1.getDouble("y"), part1.getDouble("z"));
+                Vec3 endPos = new Vec3(part2.getDouble("x"), part2.getDouble("y"), part2.getDouble("z"));
+                if (route.referer == ARoute.Referer.DUNGEON) {
+                    startPos = ((Room) adjData[0]).transformInnerCoordinate(startPos);
+                    endPos = ((Room) adjData[0]).transformInnerCoordinate(endPos);
                 }
-                break;
-                case "walk":
-                {
-                    JSONObject to = jsonEle.getJSONObject("to");
-                    Vec3 target = new Vec3(to.getDouble("x"), Sync.player().posY, to.getDouble("z"));
-                    if (referer == ARoute.Referer.DUNGEON) {
-                        target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                switch (jsonEle.getString("type")) {
+                    case "wait": {
+                        route.add(new ARWait(startPos, jsonEle.getLong("time")));
                     }
-                    route.add(new ARWalk(semiPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"))
-                    );
-                }
-                break;
-                case "click":
-                {
-                    JSONObject click = jsonEle.getJSONObject("cord");
-                    BlockPos target = new BlockPos(click.getDouble("x"), click.getDouble("y"), click.getDouble("z"));
-                    if (referer == ARoute.Referer.DUNGEON) {
-                        target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                    break;
+                    case "walk": {
+                        JSONObject to = jsonEle.getJSONObject("to");
+                        Vec3 target = new Vec3(to.getDouble("x"), endPos.yCoord, to.getDouble("z"));
+                        if (referer == ARoute.Referer.DUNGEON) {
+                            target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                        }
+                        route.add(new ARWalk(startPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"))
+                        );
                     }
-                    route.add(new ARClick(semiPos, target, jsonEle.getBoolean("gpu")));
+                    break;
+                    case "click": {
+                        JSONObject click = jsonEle.getJSONObject("cord");
+                        BlockPos target = new BlockPos(click.getDouble("x"), click.getDouble("y"), click.getDouble("z"));
+                        if (referer == ARoute.Referer.DUNGEON) {
+                            target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                        }
+                        route.add(new ARClick(startPos, target, jsonEle.getBoolean("gpu")));
+                    }
+                    break;
                 }
-                break;
             }
+            loadedRoutes.add(route);
+        } catch (Exception ex) {
+            System.out.println("Failed to load route.");
+            ex.printStackTrace();
         }
-        loadedRoutes.add(route);
     }
 
     @SubscribeEvent

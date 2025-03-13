@@ -23,7 +23,7 @@ public class ARWait extends ARElement{
     public State state = State.BEGIN;
 
     public ARWait(Vec3 pos, long delay) {
-        super(pos);
+        super(pos, pos);
         this.delay = delay;
     }
 
@@ -36,7 +36,7 @@ public class ARWait extends ARElement{
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {
         switch (state) {
             case BEGIN:
-                if (Sync.player().getPositionVector().distanceTo(pos) <= 0.6) {
+                if (Sync.player().getPositionVector().distanceTo(endPos) <= 0.6) {
                     lastTime = System.currentTimeMillis();
                     state = State.RELAY;
                 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class GenCommandDispatcher extends CommandBase {
+public abstract class GenCommandDispatcher extends CommandBase {
 
     private final String cmd_name;
 
@@ -34,7 +34,7 @@ public class GenCommandDispatcher extends CommandBase {
         Method def = null;
         Method matched = null;
         int cordtr = 0;
-        for (Method method : this.getClass().getMethods()) {
+        for (Method method : methods()) {
             if (method.isAnnotationPresent(CommandRoute.class)) {
                 CommandRoute route = method.getAnnotation(CommandRoute.class);
                 String path = route.route().substring(1);
@@ -80,4 +80,6 @@ public class GenCommandDispatcher extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 0;
     }
+
+    protected abstract Method[] methods();
 }

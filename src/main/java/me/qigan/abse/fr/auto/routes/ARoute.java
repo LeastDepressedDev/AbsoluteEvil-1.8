@@ -68,6 +68,11 @@ public class ARoute {
         return elems.get(step);
     }
 
+    public void clear() {
+        elems.clear();
+        reset();
+    }
+
     public void add(ARElement element) {
         this.elems.add(element);
     }

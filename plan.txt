@@ -2,7 +2,7 @@ Fix party utils not detecting classes correctly - Not started
 Add dungeon dry tracker - Not started
 
 Auto routing:
-    - Delte normal routes due to uselessability
+    - Delete normal routes due to uselessability
     - Types of ops: waitTime, awaitTill, walk(with override mixin in controller), etherwarp tp point, pearl on angles[], click on, place ghostblocks
 
 Auto save - Not started

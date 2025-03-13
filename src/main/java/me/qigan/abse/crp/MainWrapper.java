@@ -12,6 +12,7 @@ import me.qigan.abse.config.PositionConfig;
 import me.qigan.abse.crp.ovr.MCMainMenu;
 import me.qigan.abse.events.CoreEventProfiler;
 import me.qigan.abse.fr.auto.routes.ARController;
+import me.qigan.abse.fr.auto.routes.ARRCmd;
 import me.qigan.abse.fr.exc.*;
 import me.qigan.abse.fr.mining.AutoMining;
 import me.qigan.abse.mapping.Rooms;
@@ -70,7 +71,7 @@ public class MainWrapper {
 
         ClientCommandHandler.instance.registerCommand(new InCmd());
         ClientCommandHandler.instance.registerCommand(new PathCmd());
-        ClientCommandHandler.instance.registerCommand(new GenCommandDispatcher("sus"));
+        ClientCommandHandler.instance.registerCommand(new ARRCmd());
 
         File file = new File(Loader.instance().getConfigDir() + "/abse/configs");
         if (!file.exists()) file.mkdirs();

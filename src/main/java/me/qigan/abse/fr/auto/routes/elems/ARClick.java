@@ -28,14 +28,14 @@ public class ARClick extends ARElement{
     boolean clickDispatched = false;
 
     public ARClick(Vec3 pos, BlockPos clickPos, boolean gpu) {
-        super(pos);
+        super(pos, pos);
         this.clickPos = clickPos;
         this.gp = gpu;
     }
 
     @Override
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {
-        if (Sync.player().getPositionVector().distanceTo(pos) > 0.6) return;
+        if (Sync.player().getPositionVector().distanceTo(endPos) > 0.6) return;
         MovingObjectPosition semiPos = Utils.generateBlockHit(clickPos);
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
         Experimental.expRender.add(semiPos.hitVec);

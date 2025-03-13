@@ -6,6 +6,7 @@ import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.auto.routes.elems.ARClick;
+import me.qigan.abse.fr.auto.routes.elems.ARENull;
 import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.sync.Sync;
@@ -39,7 +40,9 @@ public class AutoRoutes extends Module {
         if (Minecraft.getMinecraft().theWorld == null || !isEnabled() || e.phase == TickEvent.Phase.END) return;
         boolean pressedState = Index.KEY_MANAGER.get("global_space").isPressed();
         if (Index.KEY_MANAGER.get("ar_mod_kb").isPressed() && !Index.AR_CONTROLLER.inRoute) {
-            for (ARoute route : Index.AR_CONTROLLER.loadedRoutes) {
+            List<ARoute> routes = new ArrayList<>(Index.AR_CONTROLLER.loadedRoutes);
+            if (ARRCmd.route != null) routes.add(ARRCmd.route);
+            for (ARoute route : routes) {
                 if (Sync.player().getPositionVector().distanceTo(route.startingPos) <= 0.6) {
                     Index.AR_CONTROLLER.enterRoute(route);
                     return;
@@ -61,12 +64,17 @@ public class AutoRoutes extends Module {
         if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
         if (Index.AR_CONTROLLER == null || Index.AR_CONTROLLER.loadedRoutes == null) return;
         List<ARoute> routes = new ArrayList<>(Index.AR_CONTROLLER.loadedRoutes);
+        if (ARRCmd.route != null) routes.add(ARRCmd.route);
         for (ARoute route : routes) {
             List<Vec3> path = new ArrayList<>();
             for (ARElement ele : route.elems) {
-                if (ele instanceof ARClick) continue;
-                Esp.drawPointInWorldCircle(ele.pos, 0.7, 16, 1.7f, Color.cyan);
-                path.add(ele.pos);
+                if (ele instanceof ARClick || ele instanceof ARENull) continue;
+                Esp.drawPointInWorldCircle(ele.startPos, 0.7, 16, 1.7f, Color.cyan);
+                path.add(ele.startPos);
+                if (!Utils.compare(ele.startPos, ele.endPos)) {
+                    Esp.drawPointInWorldCircle(ele.endPos, 0.7, 16, 1.7f, Color.cyan);
+                    path.add(ele.endPos);
+                }
             }
             Esp.autoFilledBox3D(route.startingPos, new Color(0, 255, 0, 85), 1.6f, true);
             RouteUpdater.drawPath(path, 1.4f, Color.cyan);
@@ -85,12 +93,11 @@ public class AutoRoutes extends Module {
 
             ARoute ctr = Index.AR_CONTROLLER.currentARoute;
             Point pt = Index.POS_CFG.calc("ar_loc");
-            List<String> texts = new ArrayList<>(Arrays.asList(
-                    "\u00A7aRoute: "
-            ));
+            List<String> texts = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 texts.add(0, ctr.step+i<ctr.elems.size() ? ctr.elems.get(ctr.step+i).elementString() : "");
             }
+            texts.add(0, "\u00A7aRoute: ");
             Esp.drawAllignedTextList(texts, pt.x, pt.y, false, e.resolution, S2Dtype.CORNERED);
         }
     }

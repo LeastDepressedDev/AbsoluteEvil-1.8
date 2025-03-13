@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 public class ARENull extends ARElement{
     public ARENull() {
-        super(new Vec3(0, 0, 0));
+        super(new Vec3(0, 0, 0), new Vec3(0, 0, 0));
     }
 
     @Override

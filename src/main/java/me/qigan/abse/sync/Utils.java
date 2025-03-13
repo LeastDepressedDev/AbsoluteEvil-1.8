@@ -86,6 +86,13 @@ public class Utils {
                 pos1.getZ() == pos2.getZ();
     }
 
+    public static boolean compare(Vec3 pos1, Vec3 pos2) {
+        if (pos1 == null || pos2 == null) return false;
+        return pos1.xCoord == pos2.xCoord &&
+                pos1.yCoord == pos2.yCoord &&
+                pos1.zCoord == pos2.zCoord;
+    }
+
     public static boolean compareXZ(BlockPos pos1, BlockPos pos2) {
         if (pos1 == null || pos2 == null) return false;
         return pos1.getX() == pos2.getX() &&

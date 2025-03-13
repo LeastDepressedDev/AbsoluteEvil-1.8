@@ -10,6 +10,8 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 public class ARWalk extends ARElement{
 
     public enum State {
@@ -19,7 +21,8 @@ public class ARWalk extends ARElement{
         DONE
     }
 
-    public final Vec3 to;
+    private static final DecimalFormat df = new DecimalFormat("#.##");
+
     public final boolean doJump;
     public final boolean allowSprint;
 
@@ -28,9 +31,8 @@ public class ARWalk extends ARElement{
     private boolean jc = true;
     private long jcTime = 0;
 
-    public ARWalk(Vec3 pos, Vec3 target, boolean jump, boolean sprint) {
-        super(pos);
-        this.to = target;
+    public ARWalk(Vec3 startPos, Vec3 target, boolean jump, boolean sprint) {
+        super(startPos, target);
         this.doJump = jump;
         this.allowSprint = sprint;
     }
@@ -45,13 +47,13 @@ public class ARWalk extends ARElement{
         Index.PLAYER_CONTROLLER.stop();
         switch (state) {
             case BEGIN:
-                if (Sync.player().getPositionVector().distanceTo(pos) > 0.6) return;
+                if (Sync.player().getPositionVector().distanceTo(startPos) > 0.6) return;
                 break;
             case ROTATE:
                 Float[] rots = Utils.getRotationsTo(
-                        to.xCoord-Sync.player().posX,
-                        to.yCoord-Sync.player().posY,
-                        to.zCoord-Sync.player().posZ,
+                        endPos.xCoord-Sync.player().posX,
+                        endPos.yCoord-Sync.player().posY,
+                        endPos.zCoord-Sync.player().posZ,
                         new float[]{Sync.rotations()[0], Sync.rotations()[1]}
                 );
                 rots[1] = null;
@@ -79,18 +81,18 @@ public class ARWalk extends ARElement{
 
     @Override
     public String elementString() {
-        return "\u00A7fWalk\u00A7f(\u00A77" + to.xCoord + "\u00A7f,\u00A77" + to.zCoord + "\u00A7f)";
+        return "\u00A7fWalk\u00A7f(\u00A77" + df.format(endPos.xCoord) + "\u00A7f,\u00A77" + df.format(endPos.zCoord) + "\u00A7f)";
     }
 
     @Override
     public JSONObject jsonObject() {
         return new JSONObject().put("type", "walk").put("pos", this.posObject())
                 .put("jump", this.doJump).put("sprint", this.allowSprint)
-                .put("to", new JSONObject().put("x", to.xCoord).put("z", to.zCoord));
+                .put("to", new JSONObject().put("x", endPos.xCoord).put("z", endPos.zCoord));
     }
 
     private void updateState() {
-        if (Sync.player().getPositionVector().distanceTo(to) <= 0.45) {
+        if (Sync.player().getPositionVector().distanceTo(endPos) <= 0.45) {
             state = State.DONE;
             Index.PLAYER_CONTROLLER.stop();
             Sync.player().motionX = 0;
@@ -98,9 +100,9 @@ public class ARWalk extends ARElement{
             return;
         }
         Float[] rots = Utils.getRotationsTo(
-                to.xCoord-Sync.player().posX,
-                to.yCoord-Sync.player().posY,
-                to.zCoord-Sync.player().posZ,
+                endPos.xCoord-Sync.player().posX,
+                endPos.yCoord-Sync.player().posY,
+                endPos.zCoord-Sync.player().posZ,
                 new float[]{Sync.player().rotationYaw, Sync.player().rotationPitch}
         );
         if (rots[0] != null && Math.abs(rots[0]-Sync.rotations()[0]) < 0.5d) {
