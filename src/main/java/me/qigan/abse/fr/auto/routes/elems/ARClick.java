@@ -51,8 +51,9 @@ public class ARClick extends ARElement{
             if (Minecraft.getMinecraft().objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK &&
                     Utils.compare(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), clickPos)) {
                 ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
+                return;
             }
-            if (gp && Math.abs(Sync.rotations()[0]-rots[0]) < 0.5 && System.currentTimeMillis()-forceDelay>300) {
+            if (gp && Math.abs(Sync.rotations()[0]-rots[0]) < 0.5 && System.currentTimeMillis()-forceDelay>130) {
                 forceDelay = System.currentTimeMillis();
                 LegitGhostBlocksMacro.performSingle();
             }

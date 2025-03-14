@@ -3,6 +3,7 @@ package me.qigan.abse.sync;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import me.qigan.abse.config.AddressedData;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -170,9 +171,16 @@ public class Utils {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         WorldClient wrld = Minecraft.getMinecraft().theWorld;
         Vec3 posVec = new Vec3(pos.getX()+0.5d, pos.getY()+0.5d, pos.getZ()+0.5d);
+        Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
 
         //TODO: Make it work with levers and other non colidable blocks
-        AxisAlignedBB axis = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock().getCollisionBoundingBox(wrld, pos, wrld.getBlockState(pos));
+        AxisAlignedBB axis = block.getCollisionBoundingBox(wrld, pos, wrld.getBlockState(pos));
+        if (axis == null) {
+            axis = new AxisAlignedBB(
+                    (double)pos.getX() + block.getBlockBoundsMinX(), (double)pos.getY() + block.getBlockBoundsMinY(), (double)pos.getZ() + block.getBlockBoundsMinZ(),
+                    (double)pos.getX() + block.getBlockBoundsMaxX(), (double)pos.getY() + block.getBlockBoundsMaxY(), (double)pos.getZ() + block.getBlockBoundsMaxZ());
+            System.out.println(axis.toString());
+        }
         return axis.calculateIntercept(player.getPositionEyes(1), posVec);
     }
 
@@ -181,7 +189,7 @@ public class Utils {
      */
     public static double createRandomDouble(double up, double down) {
         Random rand = new Random();
-        return rand.nextBoolean() ? rand.nextInt()%up : down;
+        return rand.nextBoolean() ? rand.nextInt() % up : down;
     }
 
     public static double createRandomDouble(double up, double down, long seed) {

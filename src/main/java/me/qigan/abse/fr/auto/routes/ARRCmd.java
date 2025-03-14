@@ -51,7 +51,7 @@ public class ARRCmd extends GenCommandDispatcher {
     @CommandRoute(route = "/save")
     public void saveRoute(String[] args) {
         if (args.length > 0) {
-            File file = new File(ARController.URL+"/"+args[0]);
+            File file = new File(ARController.URL+"/"+args[0]+".json");
             if (!file.exists()) {
                 try {
                     file.createNewFile();

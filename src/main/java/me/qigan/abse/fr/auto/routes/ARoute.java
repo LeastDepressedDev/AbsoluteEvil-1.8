@@ -20,8 +20,8 @@ public class ARoute {
         GENERAL //Works everywhere
     }
 
-    public String name = "";
-    public String author = "";
+    public String name = "null";
+    public String author = "null";
 
     public int step = 0;
     public List<ARElement> elems = new ArrayList<>();
@@ -71,7 +71,8 @@ public class ARoute {
         obj.put("ref", referer.toString());
         obj.put("ref_id", ref_id);
         obj.put("length", elems.size());
-        obj.put("start", startingPos);
+        obj.put("start", new JSONObject()
+                .put("x", startingPos.xCoord).put("y", startingPos.yCoord).put("z", startingPos.zCoord));
         JSONObject script = new JSONObject();
         int i = 0;
         for (ARElement element : elems) {
