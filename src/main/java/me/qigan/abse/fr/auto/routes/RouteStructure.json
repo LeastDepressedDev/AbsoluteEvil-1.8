@@ -11,7 +11,7 @@
   },
   "script": {
     "0": {
-      "type": "<wait/await/walk/epw/pearl/pgb/click/bicontr>",
+      "type": "<wait/await/walk/ewp/pearl/pgb/click/bicontr>",
       //This is a position, that player should be on a different step on route
       "pos": {
         "start": {
@@ -46,11 +46,10 @@
       "sprint": true
     },
     "4": {
-      "type": "epw",
+      "type": "ewp",
       "target": {
-        "x": 100,
-        "y": 100,
-        "z": 100
+        "yaw": 180,
+        "pitch": 0
       }
     },
     "5": {

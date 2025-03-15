@@ -45,8 +45,7 @@ public class ARoute {
             if (elems.get(step).next()) {
                 MinecraftForge.EVENT_BUS.unregister(elems.get(step));
                 if (step+1<elems.size()) MinecraftForge.EVENT_BUS.register(elems.get(step+1));
-                System.out.println(Integer.toString(step));
-                force = System.currentTimeMillis();
+                if (!elems.get(step).skip) force = System.currentTimeMillis();
                 step++;
             }
         }
@@ -88,7 +87,7 @@ public class ARoute {
     }
 
     public ARElement stepElement() {
-        if (step >= elems.size()) return new ARENull();
+        if (step >= elems.size()) return elems.get(elems.size()-1);
         return elems.get(step);
     }
 

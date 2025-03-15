@@ -521,7 +521,7 @@ public class Esp {
         GL11.glBegin(1);
 
         double aSeg = 2*Math.PI/segments;
-        for (double angle = aSeg; angle < 2*Math.PI; angle+=aSeg) {
+        for (double angle = aSeg; angle < 2*Math.PI+aSeg; angle+=aSeg) {
             GL11.glVertex3d(xPos+radius*Math.cos(angle-aSeg), yPos, zPos+radius*Math.sin(angle-aSeg));
             GL11.glVertex3d(xPos+radius*Math.cos(angle), yPos, zPos+radius*Math.sin(angle));
         }

@@ -3,10 +3,7 @@ package me.qigan.abse.fr.auto.routes;
 import me.qigan.abse.Index;
 import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.events.RoomChangedEvent;
-import me.qigan.abse.fr.auto.routes.elems.ARClick;
-import me.qigan.abse.fr.auto.routes.elems.ARElement;
-import me.qigan.abse.fr.auto.routes.elems.ARWait;
-import me.qigan.abse.fr.auto.routes.elems.ARWalk;
+import me.qigan.abse.fr.auto.routes.elems.*;
 import me.qigan.abse.fr.exc.SmoothAimControl;
 import me.qigan.abse.gui.overlay.GuiNotifier;
 import me.qigan.abse.mapping.MappingUtils;
@@ -63,17 +60,21 @@ public class ARController {
     void tick(TickEvent.ClientTickEvent e) {
         if (Minecraft.getMinecraft().theWorld == null || e.phase == TickEvent.Phase.END) return;
 
-        if (currentARoute != null) {
-            Index.PLAYER_CONTROLLER.globalToggle = inRoute;
+        try {
+            if (currentARoute != null) {
+                Index.PLAYER_CONTROLLER.globalToggle = inRoute;
 
-            if (!inRoute) return;
-            if (Minecraft.getMinecraft().thePlayer.getPositionVector().distanceTo(currentARoute.stepElement().startPos) > 80) {
-                interrupt(currentARoute);
-            }
+                if (!inRoute) return;
+                if (Minecraft.getMinecraft().thePlayer.getPositionVector().distanceTo(currentARoute.stepElement().startPos) > 80) {
+                    interrupt(currentARoute);
+                }
 
-            if (currentARoute.update(e)) {
-                finish(currentARoute);
+                if (currentARoute.update(e)) {
+                    finish(currentARoute);
+                }
             }
+        } catch (NullPointerException ignored) {
+            ignored.printStackTrace();
         }
     }
 
@@ -84,7 +85,7 @@ public class ARController {
                 //TODO: Add phantom rotation processor
             } else {
                 if (target[0] != null) Sync.player().rotationYaw = target[0];
-                if (target[1] != null) Sync.player().rotationYaw = target[1];
+                if (target[1] != null) Sync.player().rotationPitch = target[1];
             }
         } else {
             if (Index.MAIN_CFG.getBoolVal("ar_phantom")) {
@@ -143,6 +144,15 @@ public class ARController {
                             target = ((Room) adjData[0]).transformInnerCoordinate(target);
                         }
                         route.add(new ARClick(startPos, target, jsonEle.getBoolean("gpu")));
+                    }
+                    break;
+                    case "ewp": {
+                        JSONObject target = jsonEle.getJSONObject("target");
+                        Float[] angles = new Float[]{target.getFloat("yaw"), target.getFloat("pitch")};
+                        if (referer == ARoute.Referer.DUNGEON) {
+                            //TODO: Robusty angles processing
+                        }
+                        route.add(new ARWarp(startPos, endPos, angles));
                     }
                     break;
                 }

@@ -233,7 +233,20 @@ public class Utils {
         final double dist = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
         final float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0D / Math.PI) - 90.0F;
         final float pitch = (float) -(Math.atan2(diffY, dist) * 180.0D / Math.PI);
-        return new Float[] {angles[0] + MathHelper.wrapAngleTo180_float(yaw - angles[0]), angles[1] + MathHelper.wrapAngleTo180_float(pitch - angles[1]) };
+        return getRelAngles(angles, new float[]{yaw, pitch});
+    }
+
+    public static Float[] getRelAngles(float[] bases, float[] angles) {
+        return new Float[] {getRelAngle(bases[0], angles[0]), getRelAngle(bases[1], angles[1])};
+    }
+
+    public static Float[] getRelAngles(Float[] bases, Float[] angles) {
+        return new Float[] {bases[0] == null || angles[0] == null ? null : getRelAngle(bases[0], angles[0]),
+                bases[1] == null || angles[1] == null ? null : getRelAngle(bases[1], angles[1])};
+    }
+
+    public static Float getRelAngle(float base, float angle) {
+        return base+MathHelper.wrapAngleTo180_float(angle - base);
     }
 
     public static <K, V> List<AddressedData<K, V>> mapToAddressedDataList(Map<K, V> map) {

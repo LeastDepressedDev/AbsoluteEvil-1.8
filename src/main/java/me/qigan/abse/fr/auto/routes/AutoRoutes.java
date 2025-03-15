@@ -135,6 +135,7 @@ public class AutoRoutes extends Module {
         list.add(new SetsData<>("ar_wait", "Force wait between actions", ValType.NUMBER, "300"));
         list.add(new SetsData<>("ar_phantom", "Use phantom rotation[for legit]", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("ar_rotspeed", "Rotation speed[<=0->instnat]", ValType.DOUBLE_NUMBER, "16.3"));
+        list.add(new SetsData<>("ar_ewpd", "Warp recast delay", ValType.NUMBER, "300"));
         list.add(new SetsData<>("ar_reload", "Reload routes", ValType.BUTTON, (Runnable) AutoRoutes::reloadRoads));
         list.add(new SetsData<>("ar_recall", "Recall routes", ValType.BUTTON, (Runnable) () -> Index.AR_CONTROLLER.recallRoutes()));
         return list;

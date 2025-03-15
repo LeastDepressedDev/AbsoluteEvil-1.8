@@ -11,6 +11,8 @@ public abstract class ARElement {
     public Vec3 startPos;
     public Vec3 endPos;
 
+    public boolean skip = false;
+
     public ARElement(Vec3 startPos, Vec3 endPos) {
         this.startPos = startPos;
         this.endPos = endPos;

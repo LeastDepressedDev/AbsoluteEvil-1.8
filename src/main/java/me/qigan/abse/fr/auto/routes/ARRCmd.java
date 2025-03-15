@@ -9,8 +9,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.Loader;
 
 import java.io.BufferedWriter;
@@ -99,15 +101,27 @@ public class ARRCmd extends GenCommandDispatcher {
 
     @CommandRoute(route = "/add/walk")
     public void addRouteWalk(String[] args) {
-        ARElement ele = route.elems.get(route.elems.size()-1);
-        route.add(new ARWalk(ele.endPos, Sync.player().getPositionVector(), false, true));
+        ARElement pre = route.elems.get(route.elems.size()-1);
+        boolean skip = false, jump = false, sprint = true;
+        for (String str : args) {
+            if (str.equalsIgnoreCase("+skip")) skip = true;
+            else if (str.equalsIgnoreCase("+jump")) jump = true;
+            else if (str.equalsIgnoreCase("-sprint")) sprint = false;
+        }
+        ARWalk ele = new ARWalk(pre.endPos, Sync.player().getPositionVector(), jump, sprint);
+        ele.skip = skip;
+        route.add(ele);
         Sync.player().addChatMessage(new ChatComponentText("\u00A7aAdded walk."));
     }
 
     @CommandRoute(route = "/add/wait")
     public void addRouteWait(String[] args) {
         if (args.length > 0) {
-            route.add(new ARWait(Sync.player().getPositionVector(), Long.parseLong(args[0])));
+            ARWait ele = new ARWait(Sync.player().getPositionVector(), Long.parseLong(args[0]));
+            for (String str : args) {
+                if (str.equalsIgnoreCase("+skip")) ele.skip = true;
+            }
+            route.add(ele);
             Sync.player().addChatMessage(new ChatComponentText(String.format("\u00A7aAdded delay %d.", Long.parseLong(args[0]))));
         } else {
             Sync.player().addChatMessage(new ChatComponentText("\u00A7cDelay required."));
@@ -119,10 +133,32 @@ public class ARRCmd extends GenCommandDispatcher {
         MovingObjectPosition mpos = Minecraft.getMinecraft().objectMouseOver;
         if (mpos.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || mpos.getBlockPos() == null) {
             Sync.player().addChatMessage(new ChatComponentText("\u00A7cYou must be looking on block."));
+            return;
         }
-        route.add(new ARClick(Sync.player().getPositionVector(), mpos.getBlockPos(), args.length > 0 ? Boolean.parseBoolean(args[0]) : true));
+        ARClick ele = new ARClick(Sync.player().getPositionVector(), mpos.getBlockPos(), args.length > 0 ? Boolean.parseBoolean(args[0]) : true);
+        for (String str : args) {
+            if (str.equalsIgnoreCase("+skip")) ele.skip = true;
+        }
+        route.add(ele);
         Sync.player().addChatMessage(new ChatComponentText(String.format("\u00A7aAdded click (%d, %d, %d).",
                 mpos.getBlockPos().getX(), mpos.getBlockPos().getY(), mpos.getBlockPos().getZ())));
+    }
+
+    @CommandRoute(route = "/add/ewp")
+    public void addRouteEwp(String[] args) {
+        MovingObjectPosition mpos = Sync.player().rayTrace(61, 1f);
+        if (mpos.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || mpos.getBlockPos() == null) {
+            Sync.player().addChatMessage(new ChatComponentText("\u00A7cYou must be looking on block."));
+            return;
+        }
+        BlockPos posUp = mpos.getBlockPos().add(0, 1, 0);
+        ARWarp ele = new ARWarp(Sync.player().getPositionVector(), new Vec3(posUp.getX()+0.5, posUp.getY(), posUp.getZ()+0.5),
+                new Float[]{Sync.player().rotationYaw, Sync.player().rotationPitch});
+        for (String str : args) {
+            if (str.equalsIgnoreCase("+skip")) ele.skip = true;
+        }
+        route.add(ele);
+        Sync.player().addChatMessage(new ChatComponentText("\u00A7aWarp point set."));
     }
 
     @Override
