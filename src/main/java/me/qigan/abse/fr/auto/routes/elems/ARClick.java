@@ -8,6 +8,7 @@ import me.qigan.abse.fr.macro.LegitGhostBlocksMacro;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
@@ -36,6 +37,7 @@ public class ARClick extends ARElement{
     @Override
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {
         if (Sync.player().getPositionVector().distanceTo(endPos) > 0.6) return;
+        IBlockState state = Minecraft.getMinecraft().theWorld.getBlockState(this.clickPos);
         MovingObjectPosition semiPos = Utils.generateBlockHit(clickPos);
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
         if (Sync.player().getPositionVector().distanceTo(semiPos.hitVec) > Minecraft.getMinecraft().playerController.getBlockReachDistance()) {
@@ -47,12 +49,23 @@ public class ARClick extends ARElement{
             Float[] rots = Utils.getRotationsTo(Sync.player().getPositionEyes(1), semiPos.hitVec,
                     new float[]{Sync.rotations()[0], Sync.rotations()[1]});
             Index.AR_CONTROLLER.rotate(rots);
-            if (Minecraft.getMinecraft().objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK &&
-                    Utils.compare(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), clickPos)) {
-                ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
-                return;
+            if (state != null && state.getBlock() != Blocks.air) {
+                if (Minecraft.getMinecraft().objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK &&
+                        Utils.compare(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), clickPos) && System.currentTimeMillis()-forceDelay>130) {
+                    forceDelay = System.currentTimeMillis();
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(100);
+                            ClickSimTick.click(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), 1);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }).start();
+                    return;
+                }
             }
-            if (gp && Math.abs(Sync.rotations()[0]-rots[0]) < 0.5 && System.currentTimeMillis()-forceDelay>130) {
+            if (gp && !Utils.compare(Minecraft.getMinecraft().objectMouseOver.getBlockPos(), clickPos) &&
+                    Math.abs(Sync.rotations()[0]-rots[0]) < 0.5 && System.currentTimeMillis()-forceDelay>130) {
                 forceDelay = System.currentTimeMillis();
                 LegitGhostBlocksMacro.performSingle();
             }

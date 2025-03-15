@@ -176,7 +176,6 @@ public class Utils {
         Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
 
         //TODO: Make it work with levers and other non colidable blocks
-        BlockLever lever;
         AxisAlignedBB axis = block.getSelectedBoundingBox(wrld, pos);
         if (axis == null) {
             axis = new AxisAlignedBB(

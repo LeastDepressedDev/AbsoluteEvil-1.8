@@ -4,6 +4,7 @@ import me.qigan.abse.Index;
 import me.qigan.abse.config.AddressedData;
 import me.qigan.abse.events.RoomChangedEvent;
 import me.qigan.abse.fr.auto.routes.elems.ARClick;
+import me.qigan.abse.fr.auto.routes.elems.ARElement;
 import me.qigan.abse.fr.auto.routes.elems.ARWait;
 import me.qigan.abse.fr.auto.routes.elems.ARWalk;
 import me.qigan.abse.fr.exc.SmoothAimControl;
@@ -30,6 +31,7 @@ import java.util.Scanner;
 public class ARController {
     public boolean inRoute = false;
     public static String URL;
+    public ARSlots slots = new ARSlots();
 
     public ARoute currentARoute = null;
     public List<ARoute> loadedRoutes = new ArrayList<>();
@@ -204,6 +206,7 @@ public class ARController {
 
     public void resume() {
         this.inRoute = this.currentARoute != null;
+        this.slots.proc();
     }
 
     public void interrupt(ARoute route) {
