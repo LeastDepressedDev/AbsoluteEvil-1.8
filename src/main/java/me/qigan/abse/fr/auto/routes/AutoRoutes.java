@@ -86,7 +86,7 @@ public class AutoRoutes extends Module {
     }
 
     @SubscribeEvent
-    void renderGameOverlay(RenderGameOverlayEvent e) {
+    void renderGameOverlay(RenderGameOverlayEvent.Text e) {
         if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
         if (Index.AR_CONTROLLER.inRoute && Index.AR_CONTROLLER.currentARoute != null) {
 
