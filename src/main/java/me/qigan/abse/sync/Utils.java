@@ -3,7 +3,9 @@ package me.qigan.abse.sync;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import me.qigan.abse.config.AddressedData;
+import me.qigan.abse.crp.Experimental;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -174,13 +176,14 @@ public class Utils {
         Block block = Minecraft.getMinecraft().theWorld.getBlockState(pos).getBlock();
 
         //TODO: Make it work with levers and other non colidable blocks
-        AxisAlignedBB axis = block.getCollisionBoundingBox(wrld, pos, wrld.getBlockState(pos));
+        BlockLever lever;
+        AxisAlignedBB axis = block.getSelectedBoundingBox(wrld, pos);
         if (axis == null) {
             axis = new AxisAlignedBB(
                     (double)pos.getX() + block.getBlockBoundsMinX(), (double)pos.getY() + block.getBlockBoundsMinY(), (double)pos.getZ() + block.getBlockBoundsMinZ(),
                     (double)pos.getX() + block.getBlockBoundsMaxX(), (double)pos.getY() + block.getBlockBoundsMaxY(), (double)pos.getZ() + block.getBlockBoundsMaxZ());
-            System.out.println(axis.toString());
         }
+        MovingObjectPosition bpos = axis.calculateIntercept(player.getPositionEyes(1), posVec);
         return axis.calculateIntercept(player.getPositionEyes(1), posVec);
     }
 

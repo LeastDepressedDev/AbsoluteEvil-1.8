@@ -38,7 +38,6 @@ public class ARClick extends ARElement{
         if (Sync.player().getPositionVector().distanceTo(endPos) > 0.6) return;
         MovingObjectPosition semiPos = Utils.generateBlockHit(clickPos);
         if (semiPos == null || semiPos.typeOfHit == MovingObjectPosition.MovingObjectType.MISS) return;
-        Experimental.expRender.add(semiPos.hitVec);
         if (Sync.player().getPositionVector().distanceTo(semiPos.hitVec) > Minecraft.getMinecraft().playerController.getBlockReachDistance()) {
             Index.AR_CONTROLLER.interrupt(caller);
         }
