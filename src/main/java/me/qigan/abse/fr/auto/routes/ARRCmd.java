@@ -102,13 +102,14 @@ public class ARRCmd extends GenCommandDispatcher {
     @CommandRoute(route = "/add/walk")
     public void addRouteWalk(String[] args) {
         ARElement pre = route.elems.get(route.elems.size()-1);
-        boolean skip = false, jump = false, sprint = true;
+        boolean skip = false, jump = false, sprint = true, stop = true;
         for (String str : args) {
             if (str.equalsIgnoreCase("+skip")) skip = true;
             else if (str.equalsIgnoreCase("+jump")) jump = true;
             else if (str.equalsIgnoreCase("-sprint")) sprint = false;
+            else if (str.equalsIgnoreCase("-stop")) stop = false;
         }
-        ARWalk ele = new ARWalk(pre.endPos, Sync.player().getPositionVector(), jump, sprint);
+        ARWalk ele = new ARWalk(pre.endPos, Sync.player().getPositionVector(), jump, sprint, stop);
         ele.skip = skip;
         route.add(ele);
         Sync.player().addChatMessage(new ChatComponentText("\u00A7aAdded walk."));

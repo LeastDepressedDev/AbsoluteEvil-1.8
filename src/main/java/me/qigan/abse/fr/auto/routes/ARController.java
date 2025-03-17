@@ -96,15 +96,16 @@ public class ARController {
         }
     }
 
-    public void loadRoute(JSONObject obj, Object... adjData) {
+    public ARoute loadRoute(JSONObject obj, Object... adjData) {
         try {
             JSONObject pos = obj.getJSONObject("start");
             ARoute.Referer referer = ARoute.Referer.valueOf(obj.getString("ref"));
             Vec3 partPos = new Vec3(pos.getDouble("x"), pos.getDouble("y"), pos.getDouble("z"));
             int ref_id = obj.getInt("ref_id");
+            Room room = null;
             if (referer == ARoute.Referer.DUNGEON) {
-                Room room = (Room) adjData[0];
-                if (room == null || room.id != ref_id) return;
+                room = (Room) adjData[0];
+                if (room == null || room.id != ref_id) return null;
                 partPos = ((Room) adjData[0]).transformInnerCoordinate(partPos);
             }
             ARoute route = new ARoute(referer, ref_id, partPos);
@@ -131,9 +132,9 @@ public class ARController {
                         JSONObject to = jsonEle.getJSONObject("to");
                         Vec3 target = new Vec3(to.getDouble("x"), endPos.yCoord, to.getDouble("z"));
                         if (referer == ARoute.Referer.DUNGEON) {
-                            target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                            target = room.transformInnerCoordinate(target);
                         }
-                        route.add(new ARWalk(startPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"))
+                        route.add(new ARWalk(startPos, target, jsonEle.getBoolean("jump"), jsonEle.getBoolean("sprint"), jsonEle.getBoolean("stop"))
                         );
                     }
                     break;
@@ -141,7 +142,7 @@ public class ARController {
                         JSONObject click = jsonEle.getJSONObject("cord");
                         BlockPos target = new BlockPos(click.getDouble("x"), click.getDouble("y"), click.getDouble("z"));
                         if (referer == ARoute.Referer.DUNGEON) {
-                            target = ((Room) adjData[0]).transformInnerCoordinate(target);
+                            target = room.transformInnerCoordinate(target);
                         }
                         route.add(new ARClick(startPos, target, jsonEle.getBoolean("gpu")));
                     }
@@ -150,17 +151,18 @@ public class ARController {
                         JSONObject target = jsonEle.getJSONObject("target");
                         Float[] angles = new Float[]{target.getFloat("yaw"), target.getFloat("pitch")};
                         if (referer == ARoute.Referer.DUNGEON) {
-                            //TODO: Robusty angles processing
+                            angles[0] += room.rotation.angle;
                         }
                         route.add(new ARWarp(startPos, endPos, angles));
                     }
                     break;
                 }
             }
-            loadedRoutes.add(route);
+            return route;
         } catch (Exception ex) {
             System.out.println("Failed to load route.");
             ex.printStackTrace();
+            return null;
         }
     }
 
@@ -187,13 +189,15 @@ public class ARController {
         Room droom = Index.MAPPING_CONTROLLER.getPlayerRoom();
         for (AddressedData<ARoute.Referer, JSONObject> part : existingRoutes) {
             if (part.getNamespace() == ARoute.Referer.GENERAL) {
-                this.loadRoute(part.getObject());
+                ARoute r = this.loadRoute(part.getObject());
+                if (r != null) loadedRoutes.add(r);
             }
             if (part.getNamespace() == ARoute.Referer.DUNGEON && droom != null) {
-                this.loadRoute(
+                ARoute r = this.loadRoute(
                         part.getObject(),
                         Index.MAPPING_CONTROLLER.getPlayerRoom()
                 );
+                if (r != null) loadedRoutes.add(r);
             }
             if (part.getNamespace() == ARoute.Referer.FLOOR) {
                 //TODO: Add floor implementation

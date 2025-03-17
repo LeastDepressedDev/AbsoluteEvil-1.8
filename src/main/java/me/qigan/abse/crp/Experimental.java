@@ -13,6 +13,7 @@ import me.qigan.abse.vp.Esp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.client.C0CPacketInput;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S14PacketEntity;
 import net.minecraft.util.*;
@@ -73,8 +74,15 @@ public class Experimental extends Module implements EDLogic {
     @SubscribeEvent
     void packet(PacketEvent.SendEvent e) {
         if (!isEnabled()) return;
-
-
+        if (e.packet instanceof C03PacketPlayer.C05PacketPlayerLook) {
+            System.out.println("Look!");
+        }
+        if (e.packet instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
+            System.out.println("Pos look!");
+        }
+        if (e.packet instanceof C03PacketPlayer.C04PacketPlayerPosition) {
+            System.out.println("Position");
+        }
     }
 
     @Override
@@ -103,13 +111,11 @@ public class Experimental extends Module implements EDLogic {
 
     @Override
     public void onEnable() {
-        Index.PLAYER_CONTROLLER.globalToggle = true;
-        Index.PLAYER_CONTROLLER.goStateOvr[2] = true;
+
     }
 
     @Override
     public void onDisable() {
-        Index.PLAYER_CONTROLLER.reset();
-        Index.MOVEMENT_CONTROLLER.stop();
+
     }
 }

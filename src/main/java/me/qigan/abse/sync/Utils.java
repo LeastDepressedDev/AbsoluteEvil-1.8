@@ -182,8 +182,16 @@ public class Utils {
                     (double)pos.getX() + block.getBlockBoundsMinX(), (double)pos.getY() + block.getBlockBoundsMinY(), (double)pos.getZ() + block.getBlockBoundsMinZ(),
                     (double)pos.getX() + block.getBlockBoundsMaxX(), (double)pos.getY() + block.getBlockBoundsMaxY(), (double)pos.getZ() + block.getBlockBoundsMaxZ());
         }
-        MovingObjectPosition bpos = axis.calculateIntercept(player.getPositionEyes(1), posVec);
+        //MovingObjectPosition bpos = axis.calculateIntercept(player.getPositionEyes(1), posVec);
         return axis.calculateIntercept(player.getPositionEyes(1), posVec);
+    }
+
+    public static double getDistanceHorizontalSq(Vec3 vec1, Vec3 vec2) {
+        return Math.pow(vec1.xCoord-vec2.xCoord, 2)+Math.pow(vec1.zCoord-vec2.zCoord, 2);
+    }
+
+    public static double getDistanceHorizontal(Vec3 vec1, Vec3 vec2) {
+        return Math.sqrt(getDistanceHorizontalSq(vec1, vec2));
     }
 
     /**

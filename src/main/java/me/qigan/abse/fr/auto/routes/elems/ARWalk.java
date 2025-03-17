@@ -2,10 +2,8 @@ package me.qigan.abse.fr.auto.routes.elems;
 
 import me.qigan.abse.Index;
 import me.qigan.abse.fr.auto.routes.ARoute;
-import me.qigan.abse.mapping.MappingUtils;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.json.JSONObject;
@@ -25,16 +23,18 @@ public class ARWalk extends ARElement{
 
     public final boolean doJump;
     public final boolean allowSprint;
+    public final boolean doStop;
 
     //INITIALS
     public State state = State.BEGIN;
     private boolean jc = true;
     private long jcTime = 0;
 
-    public ARWalk(Vec3 startPos, Vec3 target, boolean jump, boolean sprint) {
+    public ARWalk(Vec3 startPos, Vec3 target, boolean jump, boolean sprint, boolean doStop) {
         super(startPos, target);
         this.doJump = jump;
         this.allowSprint = sprint;
+        this.doStop = doStop;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ARWalk extends ARElement{
 
     @Override
     public void tick(TickEvent.ClientTickEvent e, ARoute caller) {
-        Index.PLAYER_CONTROLLER.stop();
+        updateState(caller);
         switch (state) {
             case BEGIN:
                 if (Sync.player().getPositionVector().distanceTo(startPos) > 0.6) return;
@@ -69,7 +69,6 @@ public class ARWalk extends ARElement{
                 }
                 break;
         }
-        updateState();
     }
 
     @Override
@@ -87,16 +86,24 @@ public class ARWalk extends ARElement{
     @Override
     public JSONObject jsonObject() {
         return new JSONObject().put("type", "walk").put("pos", this.posObject())
-                .put("jump", this.doJump).put("sprint", this.allowSprint)
+                .put("jump", this.doJump).put("sprint", this.allowSprint).put("stop", this.doStop)
                 .put("to", new JSONObject().put("x", endPos.xCoord).put("z", endPos.zCoord));
     }
 
-    private void updateState() {
-        if (Sync.player().getPositionVector().distanceTo(endPos) <= 0.45) {
+    private void updateState(ARoute caller) {
+        if (Utils.getDistanceHorizontal(Sync.player().getPositionVector(), endPos) <= 0.45) {
             state = State.DONE;
-            Index.PLAYER_CONTROLLER.stop();
-            Sync.player().motionX = 0;
-            Sync.player().motionZ = 0;
+            if (!doStop) {
+                if (caller.step+1<caller.elems.size() && caller.elems.get(caller.step+1) instanceof ARWalk) {}
+                else {
+                    Index.PLAYER_CONTROLLER.stop();
+                }
+            }
+            if (doStop) {
+                Index.PLAYER_CONTROLLER.stop();
+                Sync.player().motionX = 0;
+                Sync.player().motionZ = 0;
+            }
             return;
         }
         Float[] rots = Utils.getRotationsTo(
