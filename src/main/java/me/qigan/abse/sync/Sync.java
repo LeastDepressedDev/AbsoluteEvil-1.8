@@ -31,6 +31,8 @@ public class Sync {
     public static final int tickr = 40;
     public static int tick = 0;
     private static char cls = 'U';
+    public static long ticksStill = 0;
+    public static double[] posLastTick = {0, 0, 0};
 
     public static BlockPos playerPosAsBlockPos() {
         return new BlockPos(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
@@ -362,10 +364,19 @@ public class Sync {
 
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
+        if (Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().thePlayer == null) return;
         if (tick >= tickr) {
             tick = 0;
             ovrCheck();
         }
         else tick++;
+        double[] posThisTick = {Sync.player().posX, Sync.player().posY, Sync.player().posZ};
+        if ((!Sync.player().isCollidedVertically || Sync.player().motionX != 0 || Sync.player().motionZ != 0) ||
+                !(posThisTick[0] == posLastTick[0] && posThisTick[1] == posLastTick[1] && posThisTick[2] == posLastTick[2])) {
+            ticksStill = 0;
+        } else {
+            ticksStill++;
+        }
+        posLastTick = posThisTick.clone();
     }
 }

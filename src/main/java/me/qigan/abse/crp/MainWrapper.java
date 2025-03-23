@@ -72,6 +72,7 @@ public class MainWrapper {
         ClientCommandHandler.instance.registerCommand(new InCmd());
         ClientCommandHandler.instance.registerCommand(new PathCmd());
         ClientCommandHandler.instance.registerCommand(new ARRCmd());
+        ClientCommandHandler.instance.registerCommand(new Blink.BlinkCmd());
 
         File file = new File(Loader.instance().getConfigDir() + "/abse/configs");
         if (!file.exists()) file.mkdirs();

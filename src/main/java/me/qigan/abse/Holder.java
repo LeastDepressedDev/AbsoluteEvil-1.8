@@ -14,6 +14,7 @@ import me.qigan.abse.fr.auto.routes.AutoRoutes;
 import me.qigan.abse.fr.dungons.m7p3.AirStrafe;
 import me.qigan.abse.fr.dungons.m7p3.AutoM7P4;
 import me.qigan.abse.fr.dungons.m7p3.DeviceIssue;
+import me.qigan.abse.fr.exc.Blink;
 import me.qigan.abse.fr.exc.PacketBreak;
 import me.qigan.abse.fr.kuudra.AutoRefillPearls;
 import me.qigan.abse.fr.macro.AutoDebuff;
@@ -103,6 +104,7 @@ public class Holder {
 		register(new RageLock());
 		register(new LegitGhostBlocksMacro());
 		register(new AutoRoutes());
+		register(new Blink());
 	}
 	
 	public static void register(Module mod) {
