@@ -119,7 +119,7 @@ public class M7Dragons extends Module {
                         if (!done.contains(drag)) {
                             Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(drag.name + " is done!"));
                             for (int i = 0; i < SOUND_VOL; i++) {
-                                Minecraft.getMinecraft().thePlayer.playSound("abse:skeet_hit", 1f, 1f);
+                                Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().thePlayer.playSound("abse:skeet_hit", 1f, 1f));
                             }
                             done.add(drag);
                         }
