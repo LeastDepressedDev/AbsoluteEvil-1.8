@@ -147,7 +147,7 @@ public class TerminalsModule extends Module implements EDLogic {
 
     @Override
     public String fname() {
-        return "Auto Terminals";
+        return "Terminals Issue";
     }
 
     @Override
@@ -157,6 +157,7 @@ public class TerminalsModule extends Module implements EDLogic {
         list.add(new SetsData<>("terms_cd", "Click delay[after gui update]", ValType.NUMBER, "100"));
         list.add(new SetsData<>("terms_cdr", "Delay randomization amount", ValType.NUMBER, "0"));
         list.add(new SetsData<>("terms_walk", "Inventory walk[WIP]", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("terms_clust", "Use clusterization methods", ValType.BOOLEAN, "false"));
         return list;
     }
 

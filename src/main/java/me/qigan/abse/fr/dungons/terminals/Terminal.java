@@ -12,7 +12,8 @@ public abstract class Terminal {
 
     public static enum Linker {
 
-        NUMBERS(Pattern.compile("Click in order!", Pattern.CASE_INSENSITIVE), NumbersTerminal.class)
+        NUMBERS(Pattern.compile("Click in order!", Pattern.CASE_INSENSITIVE), NumbersTerminal.class),
+        COLORS(Pattern.compile("Select all the (.+?) items!", Pattern.CASE_INSENSITIVE), ColorsTerminal.class)
 
         ;
 

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class NumbersTerminal extends Terminal {
 
     public int step = 0;
-    public AddressedData<Integer, Integer>[] solution;
+    public int[][] solution;
 
     public NumbersTerminal(Matcher matchResult) {
         super(matchResult);
@@ -25,9 +25,7 @@ public class NumbersTerminal extends Terminal {
     @Override
     public ClickInfo next(int id) {
         if (step >= solution.length) return null;
-        ClickInfo clickInfo = new ClickInfo(solution[step].getObject(), 0, id);;
-        step++;
-        return clickInfo;
+        return new ClickInfo(solution[step++][1], 0, id);
     }
 
     @Override
@@ -35,17 +33,17 @@ public class NumbersTerminal extends Terminal {
         ContainerChest c = TerminalUtils.getOpenedChestContainer();
         if (c==null) return;
         List<ItemStack> inv = c.getInventory();
-        List<AddressedData<Integer, Integer>> slots = new ArrayList<>();
+        List<int[]> slots = new ArrayList<>();
 
         for (int y = 1; y <= 2; y++) {
             for (int x = 1; x <= 7; x++) {
                 int n = TerminalUtils.cordToSlot(new int[]{x, y});
                 ItemStack stack = inv.get(n);
                 if (stack == null) continue;
-                if (stack.getMetadata() == 14) slots.add(new AddressedData<>(stack.stackSize, n));
+                if (stack.getMetadata() == 14) slots.add(new int[]{stack.stackSize, n});
             }
         }
 
-        solution = slots.stream().sorted((a, b) -> a.getNamespace()-b.getNamespace()).toArray(AddressedData[]::new);
+        solution = slots.stream().sorted((a, b) -> a[0]-b[0]).toArray(size -> new int[size][2]);
     }
 }
