@@ -13,7 +13,10 @@ public abstract class Terminal {
     public static enum Linker {
 
         NUMBERS(Pattern.compile("Click in order!", Pattern.CASE_INSENSITIVE), NumbersTerminal.class),
-        COLORS(Pattern.compile("Select all the (.+?) items!", Pattern.CASE_INSENSITIVE), ColorsTerminal.class)
+        COLORS(Pattern.compile("Select all the (.+?) items!", Pattern.CASE_INSENSITIVE), ColorsTerminal.class),
+        START_WITH(Pattern.compile("What starts with: '(.+?)'\\?", Pattern.CASE_INSENSITIVE), StartWithTerminal.class),
+        CORRECT_ALL(Pattern.compile("Correct all the panes!", Pattern.CASE_INSENSITIVE), CorrectAllTerminal.class),
+        RUBIX(Pattern.compile("Change all to same color!", Pattern.CASE_INSENSITIVE), RubixTerminal.class)
 
         ;
 

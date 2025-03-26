@@ -34,7 +34,7 @@ public class TerminalsModule extends Module implements EDLogic {
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
         if (!isEnabled()) return;
-        if (Minecraft.getMinecraft().currentScreen == null) {
+        if (Minecraft.getMinecraft().currentScreen == null && (inTerminal != null || !fc)) {
             resetDefault();
         }
     }
