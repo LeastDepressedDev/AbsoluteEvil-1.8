@@ -15,6 +15,8 @@ public class RubixTerminal extends Terminal{
 
     public static int[] ORDER = {14, 1, 4, 13, 11};
     public static Dictionary<Integer, Integer> MAPPER = new Hashtable<>();
+    public List<int[]> solution = null;
+    public int step = 0;
 
     public RubixTerminal(Matcher matchResult) {
         super(matchResult);
@@ -27,19 +29,43 @@ public class RubixTerminal extends Terminal{
 
     @Override
     public ClickInfo next(int id) {
-        return null;
+        if (step >= solution.size()) return null;
+        int[] p = solution.get(step++);
+        return new ClickInfo(p[0], p[1], id);
     }
 
     @Override
     public void build(ItemStack[] ignored) {
         ContainerChest c = TerminalUtils.getOpenedChestContainer();
         if (c==null) return;
+        List<ItemStack> inv = c.getInventory();
+        int ext = 256;
         for (int i = 0; i < 5; i++) {
-            List<AddressedData<int[], Integer>> part = new ArrayList<>();
+            List<int[]> part = new ArrayList<>();
             for (int y = 1; y <= 3; y++) {
                 for (int x = 3; x <= 5; x++) {
-                    //TODO: Finish
+                    int sn = TerminalUtils.cordToSlot(new int[]{x, y});
+                    ItemStack stack = inv.get(sn);
+                    if (stack == null) continue;
+                    Integer current = MAPPER.get(stack.getMetadata());
+                    if (current == null) continue;
+                    int p = (i - current + ORDER.length) % ORDER.length;
+                    int n = (current - i + ORDER.length) % ORDER.length;
+
+                    if (p < n) {
+                        for (int _i = 0; _i < p; _i++) {
+                            part.add(new int[]{sn, 0});
+                        }
+                    } else {
+                        for (int _i = 0; _i < n; _i++) {
+                            part.add(new int[]{sn, 1});
+                        }
+                    }
                 }
+            }
+            if (part.size() < ext) {
+                solution = part;
+                ext = solution.size();
             }
         }
     }

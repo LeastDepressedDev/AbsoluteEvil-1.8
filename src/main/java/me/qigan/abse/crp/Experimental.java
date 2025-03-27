@@ -117,7 +117,9 @@ public class Experimental extends Module implements EDLogic {
         if (!isEnabled()) return;
         //Click ids 0 - lcm, 1 - rcm
         if (e.packet instanceof C0EPacketClickWindow) {
-
+            System.out.println(Integer.toString(((C0EPacketClickWindow) e.packet).getMode()));
+            System.out.println(Integer.toString(((C0EPacketClickWindow) e.packet).getActionNumber()));
+            System.out.println(Integer.toString(((C0EPacketClickWindow) e.packet).getUsedButton()));
         }
 //        if (e.packet instanceof C03PacketPlayer.C05PacketPlayerLook) {
 //            System.out.println("Look!");

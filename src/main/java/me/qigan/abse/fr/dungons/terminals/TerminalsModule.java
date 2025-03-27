@@ -81,7 +81,6 @@ public class TerminalsModule extends Module implements EDLogic {
                 System.out.println("Click Info returned null -> terminal should be finished!");
                 return;
             }
-            System.out.println(String.format("Window is ready: %d - %d", info.slot, info.type));
             long cd = Index.MAIN_CFG.getIntVal("terms_cd");
             int rd = Index.MAIN_CFG.getIntVal("terms_cdr");
             if (rd > 0) {
@@ -105,7 +104,6 @@ public class TerminalsModule extends Module implements EDLogic {
                     System.out.println("Click Info returned null -> terminal should be finished!");
                     return;
                 }
-                System.out.println(String.format("Window is ready: %d - %d", info.slot, info.type));
                 long cd = Index.MAIN_CFG.getIntVal("terms_fc");
                 int rd = Index.MAIN_CFG.getIntVal("terms_cdr");
                 if (rd > 0) {
@@ -113,12 +111,15 @@ public class TerminalsModule extends Module implements EDLogic {
                     cd += rand.nextInt() % (rd+1);
                 }
                 dispatchDelayedClick(info, cd);
+            } else {
+
             }
         }
     }
 
     public static void dispatchDelayedClick(Terminal.ClickInfo info, long delay) {
         TimeoutTasks.addTimeout(() -> delayedClick(info), delay);
+        System.out.println(String.format("Called click %d:%d", info.slot, info.type));
         fc = false;
     }
 
@@ -132,7 +133,10 @@ public class TerminalsModule extends Module implements EDLogic {
             Sync.player().addChatMessage(new ChatComponentText("\u00A76[ABSE terminals] \u00A7cCancelled click due to unproved window id."));
             return;
         }
-        if (Minecraft.getMinecraft().currentScreen != null) Minecraft.getMinecraft().playerController.windowClick(info.windowId, info.slot, 0, info.type, Sync.player());
+        if (Minecraft.getMinecraft().currentScreen != null) {
+            Minecraft.getMinecraft().playerController.windowClick(info.windowId, info.slot, info.type, 0, Sync.player());
+            System.out.println(String.format("Clicked %d:%d", info.slot, info.type));
+        }
     }
 
     @Override
