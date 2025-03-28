@@ -13,6 +13,7 @@ import me.qigan.abse.vp.Esp;
 import me.qigan.abse.vp.S2Dtype;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ContainerChest;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
@@ -40,11 +41,25 @@ public class TerminalsModule extends Module implements EDLogic {
     public static boolean called = false;
     public static boolean ready = false;
 
+    public static boolean upt = false;
+    public static boolean upt_used = true;
+
     @SubscribeEvent
     void tick(TickEvent.ClientTickEvent e) {
         if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
         if (Minecraft.getMinecraft().currentScreen == null && (inTerminal != null || !fc)) {
             resetDefault();
+        }
+        if (Index.MAIN_CFG.getBoolVal("terms_ld") && inTerminal!=null && upt && !upt_used
+                && lastTime != -1 && System.currentTimeMillis()-lastTime>Index.MAIN_CFG.getIntVal("terms_ld_t")) {
+            upt = false;
+            upt_used = true;
+            ContainerChest c = TerminalUtils.getOpenedChestContainer();
+            if (c==null) return;
+            matchTerminal(c.getLowerChestInventory().getName());
+            inTerminal.build(c.getInventory().stream().toArray(ItemStack[]::new));
+            Terminal.ClickInfo info = inTerminal.next(c.windowId);
+            callPreClicK(info);
         }
     }
 
@@ -78,6 +93,7 @@ public class TerminalsModule extends Module implements EDLogic {
         called = false;
         ready = true;
         inTerminal = null;
+        upt = false;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -90,38 +106,60 @@ public class TerminalsModule extends Module implements EDLogic {
         }
     }
 
+    public static void matchTerminal(String guiName) {
+        for (Terminal.Linker link : Terminal.Linker.values()) {
+            Matcher matcher = link.regex.matcher(guiName);
+            if (matcher.matches()) {
+                try {
+                    inTerminal = link.instance(matcher);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                fc = true;
+                return;
+            }
+        }
+    }
+
     @SubscribeEvent
-    void guiPacket(PacketEvent.ReceiveEvent e) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    void guiPacket(PacketEvent.ReceiveEvent e) {
         if (!isEnabled()) return;
         if (e.packet instanceof S2DPacketOpenWindow) {
+            upt = false;
+            upt_used = false;
             ready = true;
             if (inTerminal == null) {
                 String title = ((S2DPacketOpenWindow) e.packet).getWindowTitle().getUnformattedText();
 
-                for (Terminal.Linker link : Terminal.Linker.values()) {
-                    Matcher matcher = link.regex.matcher(title);
-                    if (matcher.matches()) {
-                        inTerminal = link.instance(matcher);
-                        fc = true;
-                        break;
+                matchTerminal(title);
+
+                TimeoutTasks.addTimeout(() -> {
+                    if (inTerminal == null) {
+                        ContainerChest c = TerminalUtils.getOpenedChestContainer();
+                        if (c==null) return;
+                        String sub = c.getLowerChestInventory().getName();
+
+                        matchTerminal(sub);
+
+                        if (inTerminal != null) {
+                            inTerminal.build(c.getInventory().stream().toArray(ItemStack[]::new));
+                            Terminal.ClickInfo info = inTerminal.next(c.windowId);
+                            callPreClicK(info);
+                        }
                     }
-                }
+                }, Index.MAIN_CFG.getIntVal("terms_fc"));
             }
             if (fc) return;
             //Idk why I placed this check but let it be!
             if (inTerminal == null) return;
             Terminal.ClickInfo info = inTerminal.next(((S2DPacketOpenWindow) e.packet).getWindowId());
-            if (info == null) {
-                System.out.println("Click Info returned null -> terminal should be finished!");
-                return;
-            }
-            long cd = Index.MAIN_CFG.getIntVal("terms_cd");
-            int rd = Index.MAIN_CFG.getIntVal("terms_cdr");
-            if (rd > 0) {
-                Random rand = new Random();
-                cd += rand.nextInt() % (rd+1);
-            }
-            dispatchDelayedClick(info, cd);
+            callPreClicK(info);
         }
         if (e.packet instanceof S2EPacketCloseWindow) {
             resetDefault();
@@ -134,22 +172,26 @@ public class TerminalsModule extends Module implements EDLogic {
             if (c==null) return;
             inTerminal.build(((S30PacketWindowItems) e.packet).getItemStacks());
             Terminal.ClickInfo info = inTerminal.next(c.windowId);
-            if (info == null) {
-                System.out.println("Click Info returned null -> terminal should be finished!");
-                return;
-            }
-            long cd = Index.MAIN_CFG.getIntVal(fc ? "terms_fc" : "terms_cd");
-            int rd = Index.MAIN_CFG.getIntVal("terms_cdr");
-            if (rd > 0) {
-                Random rand = new Random();
-                cd += rand.nextInt() % (rd+1);
-            }
-            dispatchDelayedClick(info, cd);
+            callPreClicK(info);
         }
     }
 
+    public static void callPreClicK(Terminal.ClickInfo info) {
+        if (info == null) {
+            System.out.println("Click Info returned null -> terminal should be finished!");
+            return;
+        }
+        long cd = Index.MAIN_CFG.getIntVal(fc ? "terms_fc" : "terms_cd");
+        int rd = Index.MAIN_CFG.getIntVal("terms_cdr");
+        if (rd > 0) {
+            Random rand = new Random();
+            cd += rand.nextInt() % (rd+1);
+        }
+        dispatchDelayedClick(info, cd);
+    }
+
     public static void dispatchDelayedClick(Terminal.ClickInfo info, long delay) {
-        TimeoutTasks.addTimeout(() -> delayedClick(info), delay);
+        TimeoutTasks.addTimeout(() -> Minecraft.getMinecraft().addScheduledTask(() -> delayedClick(info)), delay);
         System.out.println(String.format("Called click %d:%d", info.slot, info.type));
         called = true;
         ready = false;
@@ -158,6 +200,7 @@ public class TerminalsModule extends Module implements EDLogic {
 
     public static void delayedClick(Terminal.ClickInfo info) {
         ContainerChest current = TerminalUtils.getOpenedChestContainer();
+        upt = true;
         if (current == null) {
             Sync.player().addChatMessage(new ChatComponentText("\u00A76[ABSE terminals] \u00A7cCancelled click due to null was returned for current inventory."));
             return;
@@ -193,10 +236,15 @@ public class TerminalsModule extends Module implements EDLogic {
     public List<SetsData<?>> sets() {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("terms_fc", "First click delay", ValType.NUMBER, "350"));
-        list.add(new SetsData<>("terms_cd", "Click delay[after gui update]", ValType.NUMBER, "100"));
+        list.add(new SetsData<>("terms_cd", "Click delay[after gui update]", ValType.NUMBER, "80"));
         list.add(new SetsData<>("terms_cdr", "Delay randomization amount", ValType.NUMBER, "0"));
+        list.add(new SetsData<>("terms_com1", "Inv walking: ", ValType.COMMENT, null));
         list.add(new SetsData<>("terms_walk", "Inventory walk", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("terms_rot", "Allow rotation in terminal", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("terms_com2", "Advanced terminal settings: ", ValType.COMMENT, null));
+        list.add(new SetsData<>("terms_ld", "Sync prediction[WIP]", ValType.BOOLEAN, "false"));
+        list.add(new SetsData<>("terms_com_ld", "^^^ Recommended for sub 50ms main delay", ValType.COMMENT, null));
+        list.add(new SetsData<>("terms_ld_t", "Sync time", ValType.NUMBER, "700"));
         list.add(new SetsData<>("terms_clust", "Use clusterization methods", ValType.BOOLEAN, "false"));
         return list;
     }

@@ -22,11 +22,15 @@ public class TimeoutTasks {
         List<AddressedData<Runnable, long[]>> tasks = new ArrayList<>(ops);
         int i = 0;
         for (AddressedData<Runnable, long[]> task : tasks) {
-            if (System.currentTimeMillis()-task.getObject()[1]>task.getObject()[0]) {
-                ops.remove(i);
-                task.getNamespace().run();
+            try {
+                if (System.currentTimeMillis() - task.getObject()[1] > task.getObject()[0]) {
+                    ops.remove(i);
+                    task.getNamespace().run();
+                }
+                i++;
+            } catch (IndexOutOfBoundsException ex) {
+                break;
             }
-            i++;
         }
     }
 
