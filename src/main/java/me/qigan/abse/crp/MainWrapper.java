@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.io.File;
@@ -102,11 +103,19 @@ public class MainWrapper {
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;
 //        if (QGuiScreen.register(PositionsGui.class, new PositionsGui(MainGui.class))) x0++;
 //        System.out.println("QGuiScreen: Registered " + x0 + " screens.");
+
+        //It is located in the end cuz stupid event priority
+        MinecraftForge.EVENT_BUS.register(new InvWalk());
     }
 
     @SubscribeEvent
     public void onServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
         if (Minecraft.getMinecraft().getCurrentServerData() == null) return;
+        event.manager.channel().pipeline().addBefore("packet_handler", "abse_packet_handler", new PacketHandler());
+    }
+
+    @SubscribeEvent
+    public void onClientTest(FMLNetworkEvent.ServerConnectionFromClientEvent event) {
         event.manager.channel().pipeline().addBefore("packet_handler", "abse_packet_handler", new PacketHandler());
     }
 

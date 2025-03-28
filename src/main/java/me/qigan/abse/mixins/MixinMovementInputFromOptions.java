@@ -1,12 +1,14 @@
 package me.qigan.abse.mixins;
 
 import me.qigan.abse.Index;
+import me.qigan.abse.fr.exc.InvWalk;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,7 +28,7 @@ public class MixinMovementInputFromOptions {
         inpOf.moveStrafe = 0.0F;
         inpOf.moveForward = 0.0F;
         if (Index.PLAYER_CONTROLLER.globalToggle) {
-            if (Minecraft.getMinecraft().currentScreen != null && !Minecraft.getMinecraft().currentScreen.allowUserInput) return;
+            if (Minecraft.getMinecraft().currentScreen != null) return;
             if (Index.PLAYER_CONTROLLER.goStateOvr[0]) {
                 ++inpOf.moveForward;
             }
@@ -46,24 +48,45 @@ public class MixinMovementInputFromOptions {
             inpOf.jump = Index.PLAYER_CONTROLLER.jump;
             inpOf.sneak = Index.PLAYER_CONTROLLER.sneak;
         } else {
-            if (settings.keyBindForward.isKeyDown()) {
-                ++inpOf.moveForward;
-            }
+            if (InvWalk.invWalk) {
+                if (Keyboard.isKeyDown(settings.keyBindForward.getKeyCode())) {
+                    ++inpOf.moveForward;
+                }
 
-            if (settings.keyBindBack.isKeyDown()) {
-                --inpOf.moveForward;
-            }
+                if (Keyboard.isKeyDown(settings.keyBindBack.getKeyCode())) {
+                    --inpOf.moveForward;
+                }
 
-            if (settings.keyBindLeft.isKeyDown()) {
-                ++inpOf.moveStrafe;
-            }
+                if (Keyboard.isKeyDown(settings.keyBindLeft.getKeyCode())) {
+                    ++inpOf.moveStrafe;
+                }
 
-            if (settings.keyBindRight.isKeyDown()) {
-                --inpOf.moveStrafe;
-            }
+                if (Keyboard.isKeyDown(settings.keyBindRight.getKeyCode())) {
+                    --inpOf.moveStrafe;
+                }
 
-            inpOf.jump = settings.keyBindJump.isKeyDown();
-            inpOf.sneak = settings.keyBindSneak.isKeyDown();
+                inpOf.jump = Keyboard.isKeyDown(settings.keyBindJump.getKeyCode());
+                inpOf.sneak = Keyboard.isKeyDown(settings.keyBindSneak.getKeyCode());
+            } else {
+                if (settings.keyBindForward.isKeyDown()) {
+                    ++inpOf.moveForward;
+                }
+
+                if (settings.keyBindBack.isKeyDown()) {
+                    --inpOf.moveForward;
+                }
+
+                if (settings.keyBindLeft.isKeyDown()) {
+                    ++inpOf.moveStrafe;
+                }
+
+                if (settings.keyBindRight.isKeyDown()) {
+                    --inpOf.moveStrafe;
+                }
+
+                inpOf.jump = settings.keyBindJump.isKeyDown();
+                inpOf.sneak = settings.keyBindSneak.isKeyDown();
+            }
         }
 
 
