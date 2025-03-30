@@ -16,7 +16,8 @@ public abstract class Terminal {
         COLORS(Pattern.compile("Select all the (.+?) items!", Pattern.CASE_INSENSITIVE), ColorsTerminal.class),
         START_WITH(Pattern.compile("What starts with: '(.+?)'\\?", Pattern.CASE_INSENSITIVE), StartWithTerminal.class),
         CORRECT_ALL(Pattern.compile("Correct all the panes!", Pattern.CASE_INSENSITIVE), CorrectAllTerminal.class),
-        RUBIX(Pattern.compile("Change all to same color!", Pattern.CASE_INSENSITIVE), RubixTerminal.class)
+        RUBIX(Pattern.compile("Change all to same color!", Pattern.CASE_INSENSITIVE), RubixTerminal.class),
+        MELODY(Pattern.compile("Click the button on time!", Pattern.CASE_INSENSITIVE), MelodyTerminal.class)
 
         ;
 

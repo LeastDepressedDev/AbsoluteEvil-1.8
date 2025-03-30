@@ -50,16 +50,51 @@ public class TerminalsModule extends Module implements EDLogic {
         if (Minecraft.getMinecraft().currentScreen == null && (inTerminal != null || !fc)) {
             resetDefault();
         }
+        if (inTerminal instanceof MelodyTerminal) return;
         if (Index.MAIN_CFG.getBoolVal("terms_ld") && inTerminal!=null && upt && !upt_used
                 && lastTime != -1 && System.currentTimeMillis()-lastTime>Index.MAIN_CFG.getIntVal("terms_ld_t")) {
             upt = false;
             upt_used = true;
+            fc = Index.MAIN_CFG.getBoolVal("terms_ld_fc");
             ContainerChest c = TerminalUtils.getOpenedChestContainer();
             if (c==null) return;
             matchTerminal(c.getLowerChestInventory().getName());
             inTerminal.build(c.getInventory().stream().toArray(ItemStack[]::new));
             Terminal.ClickInfo info = inTerminal.next(c.windowId);
             callPreClicK(info);
+        }
+    }
+
+    @SubscribeEvent
+    void melodyTick(TickEvent.ClientTickEvent e) {
+        if (!isEnabled() || Minecraft.getMinecraft().theWorld == null) return;
+        if (inTerminal instanceof MelodyTerminal) {
+            if (System.currentTimeMillis() - lastTime > Index.MAIN_CFG.getIntVal("terms_fc") && !called) {
+                ContainerChest c = TerminalUtils.getOpenedChestContainer();
+                if (c==null) return;
+                int currentSlot = 0;
+                for (int i = 1; i <= 5; i++) {
+                    if (c.getInventory().get(i).getMetadata() == 2) {
+                        currentSlot = i;
+                        break;
+                    }
+                }
+                int[] cord = null;
+                if (currentSlot == 0) return;
+                for (int x = 1; x <= 5; x++) {
+                    for (int y = 1; y <= 4; y++) {
+                        int[] pc = {x, y};
+                        if (c.getInventory().get(TerminalUtils.cordToSlot(pc)).getMetadata() == 5) {
+                            cord = pc;
+                            break;
+                        }
+                    }
+                }
+                if (cord == null) return;
+                if (cord[0] == currentSlot) {
+                    dispatchDelayedClick(new Terminal.ClickInfo(TerminalUtils.cordToSlot(new int[]{7, cord[1]}), 0, c.windowId), 20);
+                }
+            }
         }
     }
 
@@ -122,6 +157,7 @@ public class TerminalsModule extends Module implements EDLogic {
                     throw new RuntimeException(e);
                 }
                 fc = true;
+                if (inTerminal instanceof MelodyTerminal) lastTime = System.currentTimeMillis();
                 return;
             }
         }
@@ -148,6 +184,7 @@ public class TerminalsModule extends Module implements EDLogic {
                         matchTerminal(sub);
 
                         if (inTerminal != null) {
+                            if (inTerminal instanceof MelodyTerminal) return;
                             inTerminal.build(c.getInventory().stream().toArray(ItemStack[]::new));
                             Terminal.ClickInfo info = inTerminal.next(c.windowId);
                             callPreClicK(info);
@@ -158,6 +195,7 @@ public class TerminalsModule extends Module implements EDLogic {
             if (fc) return;
             //Idk why I placed this check but let it be!
             if (inTerminal == null) return;
+            if (inTerminal instanceof MelodyTerminal) return;
             Terminal.ClickInfo info = inTerminal.next(((S2DPacketOpenWindow) e.packet).getWindowId());
             callPreClicK(info);
         }
@@ -170,6 +208,7 @@ public class TerminalsModule extends Module implements EDLogic {
             if (!ready || called) return;
             ContainerChest c = TerminalUtils.getOpenedChestContainer();
             if (c==null) return;
+            if (inTerminal instanceof MelodyTerminal) return;
             inTerminal.build(((S30PacketWindowItems) e.packet).getItemStacks());
             Terminal.ClickInfo info = inTerminal.next(c.windowId);
             callPreClicK(info);
@@ -244,6 +283,7 @@ public class TerminalsModule extends Module implements EDLogic {
         list.add(new SetsData<>("terms_com2", "Advanced terminal settings: ", ValType.COMMENT, null));
         list.add(new SetsData<>("terms_ld", "Sync prediction[WIP]", ValType.BOOLEAN, "false"));
         list.add(new SetsData<>("terms_com_ld", "^^^ Recommended for sub 50ms main delay", ValType.COMMENT, null));
+        list.add(new SetsData<>("terms_ld_fc", "First click on sync", ValType.BOOLEAN, "true"));
         list.add(new SetsData<>("terms_ld_t", "Sync time", ValType.NUMBER, "700"));
         list.add(new SetsData<>("terms_clust", "Use clusterization methods", ValType.BOOLEAN, "false"));
         return list;
