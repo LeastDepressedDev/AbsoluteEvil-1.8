@@ -2,12 +2,9 @@ package me.qigan.abse.mixins;
 
 import me.qigan.abse.fr.exc.InvWalk;
 import me.qigan.abse.fr.exc.TimeoutTasks;
-import me.qigan.abse.sync.Sync;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

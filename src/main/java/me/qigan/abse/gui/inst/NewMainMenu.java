@@ -12,6 +12,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatComponentText;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -287,6 +290,25 @@ public class NewMainMenu extends QGuiScreen {
 //                10, 10, 0xFFFFFF, S2Dtype.CORNERED);
 //        Esp.drawOverlayString(innerCords.x + "||" + innerCords.y,
 //                10, 25, 0xFFFFFF, S2Dtype.CORNERED);
+
+
+        GlStateManager.pushMatrix();
+        Tessellator lvt_9_1_ = Tessellator.getInstance();
+        WorldRenderer lvt_10_1_ = lvt_9_1_.getWorldRenderer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        //GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_);
+        lvt_10_1_.begin(4, DefaultVertexFormats.POSITION_COLOR);
+        lvt_10_1_.pos((double)100, (double)100, 0.0).color(1f, 0f, 0f, 1f).endVertex();
+        lvt_10_1_.pos((double)200, (double)200, 0.0).color(0f, 1f, 0f, 1f).endVertex();
+        lvt_10_1_.pos((double)200, (double)100, 0.0).color(0f, 0f, 1f, 1f).endVertex();
+        lvt_9_1_.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
