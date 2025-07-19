@@ -4,6 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,15 +45,23 @@ public abstract class MixinGuiButton {
         
         if (this.visible) {
             FontRenderer fontrenderer = mc.fontRendererObj;
-            mc.getTextureManager().bindTexture(buttonTextures);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int i = this.getHoverState(this.hovered);
+
+            GlStateManager.pushMatrix();
+            Tessellator tes = Tessellator.getInstance();
+            WorldRenderer wr = tes.getWorldRenderer();
             GlStateManager.enableBlend();
+            GlStateManager.disableTexture2D();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.blendFunc(770, 771);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            wr.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
+            
+            tes.draw();
+            GlStateManager.enableTexture2D();
+            GlStateManager.disableBlend();
+            GlStateManager.shadeModel(GL11.GL_FLAT);
+            GlStateManager.popMatrix();
+
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
             if (this.packedFGColour != 0) {
