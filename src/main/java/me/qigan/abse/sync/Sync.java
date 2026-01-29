@@ -5,7 +5,6 @@ import me.qigan.abse.Index;
 import me.qigan.abse.crp.Experimental;
 import me.qigan.abse.fr.Debug;
 import me.qigan.abse.fr.exc.PhantomAim;
-import me.qigan.abse.mapping.MappingConstants;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
@@ -356,10 +355,6 @@ public class Sync {
             if (corners[0] != null && corners[1] != null) break;
         }
         return corners;
-    }
-
-    public static boolean isClear() {
-        return inDungeon && Utils.posInDim(Sync.playerPosAsBlockPos(), MappingConstants.MAP_BOUNDS);
     }
 
     @SubscribeEvent

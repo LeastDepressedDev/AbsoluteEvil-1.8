@@ -14,7 +14,6 @@ public abstract class Module {
 	public static enum Category {
 
 		MINIGAMES("Mini-games"),
-		SKYBLOCK("Skyblock"),
 		OTHER("Other")
 
 		;
@@ -30,12 +29,6 @@ public abstract class Module {
 		//MINI-GAmes
 		COMBAT(Category.MINIGAMES, "Combat"),
 		BEDWARS(Category.MINIGAMES, "Bedwars"),
-
-		//SKYBLOCK
-		DUNGEONS(Category.SKYBLOCK, "Dungeons"),
-		//OVERWORLD(Category.SKYBLOCK, "Overworld"),
-		SB_QOL(Category.SKYBLOCK, "Qol"),
-		AUTO(Category.SKYBLOCK, "Auto"),
 
 		//OTHER
 		QOL(Category.OTHER, "Qol"),

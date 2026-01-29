@@ -1,7 +1,6 @@
 package me.qigan.abse.pathing;
 
 import me.qigan.abse.config.AddressedData;
-import me.qigan.abse.mapping.MappingConstants;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.BlockPos;

@@ -7,7 +7,6 @@ import me.qigan.abse.config.ValType;
 import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
-import me.qigan.abse.fr.macro.Macro;
 import me.qigan.abse.gui.inst.NewMainMenu;
 import me.qigan.abse.sync.Utils;
 import me.qigan.abse.vp.Esp;
@@ -97,8 +96,6 @@ public class RenderableModule extends WidgetUpdatable {
         Gui.drawRect(cordX, cordY, boxX, boxY+sizeFunction(), NewMainMenu.SEMI_BG_COL_1.getRGB());
         String fname = module.fname();
 
-        Macro mac = module.getClass().getAnnotation(Macro.class);
-        if (mac != null) fname += "\u00A7a\u2714";
         DangerousModule annot = module.getClass().getAnnotation(DangerousModule.class);
         if (annot != null) fname += "\u00A7c\u26A0";
         if (Debug.DISABLE_STATE.contains(module.id())) fname = "\u00A77" + fname;

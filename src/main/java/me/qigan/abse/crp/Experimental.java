@@ -6,7 +6,6 @@ import me.qigan.abse.config.ValType;
 import me.qigan.abse.events.PacketEvent;
 import me.qigan.abse.fr.exc.PhantomAim;
 import me.qigan.abse.fr.exc.TimeoutTasks;
-import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.Path;
 import me.qigan.abse.sync.Sync;
 
@@ -137,11 +136,6 @@ public class Experimental extends Module implements EDLogic {
         List<SetsData<?>> list = new ArrayList<>();
         list.add(new SetsData<>("exptl_but1", "Routing", ValType.BUTTON, (Runnable) () -> {
             if (isEnabled()) Index.MOVEMENT_CONTROLLER.go(new Path(Sync.playerPosAsBlockPos(), new BlockPos(10, 9, 7)).build());
-        }));
-        list.add(new SetsData<>("exptl_but2", "Mapping", ValType.BUTTON, (Runnable) () -> {
-            if (isEnabled()) {
-                MappingController.debug.clear();
-            }
         }));
         list.add(new SetsData<>("exptl_but3", "Timeout thing test", ValType.BUTTON, (Runnable) () -> {
             if (isEnabled()) {

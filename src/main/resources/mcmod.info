@@ -3,13 +3,12 @@
   "modid": "abse",
   "name": "Absolute evil",
   "description": "Absolute Evil is a decent mod for skyblock.(Now on 1.8, 1.6 sucks lmao)",
-  "version": "${version}",
+  "version": "2.1",
   "mcversion": "${mcversion}",
   "url": "hitler.hypixel.net",
   "updateUrl": "",
   "authorList": ["qigan"],
-  "credits": "my twisted mind and some other coders who wrote a part of visuals.",
-  "logoFile": "logo.png",
+  "credits": "my twisted mind and some other coders who wrote a part of visuals."
   "screenshots": [],
   "dependencies": []
 }

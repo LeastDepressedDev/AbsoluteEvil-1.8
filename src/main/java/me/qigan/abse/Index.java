@@ -5,11 +5,9 @@ import me.qigan.abse.config.KeybindManager;
 import me.qigan.abse.config.MuConfig;
 import me.qigan.abse.config.PositionConfig;
 import me.qigan.abse.crp.MainWrapper;
-import me.qigan.abse.fr.auto.routes.ARController;
-import me.qigan.abse.fr.other.BWTeamTracker;
+import me.qigan.abse.fr.bedwars.BWTeamTracker;
 import me.qigan.abse.fr.other.BowPracticeMod;
-import me.qigan.abse.fr.other.FireballDetector;
-import me.qigan.abse.mapping.MappingController;
+import me.qigan.abse.fr.bedwars.FireballDetector;
 import me.qigan.abse.fr.exc.PlayerControllerOverrider;
 import me.qigan.abse.pathing.MovementController;
 import net.minecraft.client.Minecraft;
@@ -30,13 +28,11 @@ public class Index
     public static ConfigManager CFG_MANAGER;
     public static KeybindManager KEY_MANAGER;
     public static MovementController MOVEMENT_CONTROLLER;
-    public static MappingController MAPPING_CONTROLLER;
     public static PositionConfig POS_CFG;
     public static PlayerControllerOverrider PLAYER_CONTROLLER;
-    public static ARController AR_CONTROLLER;
 
     public static final String MODID = "abse";
-    public static final String VERSION = "2.0";
+    public static final String VERSION = "2.1";
     
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -57,7 +53,6 @@ public class Index
         FireballDetector.scan.clear();
         BWTeamTracker.team.clear();
         BowPracticeMod.tracking.clear();
-        MAPPING_CONTROLLER.newDungeon();
 
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("\u00A76Absolute fix applied!"));
     }

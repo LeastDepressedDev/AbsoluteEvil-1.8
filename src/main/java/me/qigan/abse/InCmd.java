@@ -3,11 +3,8 @@ package me.qigan.abse;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.fr.Debug;
 import me.qigan.abse.fr.exc.PacketBreak;
-import me.qigan.abse.fr.qol.GhostBlocks;
-import me.qigan.abse.fr.qol.GhostUtils;
-import me.qigan.abse.mapping.mod.M7Route;
+import me.qigan.abse.fr.other.GhostBlocks;
 import me.qigan.abse.gui.inst.NewMainMenu;
-import me.qigan.abse.gui.inst.LegacyGui;
 import me.qigan.abse.sync.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -41,19 +38,6 @@ public class InCmd extends CommandBase{
 				sender.addChatMessage(new ChatComponentText("\u00A7a/abse cfg - command for manually changing cfg."));
 				sender.addChatMessage(new ChatComponentText("\u00A7a/abse gb - ghost block management."));
 				sender.addChatMessage(new ChatComponentText("\u00A7a/abse ghosts - ghost utils management."));
-			} else if (args[0].equalsIgnoreCase("ghosts")) {
-				if (args.length > 1) {
-					if (args[1].equalsIgnoreCase("reset")) {
-						GhostUtils.reset();
-						sender.addChatMessage(new ChatComponentText("\u00A7aReset session status."));
-					} else {
-						sender.addChatMessage(new ChatComponentText("\u00A7cWrong argument!"));
-					}
-				} else {
-					sender.addChatMessage(new ChatComponentText("\u00A7a/abse ghosts reset - reset session ghost status."));
-				}
-			} else if (args[0].equalsIgnoreCase("m7")) {
-				M7Route.placeRoute();
 			} else if (args[0].equalsIgnoreCase("freeze")) {
 				PacketBreak.stun();
 			} else if (args[0].equalsIgnoreCase("crash")) {
@@ -142,8 +126,6 @@ public class InCmd extends CommandBase{
 				} else {
 					sender.addChatMessage(new ChatComponentText("\u00A7c Ghost blocks shit"));
 				}
-			} else if (args[0].equalsIgnoreCase("old")) {
-				LegacyGui.queue = true;
 			} else if (args[0].equalsIgnoreCase("item")) {
 				Minecraft.getMinecraft().thePlayer.addChatMessage(
 						new ChatComponentText(

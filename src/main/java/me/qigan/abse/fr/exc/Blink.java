@@ -9,7 +9,6 @@ import me.qigan.abse.crp.DangerousModule;
 import me.qigan.abse.crp.EDLogic;
 import me.qigan.abse.crp.Module;
 import me.qigan.abse.events.PacketEvent;
-import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.sync.CommandRoute;
 import me.qigan.abse.sync.GenCommandDispatcher;
 import me.qigan.abse.sync.Sync;
@@ -199,7 +198,6 @@ public class Blink extends Module implements EDLogic {
             List<Vec3> path = new ArrayList<>();
             for (AddressedData<Vec3, Boolean> pat : packets)
                 path.add(new Vec3(pat.getNamespace().xCoord, pat.getNamespace().yCoord, pat.getNamespace().zCoord));
-            RouteUpdater.drawPath(path, 1.4f, Color.magenta);
             p = packets.get(packets.size()-1).getNamespace();
             Esp.drawPointInWorldCircle(new Vec3(p.xCoord, p.yCoord, p.zCoord), 1.3, 16, 2.3f, Color.magenta);
         }

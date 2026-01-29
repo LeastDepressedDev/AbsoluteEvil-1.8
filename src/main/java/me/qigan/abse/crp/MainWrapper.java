@@ -11,22 +11,12 @@ import me.qigan.abse.config.MuConfig;
 import me.qigan.abse.config.PositionConfig;
 import me.qigan.abse.crp.ovr.MCMainMenu;
 import me.qigan.abse.events.CoreEventProfiler;
-import me.qigan.abse.fr.auto.routes.ARController;
-import me.qigan.abse.fr.auto.routes.ARRCmd;
 import me.qigan.abse.fr.exc.*;
-import me.qigan.abse.fr.mining.AutoMining;
-import me.qigan.abse.mapping.Rooms;
 import me.qigan.abse.fr.exc.PlayerControllerOverrider;
-import me.qigan.abse.mapping.mod.M7Route;
 import me.qigan.abse.gui.inst.NewMainMenu;
 import me.qigan.abse.gui.overlay.GuiNotifier;
-import me.qigan.abse.gui.inst.LegacyGui;
-import me.qigan.abse.mapping.MappingConstants;
-import me.qigan.abse.mapping.MappingController;
 import me.qigan.abse.pathing.MovementController;
-import me.qigan.abse.mapping.routing.RouteUpdater;
 import me.qigan.abse.events.PacketHandler;
-import me.qigan.abse.sync.GenCommandDispatcher;
 import me.qigan.abse.sync.SoundUtils;
 import me.qigan.abse.sync.Sync;
 import me.qigan.abse.sync.Utils;
@@ -37,7 +27,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.io.File;
@@ -49,10 +38,7 @@ public class MainWrapper {
     public static void initialise(FMLInitializationEvent e) {
 
         Utils.setupRoman();
-        MappingConstants.setup();
         TagConstants.init();
-        M7Route.setup();
-        Rooms.setup();
 
         //ClientSync.active();
         MinecraftForge.EVENT_BUS.register(new MainWrapper());
@@ -63,7 +49,6 @@ public class MainWrapper {
         MinecraftForge.EVENT_BUS.register(new SmoothAimControl());
         MinecraftForge.EVENT_BUS.register(new ClickSimTick());
         MinecraftForge.EVENT_BUS.register(new TickTasks());
-        MinecraftForge.EVENT_BUS.register(new RouteUpdater());
         MinecraftForge.EVENT_BUS.register(new Alert());
         MinecraftForge.EVENT_BUS.register(new CoreEventProfiler());
         MinecraftForge.EVENT_BUS.register(new PhantomAim());
@@ -72,13 +57,10 @@ public class MainWrapper {
 
         ClientCommandHandler.instance.registerCommand(new InCmd());
         ClientCommandHandler.instance.registerCommand(new PathCmd());
-        ClientCommandHandler.instance.registerCommand(new ARRCmd());
         ClientCommandHandler.instance.registerCommand(new Blink.BlinkCmd());
 
         File file = new File(Loader.instance().getConfigDir() + "/abse/configs");
         if (!file.exists()) file.mkdirs();
-
-        AutoMining.init();
 
         Holder.link();
         System.out.println("ABSE SOUND REG: " + SoundUtils.initialise() + " sounds registered.");
@@ -90,14 +72,10 @@ public class MainWrapper {
         Index.POS_CFG.load().defts(true).update();
         Index.MOVEMENT_CONTROLLER = new MovementController();
         MinecraftForge.EVENT_BUS.register(Index.MOVEMENT_CONTROLLER);
-        Index.MAPPING_CONTROLLER = new MappingController();
-        MinecraftForge.EVENT_BUS.register(Index.MAPPING_CONTROLLER);
         Index.KEY_MANAGER = new KeybindManager();
         MinecraftForge.EVENT_BUS.register(Index.KEY_MANAGER);
         Index.KEY_MANAGER.after();
         Index.PLAYER_CONTROLLER = new PlayerControllerOverrider();
-        Index.AR_CONTROLLER = new ARController();
-        MinecraftForge.EVENT_BUS.register(Index.AR_CONTROLLER);
 
 //        int x0 = 0;
 //        if (QGuiScreen.register(MainGui.class, new MainGui(0, null))) x0++;
@@ -121,15 +99,6 @@ public class MainWrapper {
 
     @SubscribeEvent
     public void tick(InputEvent.KeyInputEvent e) {
-        if (LegacyGui.queue) {
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    Minecraft.getMinecraft().displayGuiScreen(new LegacyGui(0, null));
-                }
-            });
-            LegacyGui.queue = false;
-        }
         if (NewMainMenu.queue) {
             Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
