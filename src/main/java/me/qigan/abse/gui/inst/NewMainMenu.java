@@ -292,24 +292,24 @@ public class NewMainMenu extends QGuiScreen {
 //                10, 25, 0xFFFFFF, S2Dtype.CORNERED);
 
 
-        GlStateManager.pushMatrix();
-        Tessellator lvt_9_1_ = Tessellator.getInstance();
-        WorldRenderer lvt_10_1_ = lvt_9_1_.getWorldRenderer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        //GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_);
-        lvt_10_1_.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
-        lvt_10_1_.pos((double) 200, (double) 200, 0.0).color(1f, 1f, 1f, 1f).endVertex();
-        for (double alpha = 0; alpha <= 2*Math.PI; alpha+=Math.PI/32) {
-            lvt_10_1_.pos((double) 200+50*Math.cos(-alpha), (double) 200+50*Math.sin(-alpha), 0.0).color(1f, 1f, 1f, (float) alpha/(float)Math.PI/2f).endVertex();
-        }
-        lvt_9_1_.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.popMatrix();
+//        GlStateManager.pushMatrix();
+//        Tessellator lvt_9_1_ = Tessellator.getInstance();
+//        WorldRenderer lvt_10_1_ = lvt_9_1_.getWorldRenderer();
+//        GlStateManager.enableBlend();
+//        GlStateManager.disableTexture2D();
+//        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+//        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+//        //GlStateManager.color(lvt_6_1_, lvt_7_1_, lvt_8_1_, lvt_5_3_);
+//        lvt_10_1_.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+//        lvt_10_1_.pos((double) 200, (double) 200, 0.0).color(1f, 1f, 1f, 1f).endVertex();
+//        for (double alpha = 0; alpha <= 2*Math.PI; alpha+=Math.PI/32) {
+//            lvt_10_1_.pos((double) 200+50*Math.cos(-alpha), (double) 200+50*Math.sin(-alpha), 0.0).color(1f, 1f, 1f, (float) alpha/(float)Math.PI/2f).endVertex();
+//        }
+//        lvt_9_1_.draw();
+//        GlStateManager.enableTexture2D();
+//        GlStateManager.disableBlend();
+//        GlStateManager.shadeModel(GL11.GL_FLAT);
+//        GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
